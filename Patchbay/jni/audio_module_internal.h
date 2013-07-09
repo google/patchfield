@@ -1,0 +1,49 @@
+#ifndef __AUDIO_MODULE_INTERNAL_H__
+#define __AUDIO_MODULE_INTERNAL_H__
+
+#include "audio_module.h"
+
+#include <semaphore.h>
+#include <stddef.h>
+#include <time.h>
+
+#define MAX_MODULES 32 
+#define MAX_CONNECTIONS 16 
+
+typedef struct {
+  int status;  // 0: none; 1: current; 2: slated for deletion
+  int in_use;
+
+  int source_index;
+  int source_port;
+  int sink_port;
+} connection;
+
+typedef struct {
+  int status;  // 0: none; 1: current; 2: slated for deletion
+  int in_use;
+  int active;
+
+  int sample_rate;
+  int buffer_frames;
+
+  int input_channels;
+  ptrdiff_t input_buffer;   // Storing buffers as offsets of type ptrdiff_t
+  int output_channels;      // rather than pointers of type float* to render
+  ptrdiff_t output_buffer;  // them independent of the shared memory location.
+
+  connection input_connections[MAX_CONNECTIONS];
+  int dependents;
+
+  struct timespec deadline;
+  sem_t report;
+  sem_t wake;
+  sem_t ready;
+} audio_module;
+
+audio_module *ami_get_audio_module(void *p, int index);
+float *ami_get_audio_buffer(void *p, ptrdiff_t offset);
+void ami_collect_input(void *p, int index);
+void ami_notify_dependents(void *p, int index);
+
+#endif
