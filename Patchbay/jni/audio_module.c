@@ -150,7 +150,7 @@ void am_release(audio_module_runner *amr) {
 }
 
 int am_has_timed_out(audio_module_runner *amr) {
-  return __sync_fetch_and_or(&amr->timed_out, 0);
+  return __sync_or_and_fetch(&amr->timed_out, 0);
 }
 
 int am_get_sample_rate(audio_module_runner *amr) {

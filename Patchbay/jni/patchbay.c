@@ -30,7 +30,7 @@ static void perform_cleanup(patchbay *pb) {
   int i, j, k;
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
-    if (__sync_fetch_and_or(&module->status, 0) == 2) {
+    if (__sync_or_and_fetch(&module->status, 0) == 2) {
       sem_destroy(&module->report);
       sem_destroy(&module->wake);
       sem_destroy(&module->ready);
@@ -46,7 +46,7 @@ static void perform_cleanup(patchbay *pb) {
         for (k = 0; k < MAX_CONNECTIONS; ++k) {
           connection *conn = u->input_connections + k;
           if (conn->source_index == i &&
-              __sync_fetch_and_or(&conn->status, 0)) {
+              __sync_or_and_fetch(&conn->status, 0)) {
             while (!__sync_bool_compare_and_swap(&conn->status,
                   conn->status, 0));
           }
@@ -78,7 +78,7 @@ static int add_module(patchbay *pb,
   int i;
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
-    if (__sync_fetch_and_or(&module->status, 0) == 0) {
+    if (__sync_or_and_fetch(&module->status, 0) == 0) {
       module->active = 0;
       module->in_use = 0;
       module->sample_rate = pb->sample_rate;
@@ -120,7 +120,7 @@ static int deactivate_module(patchbay *pb, int index) {
 
 static int is_active(patchbay *pb, int index) {
   audio_module *module = ami_get_audio_module(pb->shm_ptr, index);
-  return __sync_fetch_and_or(&module->active, 0);
+  return __sync_or_and_fetch(&module->active, 0);
 }
 
 static int get_input_channels(patchbay *pb, int index) {
@@ -142,7 +142,7 @@ static int is_connected(patchbay *pb, int source_index, int source_port,
     if (input->source_index == source_index &&
         input->source_port == source_port &&
         input->sink_port == sink_port &&
-        __sync_fetch_and_or(&input->status, 0) == 1) {
+        __sync_or_and_fetch(&input->status, 0) == 1) {
       return 1;
     }
   }
@@ -158,7 +158,7 @@ static int connect_modules(patchbay *pb, int source_index, int source_port,
   int i;
   for (i = 0; i < MAX_CONNECTIONS; ++i) {
     connection *input = sink->input_connections + i;
-    if (__sync_fetch_and_or(&input->status, 0) == 0) {
+    if (__sync_or_and_fetch(&input->status, 0) == 0) {
       input->sink_port = sink_port;
       input->source_index = source_index;
       input->source_port = source_port;
@@ -190,7 +190,7 @@ static void release(patchbay *pb) {
   opensl_close(pb->os);
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
-    if (__sync_fetch_and_or(&module->status, 0)) {
+    if (__sync_or_and_fetch(&module->status, 0)) {
       sem_destroy(&module->report);
       sem_destroy(&module->wake);
       sem_destroy(&module->ready);
@@ -226,8 +226,8 @@ static void process(void *context, int sample_rate, int buffer_frames,
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
     module->in_use =
-      __sync_fetch_and_or(&module->status, 0) == 1 &&
-      __sync_fetch_and_or(&module->active, 0) &&
+      __sync_or_and_fetch(&module->status, 0) == 1 &&
+      __sync_or_and_fetch(&module->active, 0) &&
       (i < 2 || !sem_timedwait(&module->report, &deadline));
     module->dependents = 1;
   }
@@ -236,7 +236,7 @@ static void process(void *context, int sample_rate, int buffer_frames,
     if (module->in_use) {
       for (j = 0; j < MAX_CONNECTIONS; ++j) {
         connection *conn = module->input_connections + j;
-        conn->in_use = (__sync_fetch_and_or(&conn->status, 0) == 1);
+        conn->in_use = (__sync_or_and_fetch(&conn->status, 0) == 1);
         if (conn->in_use) {
           ++(ami_get_audio_module(pb->shm_ptr, conn->source_index)->dependents);
         }
