@@ -10,6 +10,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/atomics.h>
 #include <time.h>
 
 #define LOGI(...) \
@@ -31,7 +32,6 @@ static void perform_cleanup(patchbay *pb) {
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
     if (__sync_or_and_fetch(&module->status, 0) == 2) {
-      sem_destroy(&module->report);
       sem_destroy(&module->wake);
       sem_destroy(&module->ready);
       int buffer_frames = (module->input_channels + module->output_channels) *
@@ -90,7 +90,7 @@ static int add_module(patchbay *pb,
       module->output_buffer = pb->next_buffer;
       pb->next_buffer += output_channels * pb->buffer_frames;
       module->dependents = 0;
-      sem_init(&module->report, 1, 0);
+      module->report = 0;
       sem_init(&module->wake, 1, 0);
       sem_init(&module->ready, 1, 0);
       memset(module->input_connections, 0, MAX_CONNECTIONS * sizeof(connection));
@@ -191,7 +191,6 @@ static void release(patchbay *pb) {
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
     if (__sync_or_and_fetch(&module->status, 0)) {
-      sem_destroy(&module->report);
       sem_destroy(&module->wake);
       sem_destroy(&module->ready);
     }
@@ -220,16 +219,24 @@ static void process(void *context, int sample_rate, int buffer_frames,
      int output_channels, short *output_buffer) {
   patchbay *pb = (patchbay *) context;
   struct timespec deadline;
-  clock_gettime(CLOCK_REALTIME, &deadline);
-  add_nsecs(&deadline, 100000);  // 0.1ms deadline for clients to report.
+  deadline.tv_sec = 0;
+  deadline.tv_nsec = 100000;  // 0.1ms deadline for clients to report.
   int i, j;
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
-    module->in_use =
-      __sync_or_and_fetch(&module->status, 0) == 1 &&
-      __sync_or_and_fetch(&module->active, 0) &&
-      (i < 2 || !sem_timedwait(&module->report, &deadline));
     module->dependents = 1;
+    module->in_use = 0;
+    if (__sync_or_and_fetch(&module->status, 0) == 1 &&
+        __sync_or_and_fetch(&module->active, 0)) {
+      if (i >= 2) {
+        __futex_wait(&module->report, 0, &deadline);
+        if (__sync_bool_compare_and_swap(&module->report, 1, 0)) {
+          module->in_use = 1;
+        }
+      } else {
+        module->in_use = 1;
+      }
+    }
   }
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
@@ -256,6 +263,7 @@ static void process(void *context, int sample_rate, int buffer_frames,
     sem_wait(&input->ready);
   }
   int dt = (ONE_BILLION / sample_rate + 1) * buffer_frames;
+  clock_gettime(CLOCK_REALTIME, &deadline);
   add_nsecs(&deadline, 2 * dt);  // Two-buffer-period processing deadline.
   for (i = 2; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);

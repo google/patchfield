@@ -36,7 +36,7 @@ typedef struct {
   int dependents;
 
   struct timespec deadline;
-  sem_t report;
+  int report;
   sem_t wake;
   sem_t ready;
 } audio_module;

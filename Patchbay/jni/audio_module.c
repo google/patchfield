@@ -13,6 +13,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/atomics.h>
 #include <sys/types.h>
 #include <time.h>
 
@@ -58,7 +59,11 @@ static void *run_module(void *arg) {
   timer_create(CLOCK_MONOTONIC, &evp, &timer);
 
   while (1) {
-    sem_post(&module->report);
+    if (__sync_bool_compare_and_swap(&module->report, 0, 1)) {
+      __futex_wake(&module->report, INT_MAX);
+    } else {
+      while (!__sync_bool_compare_and_swap(&module->report, module->report, 0));
+    }
     sem_wait(&module->wake);
     if (amr->done) {
       break;
@@ -117,7 +122,7 @@ audio_module_runner *am_create(int token, int index,
 
     audio_module *module = ami_get_audio_module(amr->shm_ptr, amr->index);
     // Clear semaphores, just in case.
-    while (!sem_trywait(&module->report));
+    while (!__sync_bool_compare_and_swap(&module->report, module->report, 0));
     while (!sem_trywait(&module->wake));
     while (!sem_trywait(&module->ready));
 
