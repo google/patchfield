@@ -1,7 +1,8 @@
 #include "patchbay.h"
 
-#include "opensl_stream/opensl_stream.h"
 #include "audio_module_internal.h"
+#include "futex_barrier.h"
+#include "opensl_stream/opensl_stream.h"
 #include "shared_memory_internal.h"
 
 #include <android/log.h>
@@ -10,7 +11,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/atomics.h>
 #include <time.h>
 
 #define LOGI(...) \
@@ -90,7 +90,7 @@ static int add_module(patchbay *pb,
       module->output_buffer = pb->next_buffer;
       pb->next_buffer += output_channels * pb->buffer_frames;
       module->dependents = 0;
-      module->report = 0;
+      fb_clobber(&module->report);
       sem_init(&module->wake, 1, 0);
       sem_init(&module->ready, 1, 0);
       memset(module->input_connections, 0, MAX_CONNECTIONS * sizeof(connection));
@@ -225,18 +225,10 @@ static void process(void *context, int sample_rate, int buffer_frames,
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
     module->dependents = 1;
-    module->in_use = 0;
-    if (__sync_or_and_fetch(&module->status, 0) == 1 &&
-        __sync_or_and_fetch(&module->active, 0)) {
-      if (i >= 2) {
-        __futex_wait(&module->report, 0, &deadline);
-        if (__sync_bool_compare_and_swap(&module->report, 1, 0)) {
-          module->in_use = 1;
-        }
-      } else {
-        module->in_use = 1;
-      }
-    }
+    module->in_use =
+      __sync_or_and_fetch(&module->status, 0) == 1 &&
+      __sync_or_and_fetch(&module->active, 0) &&
+      ((i < 2) || fb_wait_and_clear(&module->report, &deadline) == 0);
   }
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);

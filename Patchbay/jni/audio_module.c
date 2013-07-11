@@ -1,7 +1,8 @@
 #include "audio_module.h"
 
-#include "opensl_stream/opensl_stream.h"
 #include "audio_module_internal.h"
+#include "futex_barrier.h"
+#include "opensl_stream/opensl_stream.h"
 #include "shared_memory_internal.h"
 
 #include <android/log.h>
@@ -13,7 +14,6 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/atomics.h>
 #include <sys/types.h>
 #include <time.h>
 
@@ -59,11 +59,7 @@ static void *run_module(void *arg) {
   timer_create(CLOCK_MONOTONIC, &evp, &timer);
 
   while (1) {
-    if (__sync_bool_compare_and_swap(&module->report, 0, 1)) {
-      __futex_wake(&module->report, INT_MAX);
-    } else {
-      while (!__sync_bool_compare_and_swap(&module->report, module->report, 0));
-    }
+    fb_wake(&module->report);
     sem_wait(&module->wake);
     if (amr->done) {
       break;
@@ -121,8 +117,8 @@ audio_module_runner *am_create(int token, int index,
     amr->launch_counter = 3;  // Make sure that this number stays current.
 
     audio_module *module = ami_get_audio_module(amr->shm_ptr, amr->index);
-    // Clear semaphores, just in case.
-    while (!__sync_bool_compare_and_swap(&module->report, module->report, 0));
+    // Clear barriers, just in case.
+    fb_clobber(&module->report);
     while (!sem_trywait(&module->wake));
     while (!sem_trywait(&module->ready));
 
