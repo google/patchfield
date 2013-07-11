@@ -3,8 +3,8 @@
 
 #include <time.h>
 
-int fb_wait(int *p, struct timespec *deadline);
-int fb_wait_and_clear(int *p, struct timespec *deadline);
+int fb_wait(int *p, struct timespec *abstime);
+int fb_wait_and_clear(int *p, struct timespec *abstime);
 int fb_wake(int *p);
 void fb_clobber(int *p);
 

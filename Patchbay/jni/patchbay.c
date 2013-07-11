@@ -217,8 +217,8 @@ static void process(void *context, int sample_rate, int buffer_frames,
      int output_channels, short *output_buffer) {
   patchbay *pb = (patchbay *) context;
   struct timespec deadline;
-  deadline.tv_sec = 0;
-  deadline.tv_nsec = 100000;  // 0.1ms deadline for clients to report.
+  clock_gettime(CLOCK_MONOTONIC, &deadline);
+  add_nsecs(&deadline, 100000);  // 0.1ms deadline for clients to report.
   int i, j;
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
