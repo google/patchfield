@@ -32,7 +32,6 @@ static void perform_cleanup(patchbay *pb) {
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
     if (__sync_or_and_fetch(&module->status, 0) == 2) {
-      sem_destroy(&module->wake);
       sem_destroy(&module->ready);
       int buffer_frames = (module->input_channels + module->output_channels) *
         pb->buffer_frames;
@@ -91,7 +90,7 @@ static int add_module(patchbay *pb,
       pb->next_buffer += output_channels * pb->buffer_frames;
       module->dependents = 0;
       fb_clobber(&module->report);
-      sem_init(&module->wake, 1, 0);
+      fb_clobber(&module->wake);
       sem_init(&module->ready, 1, 0);
       memset(module->input_connections, 0, MAX_CONNECTIONS * sizeof(connection));
       __sync_bool_compare_and_swap(&module->status, 0, 1);
@@ -191,7 +190,6 @@ static void release(patchbay *pb) {
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
     if (__sync_or_and_fetch(&module->status, 0)) {
-      sem_destroy(&module->wake);
       sem_destroy(&module->ready);
     }
   }
@@ -263,7 +261,7 @@ static void process(void *context, int sample_rate, int buffer_frames,
       module->deadline.tv_sec = deadline.tv_sec;
       module->deadline.tv_nsec = deadline.tv_nsec;
       while (!sem_trywait(&module->ready));  // Clear semaphore, just in case.
-      sem_post(&module->wake);
+      fb_wake(&module->wake);
     }
   }
   audio_module *output = ami_get_audio_module(pb->shm_ptr, 1);

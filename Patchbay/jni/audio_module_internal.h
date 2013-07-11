@@ -37,7 +37,7 @@ typedef struct {
 
   struct timespec deadline;
   int report;
-  sem_t wake;
+  int wake;
   sem_t ready;
 } audio_module;
 

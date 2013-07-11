@@ -60,7 +60,7 @@ static void *run_module(void *arg) {
 
   while (1) {
     fb_wake(&module->report);
-    sem_wait(&module->wake);
+    fb_wait_and_clear(&module->wake, NULL);
     if (amr->done) {
       break;
     }
@@ -119,7 +119,7 @@ audio_module_runner *am_create(int token, int index,
     audio_module *module = ami_get_audio_module(amr->shm_ptr, amr->index);
     // Clear barriers, just in case.
     fb_clobber(&module->report);
-    while (!sem_trywait(&module->wake));
+    fb_clobber(&module->wake);
     while (!sem_trywait(&module->ready));
 
     OPENSL_STREAM *os = opensl_open(module->sample_rate, 0, 2,
@@ -143,7 +143,7 @@ void am_release(audio_module_runner *amr) {
   audio_module *module = ami_get_audio_module(amr->shm_ptr, amr->index);
 
   amr->done = 1;
-  sem_post(&module->wake);
+  fb_wake(&module->wake);
   pthread_join(amr->thread, NULL);
 
   smi_unmap(amr->shm_ptr);

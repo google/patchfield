@@ -1,12 +1,15 @@
 #include "futex_barrier.h"
 
-#include "limits.h"
-#include "sys/atomics.h"
+#include <limits.h>
+#include <linux/futex.h>
+#include <sys/linux-syscalls.h>
+#include <unistd.h>
 
 int fb_wait(int *p, struct timespec *deadline) {
   switch (__sync_or_and_fetch(p, 0)) {
     case 0:
-      __futex_wait(p, 0, deadline);
+      syscall(__NR_futex, p, FUTEX_WAIT, 0, NULL, NULL, 0);
+      // __futex_wait(p, 0, deadline);
       break;
     case 1:
       return 0;   // Success!
@@ -26,7 +29,8 @@ int fb_wait(int *p, struct timespec *deadline) {
 int fb_wait_and_clear(int *p, struct timespec *deadline) {
   switch (__sync_or_and_fetch(p, 0)) {
     case 0:
-      __futex_wait(p, 0, deadline);
+      syscall(__NR_futex, p, FUTEX_WAIT, 0, NULL, NULL, 0);
+      // __futex_wait(p, 0, deadline);
     case 1:
       break;
     default:
@@ -44,7 +48,8 @@ int fb_wait_and_clear(int *p, struct timespec *deadline) {
 
 int fb_wake(int *p) {
   if (__sync_bool_compare_and_swap(p, 0, 1)) {
-    __futex_wake(p, INT_MAX);
+    syscall(__NR_futex, p, FUTEX_WAKE, INT_MAX, NULL, NULL, 0);
+    // __futex_wake(p, INT_MAX);
     return 0;
   } else {
     return -2;
