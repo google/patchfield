@@ -51,16 +51,6 @@ int fb_wake(int *p) {
   }
 }
 
-int fb_clear(int *p) {
-  switch (__sync_val_compare_and_swap(p, 1, 0)) {
-    case 0:
-    case 1:
-      return 0;
-    default:
-      return -2;
-  }
-}
-
 void fb_clobber(int *p) {
   int val = 1;
   while (val = __sync_val_compare_and_swap(p, val, 0));
