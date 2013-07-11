@@ -1,4 +1,4 @@
-#include "futex_barrier.h"
+#include "simple_barrier.h"
 
 #include <limits.h>
 #include <linux/futex.h>

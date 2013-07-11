@@ -1,7 +1,7 @@
 #include "patchbay.h"
 
 #include "audio_module_internal.h"
-#include "futex_barrier.h"
+#include "simple_barrier.h"
 #include "opensl_stream/opensl_stream.h"
 #include "shared_memory_internal.h"
 

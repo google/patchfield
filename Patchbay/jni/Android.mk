@@ -12,7 +12,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := patchbay
 LOCAL_LDLIBS := -lOpenSLES -llog
 LOCAL_SRC_FILES := patchbay.c shared_memory_internal.c audio_module_internal.c \
-  futex_barrier.c opensl_stream/opensl_stream.c
+  simple_barrier.c opensl_stream/opensl_stream.c
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -20,7 +20,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := audiomodule
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
 LOCAL_EXPORT_LDLIBS := -lOpenSLES -llog
-LOCAL_SRC_FILES := audio_module.c audio_module_internal.c futex_barrier.c \
+LOCAL_SRC_FILES := audio_module.c audio_module_internal.c simple_barrier.c \
 	shared_memory_internal.c opensl_stream/opensl_stream.c
 include $(BUILD_STATIC_LIBRARY)
 
