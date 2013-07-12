@@ -34,13 +34,14 @@ typedef struct {
   connection input_connections[MAX_CONNECTIONS];
 
   struct timespec deadline;
-  int report;
-  int wake;
-  int ready;
+  ptrdiff_t report;
+  ptrdiff_t wake;
+  ptrdiff_t ready;
 } audio_module;
 
 audio_module *ami_get_audio_module(void *p, int index);
 float *ami_get_audio_buffer(void *p, ptrdiff_t offset);
+int *ami_get_barrier(void *p, ptrdiff_t offset);
 void ami_collect_input(void *p, int index);
 
 #endif

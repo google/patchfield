@@ -12,6 +12,10 @@ float *ami_get_audio_buffer(void *p, ptrdiff_t offset) {
   return ((float *) p) + offset;
 }
 
+int *ami_get_barrier(void *p, ptrdiff_t offset) {
+  return ((int *) p) + offset;
+}
+
 void ami_collect_input(void *p, int index) {
   audio_module *module = ami_get_audio_module(p, index);
   float *input_buffer = ami_get_audio_buffer(p, module->input_buffer);
@@ -27,7 +31,7 @@ void ami_collect_input(void *p, int index) {
           input_buffer + conn->sink_port * module->buffer_frames;
         float *source_channel = ami_get_audio_buffer(p,
             source->output_buffer) + conn->source_port * module->buffer_frames;
-        if (!sb_wait(&source->ready, &source->deadline)) {
+        if (!sb_wait(ami_get_barrier(p, source->ready), &source->deadline)) {
           for (j = 0; j < module->buffer_frames; ++j) {
             input_channel[j] += source_channel[j];
           }

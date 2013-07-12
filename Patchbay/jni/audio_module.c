@@ -58,8 +58,8 @@ static void *run_module(void *arg) {
   timer_create(CLOCK_MONOTONIC, &evp, &timer);
 
   while (1) {
-    sb_wake(&module->report);
-    sb_wait_and_clear(&module->wake, NULL);
+    sb_wake(ami_get_barrier(amr->shm_ptr, module->report));
+    sb_wait_and_clear(ami_get_barrier(amr->shm_ptr, module->wake), NULL);
     if (amr->done) {
       break;
     }
@@ -78,7 +78,7 @@ static void *run_module(void *arg) {
           ami_get_audio_buffer(amr->shm_ptr, module->output_buffer));
       timerspec.it_value.tv_sec = 0;
       timer_settime(timer, 0, &timerspec, NULL);  // Disarm timer.
-      sb_wake(&module->ready);
+      sb_wake(ami_get_barrier(amr->shm_ptr, module->ready));
     } else {
       __sync_bool_compare_and_swap(&amr->timed_out, 0, 1);
       // We can safely log now because we are leaving the processing chain.
@@ -121,9 +121,9 @@ audio_module_runner *am_create(int version, int token, int index,
 
     audio_module *module = ami_get_audio_module(amr->shm_ptr, amr->index);
     // Clear barriers, just in case.
-    sb_clobber(&module->report);
-    sb_clobber(&module->wake);
-    sb_clobber(&module->ready);
+    sb_clobber(ami_get_barrier(amr->shm_ptr, module->report));
+    sb_clobber(ami_get_barrier(amr->shm_ptr, module->wake));
+    sb_clobber(ami_get_barrier(amr->shm_ptr, module->ready));
 
     OPENSL_STREAM *os = opensl_open(module->sample_rate, 0, 2,
         module->buffer_frames, launch_thread, amr);
@@ -145,7 +145,7 @@ void am_release(audio_module_runner *amr) {
   audio_module *module = ami_get_audio_module(amr->shm_ptr, amr->index);
 
   amr->done = 1;
-  sb_wake(&module->wake);
+  sb_wake(ami_get_barrier(amr->shm_ptr, module->wake));
   pthread_join(amr->thread, NULL);
 
   smi_unmap(amr->shm_ptr);

@@ -11,11 +11,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 #define LOGI(...) \
   __android_log_print(ANDROID_LOG_INFO, "patchbay", __VA_ARGS__)
 #define LOGW(...) \
   __android_log_print(ANDROID_LOG_WARN, "patchbay", __VA_ARGS__)
+
+#define PAGESIZE sysconf(_SC_PAGESIZE)
+#define BARRIER_OFFSET (MAX_MODULES * sizeof(audio_module) / PAGESIZE + 1)
+#define BUFFER_OFFSET \
+  (BARRIER_OFFSET + MAX_MODULES * 3 * sizeof(int) / PAGESIZE + 1)
 
 typedef struct {
   OPENSL_STREAM *os;
@@ -86,9 +92,12 @@ static int add_module(patchbay *pb,
       module->output_channels = output_channels;
       module->output_buffer = pb->next_buffer;
       pb->next_buffer += output_channels * pb->buffer_frames;
-      sb_clobber(&module->report);
-      sb_clobber(&module->wake);
-      sb_clobber(&module->ready);
+      module->report = BARRIER_OFFSET * PAGESIZE / sizeof(int) + i * 3;
+      sb_clobber(ami_get_barrier(pb->shm_ptr, module->report));
+      module->wake = module->report + 1;
+      sb_clobber(ami_get_barrier(pb->shm_ptr, module->wake));
+      module->ready = module->wake + 1;
+      sb_clobber(ami_get_barrier(pb->shm_ptr, module->ready));
       memset(module->input_connections, 0, MAX_CONNECTIONS * sizeof(connection));
       __sync_bool_compare_and_swap(&module->status, 0, 1);
       return i;
@@ -216,9 +225,10 @@ static void process(void *context, int sample_rate, int buffer_frames,
     module->in_use =
       __sync_or_and_fetch(&module->status, 0) == 1 &&
       __sync_or_and_fetch(&module->active, 0) &&
-      ((i < 2) || sb_wait_and_clear(&module->report, &deadline) == 0);
+      ((i < 2) || sb_wait_and_clear(ami_get_barrier(pb->shm_ptr, module->report),
+         &deadline) == 0);
     if (module->in_use) {
-      sb_clobber(&module->ready);
+      sb_clobber(ami_get_barrier(pb->shm_ptr, module->ready));
       for (j = 0; j < MAX_CONNECTIONS; ++j) {
         connection *conn = module->input_connections + j;
         conn->in_use = (__sync_or_and_fetch(&conn->status, 0) == 1);
@@ -234,7 +244,7 @@ static void process(void *context, int sample_rate, int buffer_frames,
       }
       b += buffer_frames;
     }
-    sb_wake(&input->ready);
+    sb_wake(ami_get_barrier(pb->shm_ptr, input->ready));
   }
   int dt = (ONE_BILLION / sample_rate + 1) * buffer_frames;
   clock_gettime(CLOCK_MONOTONIC, &deadline);
@@ -244,7 +254,7 @@ static void process(void *context, int sample_rate, int buffer_frames,
     if (module->in_use) {
       module->deadline.tv_sec = deadline.tv_sec;
       module->deadline.tv_nsec = deadline.tv_nsec;
-      sb_wake(&module->wake);
+      sb_wake(ami_get_barrier(pb->shm_ptr, module->wake));
     }
   }
   audio_module *output = ami_get_audio_module(pb->shm_ptr, 1);
@@ -261,7 +271,8 @@ static void process(void *context, int sample_rate, int buffer_frames,
   for (i = 2; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
     if (module->in_use) {
-      sb_wait_and_clear(&module->ready, &module->deadline);
+      sb_wait_and_clear(ami_get_barrier(pb->shm_ptr, module->ready),
+          &module->deadline);
     }
   }
   perform_cleanup(pb);
@@ -273,7 +284,7 @@ static patchbay *create_instance(int sample_rate, int buffer_frames,
   if (pb) {
     pb->sample_rate = sample_rate;
     pb->buffer_frames = buffer_frames;
-    pb->next_buffer = MAX_MODULES * sizeof(audio_module) / sizeof(float) + 1;
+    pb->next_buffer = BUFFER_OFFSET * PAGESIZE / sizeof(float);
 
     pb->shm_fd = smi_create();
     if (pb->shm_fd < 0) {
