@@ -11,17 +11,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <unistd.h>
 
 #define LOGI(...) \
   __android_log_print(ANDROID_LOG_INFO, "patchbay", __VA_ARGS__)
 #define LOGW(...) \
   __android_log_print(ANDROID_LOG_WARN, "patchbay", __VA_ARGS__)
-
-#define PAGESIZE sysconf(_SC_PAGESIZE)
-#define BARRIER_OFFSET (MAX_MODULES * sizeof(audio_module) / PAGESIZE + 1)
-#define BUFFER_OFFSET \
-  (BARRIER_OFFSET + MAX_MODULES * 3 * sizeof(int) / PAGESIZE + 1)
 
 typedef struct {
   OPENSL_STREAM *os;
@@ -92,7 +86,7 @@ static int add_module(patchbay *pb,
       module->output_channels = output_channels;
       module->output_buffer = pb->next_buffer;
       pb->next_buffer += output_channels * pb->buffer_frames;
-      module->report = BARRIER_OFFSET * PAGESIZE / sizeof(int) + i * 3;
+      module->report = BARRIER_OFFSET * MEM_PAGE_SIZE / sizeof(int) + i * 3;
       sb_clobber(ami_get_barrier(pb->shm_ptr, module->report));
       module->wake = module->report + 1;
       sb_clobber(ami_get_barrier(pb->shm_ptr, module->wake));
@@ -284,7 +278,7 @@ static patchbay *create_instance(int sample_rate, int buffer_frames,
   if (pb) {
     pb->sample_rate = sample_rate;
     pb->buffer_frames = buffer_frames;
-    pb->next_buffer = BUFFER_OFFSET * PAGESIZE / sizeof(float);
+    pb->next_buffer = BUFFER_OFFSET * MEM_PAGE_SIZE / sizeof(float);
 
     pb->shm_fd = smi_create();
     if (pb->shm_fd < 0) {

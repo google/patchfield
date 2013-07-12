@@ -112,6 +112,7 @@ audio_module_runner *am_create(int version, int token, int index,
   if (amr) {
     amr->shm_fd = token;
     amr->shm_ptr = smi_map(token);
+    smi_protect(amr->shm_ptr, ami_get_protected_size());
     amr->index = index;
     amr->done = 0;
     amr->timed_out = 0;

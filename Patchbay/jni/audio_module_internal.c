@@ -16,6 +16,10 @@ int *ami_get_barrier(void *p, ptrdiff_t offset) {
   return ((int *) p) + offset;
 }
 
+size_t ami_get_protected_size() {
+  return BARRIER_OFFSET * MEM_PAGE_SIZE;
+}
+
 void ami_collect_input(void *p, int index) {
   audio_module *module = ami_get_audio_module(p, index);
   float *input_buffer = ami_get_audio_buffer(p, module->input_buffer);

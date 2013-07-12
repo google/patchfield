@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-#define PATCHBAY_PROTOCOL_VERSION 1
+#define PATCHBAY_PROTOCOL_VERSION 2
 
 /*
  * Processing callback; takes a processing context (which is just a pointer to

@@ -56,6 +56,10 @@ int smi_unlock(void *p) {
   return munlock(p, SHARED_MEM_SIZE);
 }
 
+int smi_protect(void *p, size_t n) {
+  mprotect(p, n, PROT_READ);
+}
+
 static int smi_transmit(int fd) {
   // Boilerplate for passing file descriptors across processes.
   int x = 1;
