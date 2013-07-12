@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_samples_LowpassModule
+ * Method:    getProtocolVersion
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_samples_LowpassModule_getProtocolVersion
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     com_noisepages_nettoyeur_patchbay_samples_LowpassModule
  * Method:    getMaxChannels
  * Signature: ()I
  */
@@ -26,10 +34,10 @@ JNIEXPORT void JNICALL Java_com_noisepages_nettoyeur_patchbay_samples_LowpassMod
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_samples_LowpassModule
  * Method:    createModule
- * Signature: (III)J
+ * Signature: (IIII)J
  */
 JNIEXPORT jlong JNICALL Java_com_noisepages_nettoyeur_patchbay_samples_LowpassModule_createModule
-  (JNIEnv *, jobject, jint, jint, jint);
+  (JNIEnv *, jobject, jint, jint, jint, jint);
 
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_samples_LowpassModule

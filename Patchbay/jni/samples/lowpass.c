@@ -47,14 +47,19 @@ Java_com_noisepages_nettoyeur_patchbay_samples_LowpassModule_setParameter
 
 JNIEXPORT jlong JNICALL
 Java_com_noisepages_nettoyeur_patchbay_samples_LowpassModule_createModule
-(JNIEnv *env, jobject obj, jint token, jint index, jint channels) {
+(JNIEnv *env, jobject obj, jint version, jint token, jint index, jint channels) {
   lowpass_data *data = malloc(sizeof(lowpass_data));
   if (data) {
-    data->handle = am_create(token, index, process_func, data);
-    data->a = RANGE;
-    int i;
-    for (i = 0; i < MAX_CHANNELS; ++i) {
-      data->y[i] = 0;
+    data->handle = am_create(version, token, index, process_func, data);
+    if (data->handle != NULL) {
+      data->a = RANGE;
+      int i;
+      for (i = 0; i < MAX_CHANNELS; ++i) {
+        data->y[i] = 0;
+      }
+    } else {
+      free(data);
+      data = NULL;
     }
   }
   return (jlong) data;
@@ -73,4 +78,10 @@ Java_com_noisepages_nettoyeur_patchbay_samples_LowpassModule_hasTimedOut
 (JNIEnv *env, jobject obj, jlong p) {
   lowpass_data *data = (lowpass_data *) p;
   return am_has_timed_out(data->handle);
+}
+
+JNIEXPORT jint JNICALL
+Java_com_noisepages_nettoyeur_patchbay_samples_LowpassModule_getProtocolVersion
+(JNIEnv *env, jobject obj) {
+  return PATCHBAY_PROTOCOL_VERSION;
 }

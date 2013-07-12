@@ -20,6 +20,7 @@ public class PatchbayException extends Exception {
 	public static final int TOO_MANY_CONNECTIONS = -7;
 	public static final int CYCLIC_DEPENDENCY = -8;
 	public static final int OUT_OF_BUFFER_SPACE = -9;
+	public static final int PROTOCOL_VERSION_MISMATCH = -10;
 	
 	private static final long serialVersionUID = 1L;
 	private final int code;

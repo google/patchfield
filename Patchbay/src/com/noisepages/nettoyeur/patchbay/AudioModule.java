@@ -70,6 +70,10 @@ public abstract class AudioModule {
 	 * @throws RemoteException
 	 */
 	public int configure(IPatchbayService patchbay, String name) throws RemoteException {
+		int version = patchbay.getProtocolVersion();
+		if (version != getProtocolVersion()) {
+			return PatchbayException.PROTOCOL_VERSION_MISMATCH;
+		}
 		if (this.name != null) {
 			throw new IllegalStateException("Module is already configured.");
 		}
@@ -95,7 +99,7 @@ public abstract class AudioModule {
 			SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
 			return index;
 		}
-		if (!configure(name, token, index)) {
+		if (!configure(name, version, token, index)) {
 			patchbay.deleteModule(name);
 			SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
 			return PatchbayException.FAILURE;
@@ -141,9 +145,10 @@ public abstract class AudioModule {
 	}
 	
 	public abstract boolean hasTimedOut();
-	
-	protected abstract int getInputChannels();
-	protected abstract int getOutputChannels();
-	protected abstract boolean configure(String name, int token, int index);
+	public abstract int getProtocolVersion();
+	public abstract int getInputChannels();
+	public abstract int getOutputChannels();
+
+	protected abstract boolean configure(String name, int version, int token, int index);
 	protected abstract void release();
 }

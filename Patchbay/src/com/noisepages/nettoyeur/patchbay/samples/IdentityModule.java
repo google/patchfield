@@ -17,21 +17,21 @@ public class IdentityModule extends AudioModule {
 	private long ptr = 0;
 	
 	@Override
-	protected int getInputChannels() {
+	public int getInputChannels() {
 		return 1;
 	}
 
 	@Override
-	protected int getOutputChannels() {
+	public int getOutputChannels() {
 		return 1;
 	}
 
 	@Override
-	protected boolean configure(String name, int token, int index) {
+	protected boolean configure(String name, int version, int token, int index) {
 		if (ptr != 0) {
 			throw new IllegalStateException("Module has already been configured.");
 		}
-		ptr = createModule(token, index);
+		ptr = createModule(version, token, index);
 		return ptr != 0;
 	}
 
@@ -51,7 +51,10 @@ public class IdentityModule extends AudioModule {
 		return hasTimedOut(ptr);
 	}
 
-	private native long createModule(int token, int index);
+	@Override
+	public native int getProtocolVersion();
+
+	private native long createModule(int version, int token, int index);
 	private native void release(long ptr);
 	private native boolean hasTimedOut(long ptr);
 }

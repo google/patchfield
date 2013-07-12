@@ -102,8 +102,12 @@ static void launch_thread(void *context, int sample_rate, int buffer_frames,
   }
 }
 
-audio_module_runner *am_create(int token, int index,
+audio_module_runner *am_create(int version, int token, int index,
     audio_module_process_t process, void *context) {
+  if (version != PATCHBAY_PROTOCOL_VERSION) {
+    LOGW("Protocol version mismatch.");
+    return NULL;
+  }
   audio_module_runner *amr = malloc(sizeof(audio_module_runner));
   if (amr) {
     amr->shm_fd = token;

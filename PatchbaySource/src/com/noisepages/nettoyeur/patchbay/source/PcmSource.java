@@ -20,18 +20,18 @@ public class PcmSource extends AudioModule {
 	}
 	
 	@Override
-	protected int getInputChannels() {
+	public int getInputChannels() {
 		return 0;
 	}
 
 	@Override
-	protected int getOutputChannels() {
+	public int getOutputChannels() {
 		return channels;
 	}
 
 	@Override
-	protected boolean configure(String name, int token, int index) {
-		ptr = createSource(token, index, buffer);
+	protected boolean configure(String name, int version, int token, int index) {
+		ptr = createSource(version, token, index, buffer);
 		return ptr != 0;
 	}
 
@@ -51,7 +51,10 @@ public class PcmSource extends AudioModule {
 		return hasTimedOut(ptr);
 	}
 
-	private native long createSource(int token, int index, ByteBuffer buffer);
+	@Override
+	public native int getProtocolVersion();
+	
+	private native long createSource(int version, int token, int index, ByteBuffer buffer);
 	private native boolean hasTimedOut(long ptr);
 	private native void release(long ptr);
 }
