@@ -1,5 +1,5 @@
-#ifndef __FUTEX_BARRIER_H__
-#define __FUTEX_BARRIER_H__
+#ifndef __SIMPLE_BARRIER_H__
+#define __SIMPLE_BARRIER_H__
 
 #include <time.h>
 
