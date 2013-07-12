@@ -7,7 +7,6 @@
 
 #include <android/log.h>
 #include <limits.h>
-#include <semaphore.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
