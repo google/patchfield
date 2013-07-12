@@ -8,7 +8,6 @@
 #include <android/log.h>
 #include <errno.h>
 #include <pthread.h>
-#include <semaphore.h>
 #include <setjmp.h>
 #include <signal.h>
 #include <stddef.h>
@@ -27,7 +26,7 @@ struct _audio_module_runner {
   void *shm_ptr;
   int index;
   pthread_t thread;
-  sem_t launched;
+  int launched;
   int launch_counter;
   int done;
   int timed_out;
@@ -47,7 +46,7 @@ static void signal_handler(int sig, siginfo_t *info, void *context) {
 static void *run_module(void *arg) {
   LOGI("Entering run_module.");
   audio_module_runner *amr = (audio_module_runner *) arg;
-  sem_post(&amr->launched);
+  sb_wake(&amr->launched);
   audio_module *module = ami_get_audio_module(amr->shm_ptr, amr->index);
 
   timer_t timer;
@@ -124,11 +123,10 @@ audio_module_runner *am_create(int token, int index,
 
     OPENSL_STREAM *os = opensl_open(module->sample_rate, 0, 2,
         module->buffer_frames, launch_thread, amr);
-    sem_init(&amr->launched, 0, 0);
+    amr->launched = 0;
     opensl_start(os);
-    sem_wait(&amr->launched);
+    sb_wait(&amr->launched, NULL);
     opensl_close(os);
-    sem_destroy(&amr->launched);
 
     struct sigaction act;
     act.sa_sigaction = signal_handler;

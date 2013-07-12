@@ -3,7 +3,6 @@
 
 #include "audio_module.h"
 
-#include <semaphore.h>
 #include <stddef.h>
 #include <time.h>
 
