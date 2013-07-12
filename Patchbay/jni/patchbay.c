@@ -35,13 +35,13 @@ static void perform_cleanup(patchbay *pb) {
         pb->buffer_frames;
       pb->next_buffer -= buffer_frames;
       for (j = 0; j < MAX_MODULES; ++j) {
-        audio_module *u = ami_get_audio_module(pb->shm_ptr, j);
-        if (u->input_buffer > module->input_buffer) {
-          u->input_buffer -= buffer_frames;
-          u->output_buffer -= buffer_frames;
+        audio_module *other = ami_get_audio_module(pb->shm_ptr, j);
+        if (other->input_buffer > module->input_buffer) {
+          other->input_buffer -= buffer_frames;
+          other->output_buffer -= buffer_frames;
         }
         for (k = 0; k < MAX_CONNECTIONS; ++k) {
-          connection *conn = u->input_connections + k;
+          connection *conn = other->input_connections + k;
           if (conn->source_index == i &&
               __sync_or_and_fetch(&conn->status, 0)) {
             int val = 1;
