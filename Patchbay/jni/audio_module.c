@@ -78,13 +78,13 @@ static void *run_module(void *arg) {
           ami_get_audio_buffer(amr->shm_ptr, module->output_buffer));
       timerspec.it_value.tv_sec = 0;
       timer_settime(timer, 0, &timerspec, NULL);  // Disarm timer.
-      sb_wake(ami_get_barrier(amr->shm_ptr, module->ready));
     } else {
       __sync_bool_compare_and_swap(&amr->timed_out, 0, 1);
       // We can safely log now because we are leaving the processing chain.
       LOGW("Process callback interrupted after timeout; terminating thread.");
       break;
     }
+    sb_wake(ami_get_barrier(amr->shm_ptr, module->ready));
   }
   timer_delete(timer);
   LOGI("Leaving run_module.");

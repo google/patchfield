@@ -265,7 +265,7 @@ static void process(void *context, int sample_rate, int buffer_frames,
   for (i = 2; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
     if (module->in_use) {
-      sb_wait_and_clear(ami_get_barrier(pb->shm_ptr, module->ready),
+      sb_wait(ami_get_barrier(pb->shm_ptr, module->ready),
           &module->deadline);
     }
   }
