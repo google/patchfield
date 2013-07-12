@@ -44,8 +44,8 @@ static void perform_cleanup(patchbay *pb) {
           connection *conn = u->input_connections + k;
           if (conn->source_index == i &&
               __sync_or_and_fetch(&conn->status, 0)) {
-            while (!__sync_bool_compare_and_swap(&conn->status,
-                  conn->status, 0));
+            int val = 1;
+            while (val = __sync_val_compare_and_swap(&conn->status, val, 0));
           }
         }
       }

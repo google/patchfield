@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
 			Log.i(TAG, "Service connected.");
 			patchbay = IPatchbayService.Stub.asInterface(service);
 			AudioModule prev = null;
-			for (int i = 0; i < 1; ++i) {
+			for (int i = 0; i < 8; ++i) {
 				AudioModule module = new IdentityModule();
 				try {
 					if (module.configure(patchbay, "identity_" + i) >= 0) {
