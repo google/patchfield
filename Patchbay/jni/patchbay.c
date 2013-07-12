@@ -32,7 +32,6 @@ static void perform_cleanup(patchbay *pb) {
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
     if (__sync_or_and_fetch(&module->status, 0) == 2) {
-      sem_destroy(&module->ready);
       int buffer_frames = (module->input_channels + module->output_channels) *
         pb->buffer_frames;
       pb->next_buffer -= buffer_frames;
@@ -88,10 +87,9 @@ static int add_module(patchbay *pb,
       module->output_channels = output_channels;
       module->output_buffer = pb->next_buffer;
       pb->next_buffer += output_channels * pb->buffer_frames;
-      module->dependents = 0;
-      fb_clobber(&module->report);
-      fb_clobber(&module->wake);
-      sem_init(&module->ready, 1, 0);
+      sb_clobber(&module->report);
+      sb_clobber(&module->wake);
+      sb_clobber(&module->ready);
       memset(module->input_connections, 0, MAX_CONNECTIONS * sizeof(connection));
       __sync_bool_compare_and_swap(&module->status, 0, 1);
       return i;
@@ -187,12 +185,6 @@ static int disconnect_modules(patchbay *pb, int source_index, int source_port,
 static void release(patchbay *pb) {
   int i;
   opensl_close(pb->os);
-  for (i = 0; i < MAX_MODULES; ++i) {
-    audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
-    if (__sync_or_and_fetch(&module->status, 0)) {
-      sem_destroy(&module->ready);
-    }
-  }
   smi_unlock(pb->shm_ptr);
   smi_unmap(pb->shm_ptr);
   close(pb->shm_fd);
@@ -222,21 +214,15 @@ static void process(void *context, int sample_rate, int buffer_frames,
   int i, j;
   for (i = 0; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
-    module->dependents = 1;
     module->in_use =
       __sync_or_and_fetch(&module->status, 0) == 1 &&
       __sync_or_and_fetch(&module->active, 0) &&
-      ((i < 2) || fb_wait_and_clear(&module->report, &deadline) == 0);
-  }
-  for (i = 0; i < MAX_MODULES; ++i) {
-    audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
+      ((i < 2) || sb_wait_and_clear(&module->report, &deadline) == 0);
     if (module->in_use) {
+      sb_clobber(&module->ready);
       for (j = 0; j < MAX_CONNECTIONS; ++j) {
         connection *conn = module->input_connections + j;
         conn->in_use = (__sync_or_and_fetch(&conn->status, 0) == 1);
-        if (conn->in_use) {
-          ++(ami_get_audio_module(pb->shm_ptr, conn->source_index)->dependents);
-        }
       }
     }
   }
@@ -249,8 +235,7 @@ static void process(void *context, int sample_rate, int buffer_frames,
       }
       b += buffer_frames;
     }
-    ami_notify_dependents(pb->shm_ptr, 0);
-    sem_wait(&input->ready);
+    sb_wake(&input->ready);
   }
   int dt = (ONE_BILLION / sample_rate + 1) * buffer_frames;
   clock_gettime(CLOCK_REALTIME, &deadline);
@@ -260,8 +245,7 @@ static void process(void *context, int sample_rate, int buffer_frames,
     if (module->in_use) {
       module->deadline.tv_sec = deadline.tv_sec;
       module->deadline.tv_nsec = deadline.tv_nsec;
-      while (!sem_trywait(&module->ready));  // Clear semaphore, just in case.
-      fb_wake(&module->wake);
+      sb_wake(&module->wake);
     }
   }
   audio_module *output = ami_get_audio_module(pb->shm_ptr, 1);
@@ -270,8 +254,7 @@ static void process(void *context, int sample_rate, int buffer_frames,
     float *b = ami_get_audio_buffer(pb->shm_ptr, output->input_buffer);
     for (i = 0; i < output_channels; ++i) {
       for (j = 0; j < buffer_frames; ++j) {
-        output_buffer[i + j * output_channels] =
-          (short) (float_to_short * b[j]);
+        output_buffer[i + j * output_channels] = (short) (float_to_short * b[j]);
       }
       b += buffer_frames;
     }
@@ -279,7 +262,7 @@ static void process(void *context, int sample_rate, int buffer_frames,
   for (i = 2; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
     if (module->in_use) {
-      sem_timedwait(&module->ready, &module->deadline);
+      sb_wait_and_clear(&module->ready, &module->deadline);
     }
   }
   perform_cleanup(pb);

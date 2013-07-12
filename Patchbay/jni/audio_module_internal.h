@@ -33,17 +33,15 @@ typedef struct {
   ptrdiff_t output_buffer;  // them independent of the shared memory location.
 
   connection input_connections[MAX_CONNECTIONS];
-  int dependents;
 
   struct timespec deadline;
   int report;
   int wake;
-  sem_t ready;
+  int ready;
 } audio_module;
 
 audio_module *ami_get_audio_module(void *p, int index);
 float *ami_get_audio_buffer(void *p, ptrdiff_t offset);
 void ami_collect_input(void *p, int index);
-void ami_notify_dependents(void *p, int index);
 
 #endif

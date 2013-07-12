@@ -1,5 +1,7 @@
 #include "audio_module_internal.h"
 
+#include "simple_barrier.h"
+
 #include <string.h>
 
 audio_module *ami_get_audio_module(void *p, int index) {
@@ -25,20 +27,12 @@ void ami_collect_input(void *p, int index) {
           input_buffer + conn->sink_port * module->buffer_frames;
         float *source_channel = ami_get_audio_buffer(p,
             source->output_buffer) + conn->source_port * module->buffer_frames;
-        if (!sem_timedwait(&source->ready, &source->deadline)) {
+        if (!sb_wait(&source->ready, &source->deadline)) {
           for (j = 0; j < module->buffer_frames; ++j) {
             input_channel[j] += source_channel[j];
           }
         }
       }
     }
-  }
-}
-
-void ami_notify_dependents(void *p, int index) {
-  audio_module *module = ami_get_audio_module(p, index);
-  int i;
-  for (i = 0; i < module->dependents; ++i) {
-    sem_post(&module->ready);
   }
 }

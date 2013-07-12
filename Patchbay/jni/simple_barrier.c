@@ -38,7 +38,7 @@ static void futex_wait(int *p, struct timespec *abstime) {
   }
 }
 
-int fb_wait(int *p, struct timespec *abstime) {
+int sb_wait(int *p, struct timespec *abstime) {
   switch (__sync_or_and_fetch(p, 0)) {
     case 0:
       futex_wait(p, abstime);
@@ -58,7 +58,7 @@ int fb_wait(int *p, struct timespec *abstime) {
   }
 }
 
-int fb_wait_and_clear(int *p, struct timespec *abstime) {
+int sb_wait_and_clear(int *p, struct timespec *abstime) {
   switch (__sync_or_and_fetch(p, 0)) {
     case 0:
       futex_wait(p, abstime);
@@ -77,7 +77,7 @@ int fb_wait_and_clear(int *p, struct timespec *abstime) {
   }
 }
 
-int fb_wake(int *p) {
+int sb_wake(int *p) {
   if (__sync_bool_compare_and_swap(p, 0, 1)) {
     syscall(__NR_futex, p, FUTEX_WAKE, INT_MAX, NULL, NULL, 0, 0);
     return 0;
@@ -86,7 +86,7 @@ int fb_wake(int *p) {
   }
 }
 
-void fb_clobber(int *p) {
+void sb_clobber(int *p) {
   int val = 1;
   while (val = __sync_val_compare_and_swap(p, val, 0));
 }

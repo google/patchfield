@@ -3,9 +3,9 @@
 
 #include <time.h>
 
-int fb_wait(int *p, struct timespec *abstime);
-int fb_wait_and_clear(int *p, struct timespec *abstime);
-int fb_wake(int *p);
-void fb_clobber(int *p);
+int sb_wait(int *p, struct timespec *abstime);
+int sb_wait_and_clear(int *p, struct timespec *abstime);
+int sb_wake(int *p);
+void sb_clobber(int *p);
 
 #endif
