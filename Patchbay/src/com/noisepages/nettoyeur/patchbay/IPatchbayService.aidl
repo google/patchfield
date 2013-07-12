@@ -131,6 +131,11 @@ interface IPatchbayService {
 	int deleteModule(String module);
 	    
 	/**
+	 * @return The native protocol version; for internal use only.
+	 */
+	int getProtocolVersion();
+	
+	/**
 	 * Passes the ashmem file descriptor through a Unix domain socket; for internal use only.
 	 *
 	 * @return 0 on success, or a negative error code on failure.

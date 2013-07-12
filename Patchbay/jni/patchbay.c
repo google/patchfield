@@ -431,3 +431,9 @@ Java_com_noisepages_nettoyeur_patchbay_Patchbay_getOutputChannels
   patchbay *pb = (patchbay *) p;
   return get_output_channels(pb, index);
 }
+
+JNIEXPORT jint JNICALL
+Java_com_noisepages_nettoyeur_patchbay_Patchbay_getProtocolVersion
+(JNIEnv *env, jobject obj, jlong p) {
+  return PATCHBAY_PROTOCOL_VERSION;
+}

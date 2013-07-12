@@ -125,6 +125,11 @@ public class PatchbayService extends Service {
 		public boolean isActive(String module) throws RemoteException {
 			return patchbay.isActive(module);
 		}
+
+		@Override
+		public int getProtocolVersion() throws RemoteException {
+			return patchbay.getProtocolVersion();
+		}
 	};
 	
 	@Override

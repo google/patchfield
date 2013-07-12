@@ -6,6 +6,8 @@
 #include <stddef.h>
 #include <time.h>
 
+#define PATCHBAY_PROTOCOL_VERSION 1
+
 #define MAX_MODULES 32 
 #define MAX_CONNECTIONS 16 
 

@@ -135,6 +135,14 @@ JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_Patchbay_getInputC
 JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_Patchbay_getOutputChannels
   (JNIEnv *, jobject, jlong, jint);
 
+/*
+ * Class:     com_noisepages_nettoyeur_patchbay_Patchbay
+ * Method:    getProtocolVersion
+ * Signature: (J)I
+ */
+JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_Patchbay_getProtocolVersion
+  (JNIEnv *, jobject, jlong);
+
 #ifdef __cplusplus
 }
 #endif

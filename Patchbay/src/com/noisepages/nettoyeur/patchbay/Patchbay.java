@@ -350,6 +350,14 @@ public class Patchbay implements IPatchbayService {
 		}
 		return PatchbayException.successOrFailure(result);
 	}
+
+	@Override
+	public int getProtocolVersion() throws RemoteException {
+		if (streamPtr == 0) {
+			throw new IllegalStateException("Stream closed.");
+		}
+		return getProtocolVersion(streamPtr);
+	}
 	
 	private native long createInstance(int sampleRate, int bufferSize,
 			int inputChannels, int outputChannels);
@@ -371,6 +379,7 @@ public class Patchbay implements IPatchbayService {
 			int sinkIndex, int sinkPort);
 	private native int getInputChannels(long streamPtr, int index);
 	private native int getOutputChannels(long streamPtr, int index);
+	private native int getProtocolVersion(long streamPtr);
 
 	@Override
 	public IBinder asBinder() {
