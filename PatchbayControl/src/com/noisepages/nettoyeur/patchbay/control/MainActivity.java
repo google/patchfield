@@ -120,7 +120,9 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 			try {
 				patchbay.registerClient(receiver);
 				playButton.setChecked(patchbay.isRunning());
-				displayLine.setText("Sample rate: " + patchbay.getSampleRate() + ", buffer size: " + patchbay.getBufferSize());
+				displayLine.setText("Sample rate: " + patchbay.getSampleRate() +
+						", buffer size: " + patchbay.getBufferSize() +
+						", protocol version: " + patchbay.getProtocolVersion());
 				List<String> modules = patchbay.getModules();
 				for (String module : modules) {
 					patchView.addModule(module, patchbay.getInputChannels(module), patchbay.getOutputChannels(module));
