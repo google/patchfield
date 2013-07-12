@@ -237,7 +237,7 @@ static void process(void *context, int sample_rate, int buffer_frames,
     sb_wake(&input->ready);
   }
   int dt = (ONE_BILLION / sample_rate + 1) * buffer_frames;
-  clock_gettime(CLOCK_REALTIME, &deadline);
+  clock_gettime(CLOCK_MONOTONIC, &deadline);
   add_nsecs(&deadline, 2 * dt);  // Two-buffer-period processing deadline.
   for (i = 2; i < MAX_MODULES; ++i) {
     audio_module *module = ami_get_audio_module(pb->shm_ptr, i);
