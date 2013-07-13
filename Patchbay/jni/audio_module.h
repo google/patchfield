@@ -16,7 +16,7 @@ extern "C" {
  * The current protocol version. Service and modules must be compiled against the
  * same version of this library to properly work together.
  */
-#define PATCHBAY_PROTOCOL_VERSION 5
+#define PATCHBAY_PROTOCOL_VERSION 6
 
 /*
  * Processing callback; takes a processing context (which is just a pointer to

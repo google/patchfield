@@ -57,6 +57,18 @@ static void *run_module(void *arg) {
   evp.sigev_notify_thread_id = gettid();
   timer_create(CLOCK_MONOTONIC, &evp, &timer);
 
+  struct itimerspec timeout;
+  timeout.it_interval.tv_sec = 0;
+  timeout.it_interval.tv_nsec = 0;
+  timeout.it_value.tv_sec = 1;  // One-second timeout.
+  timeout.it_value.tv_nsec = 0;
+
+  struct itimerspec cancel;
+  cancel.it_interval.tv_sec = 0;
+  cancel.it_interval.tv_nsec = 0;
+  cancel.it_value.tv_sec = 0;
+  cancel.it_value.tv_nsec = 0;
+
   if (!sigsetjmp(sig_env, 1)) {
     while (1) {
       sb_wake(ami_get_barrier(amr->shm_ptr, module->report));
@@ -65,19 +77,13 @@ static void *run_module(void *arg) {
         break;
       }
       ami_collect_input(amr->shm_ptr, amr->index);
-      struct itimerspec timerspec;
-      timerspec.it_interval.tv_sec = 0;
-      timerspec.it_interval.tv_nsec = 0;
-      timerspec.it_value.tv_sec = 1;  // One-second timeout.
-      timerspec.it_value.tv_nsec = 0;
-      timer_settime(timer, 0, &timerspec, NULL);  // Arm timer.
+      timer_settime(timer, 0, &timeout, NULL);  // Arm timer.
       amr->process(amr->context, module->sample_rate, module->buffer_frames,
           module->input_channels,
           ami_get_audio_buffer(amr->shm_ptr, module->input_buffer),
           module->output_channels,
           ami_get_audio_buffer(amr->shm_ptr, module->output_buffer));
-      timerspec.it_value.tv_sec = 0;
-      timer_settime(timer, 0, &timerspec, NULL);  // Disarm timer.
+      timer_settime(timer, 0, &cancel, NULL);  // Disarm timer.
       sb_wake(ami_get_barrier(amr->shm_ptr, module->ready));
     }
   } else {
