@@ -86,6 +86,7 @@ static void *run_module(void *arg) {
     }
     sb_wake(ami_get_barrier(amr->shm_ptr, module->ready));
   }
+
   timer_delete(timer);
   LOGI("Leaving run_module.");
   return NULL;
