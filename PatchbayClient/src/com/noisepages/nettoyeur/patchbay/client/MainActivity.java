@@ -87,7 +87,7 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
 			try {
 				patchbay.registerClient(receiver);
 				Log.i(TAG, "Creating runner.");
-				module = new LowpassModule(2);
+				module = new LowpassModule(2, null);
 				module.configure(patchbay, moduleLabel);
 				patchbay.activateModule(moduleLabel);
 			} catch (RemoteException e) {

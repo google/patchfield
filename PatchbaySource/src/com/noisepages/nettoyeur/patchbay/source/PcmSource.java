@@ -2,6 +2,8 @@ package com.noisepages.nettoyeur.patchbay.source;
 
 import java.nio.ByteBuffer;
 
+import android.app.PendingIntent;
+
 import com.noisepages.nettoyeur.patchbay.AudioModule;
 
 public class PcmSource extends AudioModule {
@@ -14,7 +16,8 @@ public class PcmSource extends AudioModule {
 	private final int channels;
 	private final ByteBuffer buffer;
 	
-	public PcmSource(int channels, ByteBuffer buffer) {
+	public PcmSource(int channels, ByteBuffer buffer, PendingIntent intent) {
+		super(intent);
 		this.channels = channels;
 		this.buffer = buffer;
 	}

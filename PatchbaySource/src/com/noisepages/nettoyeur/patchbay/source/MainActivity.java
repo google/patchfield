@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
 				e.printStackTrace();
 				return;
 			}
-			source = new PcmSource(2, buffer);
+			source = new PcmSource(2, buffer, null);
 			mainText.setText("Relaxation Spa Treatment");
 			try {
 				source.configure(patchbay, moduleName);

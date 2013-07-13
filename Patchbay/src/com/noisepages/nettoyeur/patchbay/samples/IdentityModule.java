@@ -1,5 +1,7 @@
 package com.noisepages.nettoyeur.patchbay.samples;
 
+import android.app.PendingIntent;
+
 import com.noisepages.nettoyeur.patchbay.AudioModule;
 
 /**
@@ -16,6 +18,10 @@ public class IdentityModule extends AudioModule {
 	
 	private long ptr = 0;
 	
+	public IdentityModule(PendingIntent intent) {
+		super(intent);
+	}
+
 	@Override
 	public int getInputChannels() {
 		return 1;

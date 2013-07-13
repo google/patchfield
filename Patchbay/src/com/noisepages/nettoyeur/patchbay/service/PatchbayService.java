@@ -3,6 +3,7 @@ package com.noisepages.nettoyeur.patchbay.service;
 import java.io.IOException;
 import java.util.List;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -52,9 +53,9 @@ public class PatchbayService extends Service {
 		}
 		
 		@Override
-		public int createModule(String module, int inputChannels, int outputChannels)
+		public int createModule(String module, int inputChannels, int outputChannels, PendingIntent intent)
 				throws RemoteException {
-			return patchbay.createModule(module, inputChannels, outputChannels);
+			return patchbay.createModule(module, inputChannels, outputChannels, intent);
 		}
 
 		@Override
@@ -82,6 +83,11 @@ public class PatchbayService extends Service {
 		@Override
 		public int getOutputChannels(String module) throws RemoteException {
 			return patchbay.getOutputChannels(module);
+		}
+
+		@Override
+		public PendingIntent getIntent(String module) throws RemoteException {
+			return patchbay.getIntent(module);
 		}
 		
 		@Override

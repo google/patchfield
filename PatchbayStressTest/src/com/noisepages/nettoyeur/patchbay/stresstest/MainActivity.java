@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
 			patchbay = IPatchbayService.Stub.asInterface(service);
 			AudioModule prev = null;
 			for (int i = 0; i < 8; ++i) {
-				AudioModule module = new IdentityModule();
+				AudioModule module = new IdentityModule(null);
 				try {
 					if (module.configure(patchbay, "identity_" + i) >= 0) {
 						modules.add(module);

@@ -1,5 +1,7 @@
 package com.noisepages.nettoyeur.patchbay.samples;
 
+import android.app.PendingIntent;
+
 import com.noisepages.nettoyeur.patchbay.AudioModule;
 
 /**
@@ -18,7 +20,8 @@ public class LowpassModule extends AudioModule {
 	private long ptr = 0;
 	private final int channels;
 	
-	public LowpassModule(int channels) {
+	public LowpassModule(int channels, PendingIntent intent) {
+		super(intent);
 		if (channels < 1 || channels > getMaxChannels()) {
 			throw new IllegalArgumentException("Channel count out of range.");
 		}

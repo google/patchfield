@@ -2,6 +2,8 @@ package com.noisepages.nettoyeur.patchbay;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayClient;
 
+import android.app.PendingIntent;
+
 import java.util.List;
 
 /**
@@ -82,7 +84,13 @@ interface IPatchbayService {
 	 * code if the module doesn't exist.
 	 */
 	int getOutputChannels(String module);
-	    
+
+	/**
+	 * @return The pending intent associated with this module, or null if the module
+	 * doesn't exist.
+	 */
+	PendingIntent getIntent(String module);
+	
 	/**
 	 * @return True if the given module is currently active.
 	 */
@@ -120,7 +128,7 @@ interface IPatchbayService {
 	 *
 	 * @return The index of the new module on success, or a negative error code on failure.
 	 */
-	int createModule(String module, int inputChannels, int outputChannels);
+	int createModule(String module, int inputChannels, int outputChannels, in PendingIntent intent);
 	    
 	/**
 	 * Deletes an audio module from the Patchbay service; for internal use mostly, to be called by

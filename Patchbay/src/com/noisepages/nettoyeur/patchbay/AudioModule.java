@@ -1,5 +1,6 @@
 package com.noisepages.nettoyeur.patchbay;
 
+import android.app.PendingIntent;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -43,6 +44,8 @@ public abstract class AudioModule {
 	private String name = null;
 	private int token = -1;
 	private int index = -1;
+
+	private final PendingIntent intent;
 	
 	private class FdReceiverThread extends Thread {
 		@Override
@@ -52,6 +55,14 @@ public abstract class AudioModule {
 		}
 	}
 	
+	/**
+	 * @param intent Pending intent to be passed to the Patchbay service, so that the
+	 * service can associate an audio module with an app. May be null.
+	 */
+	protected AudioModule(PendingIntent intent) {
+		this.intent = intent;
+	}
+
 	/**
 	 * This method takes care of the elaborate choreography that it takes to set
 	 * up an audio module and to connect it to its representation in the Patchbay
@@ -94,7 +105,7 @@ public abstract class AudioModule {
 		if (token < 0) {
 			return token;
 		}
-		index = patchbay.createModule(name, getInputChannels(), getOutputChannels());
+		index = patchbay.createModule(name, getInputChannels(), getOutputChannels(), intent);
 		if (index < 0) {
 			SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
 			return index;
