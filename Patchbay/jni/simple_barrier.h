@@ -4,6 +4,7 @@
  * 0 for success, -1 for failure (due to timeouts), and -2 for errors (if the
  * memory location has been tampered with).
  */
+
 #ifndef __SIMPLE_BARRIER_H__
 #define __SIMPLE_BARRIER_H__
 
@@ -32,7 +33,7 @@ int sb_wait_and_clear(int *p, struct timespec *abstime);
 int sb_wake(int *p);
 
 /*
- * Clear *p, regardless of whether any threads are waiting on p.
+ * Clears *p, regardless of whether any threads are waiting on p.
  */
 void sb_clobber(int *p);
 

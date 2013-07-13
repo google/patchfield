@@ -5,6 +5,7 @@
  * corresponding abstract methods in the Java class. See LowpassModule.java and
  * samples/lowpass.{h,c} for an example of this interaction.
  */
+
 #ifndef __AUDIO_MODULE_H__
 #define __AUDIO_MODULE_H__
 #ifdef __cplusplus
@@ -15,7 +16,7 @@ extern "C" {
  * The current protocol version. Service and modules must be compiled against the
  * same version of this library to properly work together.
  */
-#define PATCHBAY_PROTOCOL_VERSION 2
+#define PATCHBAY_PROTOCOL_VERSION 3
 
 /*
  * Processing callback; takes a processing context (which is just a pointer to

@@ -1,3 +1,8 @@
+/*
+ * Internal data structures representing audio modules and their connections,
+ * as well as some functions that operate on them.
+ */
+
 #ifndef __AUDIO_MODULE_INTERNAL_H__
 #define __AUDIO_MODULE_INTERNAL_H__
 
@@ -26,8 +31,8 @@ typedef struct {
 
 typedef struct {
   int status;  // 0: none; 1: current; 2: slated for deletion
-  int in_use;
   int active;
+  int in_use;
 
   int sample_rate;
   int buffer_frames;
