@@ -86,11 +86,12 @@ static int add_module(patchbay *pb,
       module->output_channels = output_channels;
       module->output_buffer = pb->next_buffer;
       pb->next_buffer += output_channels * pb->buffer_frames;
-      module->report = BARRIER_OFFSET * MEM_PAGE_SIZE / sizeof(int) + i * 3;
+      module->report =
+        BARRIER_OFFSET * MEM_PAGE_SIZE / sizeof(simple_barrier_t) + i * 3;
       sb_clobber(ami_get_barrier(pb->shm_ptr, module->report));
       module->wake = module->report + 1;
       sb_clobber(ami_get_barrier(pb->shm_ptr, module->wake));
-      module->ready = module->wake + 1;
+      module->ready = module->report + 2;
       sb_clobber(ami_get_barrier(pb->shm_ptr, module->ready));
       memset(module->input_connections, 0, MAX_CONNECTIONS * sizeof(connection));
       __sync_bool_compare_and_swap(&module->status, 0, 1);

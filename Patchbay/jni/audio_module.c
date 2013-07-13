@@ -26,7 +26,7 @@ struct _audio_module_runner {
   void *shm_ptr;
   int index;
   pthread_t thread;
-  int launched;
+  simple_barrier_t launched;
   int launch_counter;
   int done;
   int timed_out;
@@ -134,7 +134,7 @@ audio_module_runner *am_create(int version, int token, int index,
 
     OPENSL_STREAM *os = opensl_open(module->sample_rate, 0, 2,
         module->buffer_frames, launch_thread, amr);
-    amr->launched = 0;
+    sb_clobber(&amr->launched);
     opensl_start(os);
     sb_wait(&amr->launched, NULL);
     opensl_close(os);

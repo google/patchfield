@@ -26,7 +26,7 @@ static void get_relative_deadline(
   }
 }
 
-static void futex_wait(int *p, struct timespec *abstime) {
+static void futex_wait(simple_barrier_t *p, struct timespec *abstime) {
   if (abstime == NULL) {
     syscall(__NR_futex, p, FUTEX_WAIT, 0, NULL, NULL, 0, 0);
   } else {
@@ -38,7 +38,7 @@ static void futex_wait(int *p, struct timespec *abstime) {
   }
 }
 
-int sb_wait(int *p, struct timespec *abstime) {
+int sb_wait(simple_barrier_t *p, struct timespec *abstime) {
   switch (__sync_or_and_fetch(p, 0)) {
     case 0:
       futex_wait(p, abstime);
@@ -58,7 +58,7 @@ int sb_wait(int *p, struct timespec *abstime) {
   }
 }
 
-int sb_wait_and_clear(int *p, struct timespec *abstime) {
+int sb_wait_and_clear(simple_barrier_t *p, struct timespec *abstime) {
   switch (__sync_or_and_fetch(p, 0)) {
     case 0:
       futex_wait(p, abstime);
@@ -77,7 +77,7 @@ int sb_wait_and_clear(int *p, struct timespec *abstime) {
   }
 }
 
-int sb_wake(int *p) {
+int sb_wake(simple_barrier_t *p) {
   if (__sync_bool_compare_and_swap(p, 0, 1)) {
     syscall(__NR_futex, p, FUTEX_WAKE, INT_MAX, NULL, NULL, 0, 0);
     return 0;
@@ -86,7 +86,7 @@ int sb_wake(int *p) {
   }
 }
 
-void sb_clobber(int *p) {
+void sb_clobber(simple_barrier_t *p) {
   int val = 1;
   while (val = __sync_val_compare_and_swap(p, val, 0));
 }

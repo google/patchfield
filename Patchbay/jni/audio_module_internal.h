@@ -8,6 +8,8 @@
 
 #include "audio_module.h"
 
+#include "simple_barrier.h"
+
 #include <stddef.h>
 #include <time.h>
 #include <unistd.h>
@@ -52,7 +54,7 @@ typedef struct {
 
 audio_module *ami_get_audio_module(void *p, int index);
 float *ami_get_audio_buffer(void *p, ptrdiff_t offset);
-int *ami_get_barrier(void *p, ptrdiff_t offset);
+simple_barrier_t *ami_get_barrier(void *p, ptrdiff_t offset);
 void ami_collect_input(void *p, int index);
 size_t ami_get_protected_size();
 

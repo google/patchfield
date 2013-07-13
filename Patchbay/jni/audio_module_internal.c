@@ -12,8 +12,8 @@ float *ami_get_audio_buffer(void *p, ptrdiff_t offset) {
   return ((float *) p) + offset;
 }
 
-int *ami_get_barrier(void *p, ptrdiff_t offset) {
-  return ((int *) p) + offset;
+simple_barrier_t *ami_get_barrier(void *p, ptrdiff_t offset) {
+  return ((simple_barrier_t *) p) + offset;
 }
 
 size_t ami_get_protected_size() {
