@@ -1,3 +1,8 @@
+/*
+ * Tools for handling shared memory with ashmem. Most functions simply wrap basic
+ * system calls, except for smi_{send,receive}, which serve to pass the ashmem
+ * file descriptor across process boundaries using Unix domain sockets.
+ */
 #ifndef __SHARED_MEMORY_INTERNAL_H__
 #define __SHARED_MEMORY_INTERNAL_H__
 
