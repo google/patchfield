@@ -144,7 +144,7 @@ public class Patchbay implements IPatchbayService {
 			int i = clients.beginBroadcast();
 			while (--i >= 0) {
 				try {
-					clients.getBroadcastItem(i).onModuleCreated(module, inputChannels, outputChannels);
+					clients.getBroadcastItem(i).onModuleCreated(module, inputChannels, outputChannels, intent);
 				} catch (RemoteException e) {
 					// Do nothing; RemoteCallbackList will take care of the cleanup.
 				}

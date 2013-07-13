@@ -1,6 +1,7 @@
 package com.noisepages.nettoyeur.patchbay.client;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -45,9 +46,9 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
 		}
 
 		@Override
-		public void onModuleCreated(String module, int ins, int outs)
+		public void onModuleCreated(String module, int ins, int outs, PendingIntent intent)
 				throws RemoteException {
-			Log.i(TAG, "Module created: name=" + module + ", ins=" + ins + ", outs=" + outs);
+			Log.i(TAG, "Module created: name=" + module + ", ins=" + ins + ", outs=" + outs + ", intent: " + intent);
 		}
 
 		@Override

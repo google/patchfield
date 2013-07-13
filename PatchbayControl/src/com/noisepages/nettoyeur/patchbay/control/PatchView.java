@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -90,7 +91,7 @@ public final class PatchView extends View {
 		this.patchbay = patchbay;
 	}
 	
-	public void addModule(String module, int inputChannels, int outputChannels) {
+	public void addModule(String module, int inputChannels, int outputChannels, PendingIntent intent) {
 		for (String u : modules) {
 			int sinks = 0;
 			try {
