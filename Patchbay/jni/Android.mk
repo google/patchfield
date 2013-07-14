@@ -39,3 +39,11 @@ LOCAL_LDLIBS := -llog
 LOCAL_SRC_FILES := samples/identity.c
 LOCAL_STATIC_LIBRARIES := audiomodule
 include $(BUILD_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := buffersizeadapter
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) $(LOCAL_PATH)/utils
+LOCAL_SRC_FILES := utils/buffer_size_adapter.c
+#include $(BUILD_STATIC_LIBRARY)
+include $(BUILD_SHARED_LIBRARY)
