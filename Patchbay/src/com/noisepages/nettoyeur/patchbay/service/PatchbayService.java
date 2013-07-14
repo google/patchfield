@@ -3,6 +3,7 @@ package com.noisepages.nettoyeur.patchbay.service;
 import java.io.IOException;
 import java.util.List;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -135,6 +136,18 @@ public class PatchbayService extends Service {
 		@Override
 		public int getProtocolVersion() throws RemoteException {
 			return patchbay.getProtocolVersion();
+		}
+
+		@Override
+		public void startForeground(int id, Notification notification)
+				throws RemoteException {
+			startForeground(id, notification);
+		}
+
+		@Override
+		public void stopForeground(boolean removeNotification)
+				throws RemoteException {
+			stopForeground(removeNotification);
 		}
 	};
 	

@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.os.IBinder;
@@ -392,6 +393,16 @@ public class Patchbay implements IPatchbayService {
 
 	@Override
 	public IBinder asBinder() {
+		throw new UnsupportedOperationException("Not implemented for local patchbay.");
+	}
+
+	@Override
+	public void startForeground(int id, Notification notification) {
+		throw new UnsupportedOperationException("Not implemented for local patchbay.");
+	}
+
+	@Override
+	public void stopForeground(boolean removeNotification) {
 		throw new UnsupportedOperationException("Not implemented for local patchbay.");
 	}
 

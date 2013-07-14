@@ -2,6 +2,7 @@ package com.noisepages.nettoyeur.patchbay;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayClient;
 
+import android.app.Notification;
 import android.app.PendingIntent;
 
 import java.util.List;
@@ -118,7 +119,7 @@ interface IPatchbayService {
 	/**
 	 * @return The buffer size in frames at which the Patchbay operates. This value is determined
 	 * by the hardware and cannot be changed. Audio modules should make no assumptions about the
-	 * buffer size. In particular, it will not be a power of two on many modules.
+	 * buffer size. In particular, it will not be a power of two on many devices.
 	 */
 	int getBufferSize();
 	    
@@ -149,4 +150,14 @@ interface IPatchbayService {
 	 * @return 0 on success, or a negative error code on failure.
 	 */
 	int sendSharedMemoryFileDescriptor();
+	
+	/**
+	 * Delegates to the corresponding Service method.
+	 */
+	void startForeground(int id, in Notification notification);
+	
+	/**
+	 * Delegates to the corresponding Service method.
+	 */
+	void stopForeground(boolean removeNotification);
 }
