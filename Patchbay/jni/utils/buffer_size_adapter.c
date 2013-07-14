@@ -71,6 +71,7 @@ buffer_size_adapter *bsa_create_adapter(
     adapter->output_buffer =
       create_buffer(host_buffer_frames, user_buffer_frames, output_channels);
     // TODO: Error checks.
+    // TODO: Choose optimal initial indices according to Letz's paper.
   }
   return adapter;
 }
