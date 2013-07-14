@@ -69,9 +69,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 		}
 
 		@Override
-		public void onModuleDeactivated(String arg0) throws RemoteException {
-			// TODO Auto-generated method stub
-			
+		public void onModuleDeactivated(String module) throws RemoteException {
 		}
 
 		@Override

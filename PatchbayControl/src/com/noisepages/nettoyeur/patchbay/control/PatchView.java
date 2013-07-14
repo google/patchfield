@@ -1,12 +1,3 @@
-/**
- * 
- * @author Peter Brinkmann (peter.brinkmann@gmail.com)
- * 
- * For information on usage and redistribution, and for a DISCLAIMER OF ALL
- * WARRANTIES, see the file, "LICENSE.txt," in this distribution.
- * 
- */
-
 package com.noisepages.nettoyeur.patchbay.control;
 
 import java.util.ArrayList;
@@ -25,6 +16,7 @@ import android.graphics.Path;
 import android.graphics.Typeface;
 import android.os.RemoteException;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +29,7 @@ public final class PatchView extends View {
 	private final List<String> modules = new ArrayList<String>();
 	private final Map<String, Integer> inputs = new HashMap<String, Integer>();
 	private final Map<String, Integer> outputs = new HashMap<String, Integer>();
+	private final Map<String, PendingIntent> intents = new HashMap<String, PendingIntent>();
 	private final Map<Pair<String, Integer>, List<Pair<String, Integer>>> connections =
 			new HashMap<Pair<String,Integer>, List<Pair<String,Integer>>>();
 	
@@ -133,6 +126,7 @@ public final class PatchView extends View {
 		modules.add(module);
 		inputs.put(module, inputChannels);
 		outputs.put(module, outputChannels);
+		intents.put(module, intent);
 		invalidate();
 	}
 	
@@ -151,6 +145,9 @@ public final class PatchView extends View {
 			}
 		}
 		modules.remove(module);
+		inputs.remove(module);
+		outputs.remove(module);
+		intents.remove(module);
 		invalidate();
 	}
 	
