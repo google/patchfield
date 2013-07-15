@@ -3,11 +3,21 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct _bsa_ring_buffer {
+typedef struct {
   int buffer_frames;
   float *v;
   int write_index;
   int read_index;
+} bsa_ring_buffer;
+
+typedef struct _buffer_size_adapter {
+  audio_module_runner *amr;
+  int host_buffer_frames;
+  int user_buffer_frames;
+  void *user_context;
+  audio_module_process_t user_process;
+  bsa_ring_buffer *input_buffer;
+  bsa_ring_buffer *output_buffer;
 };
 
 static int lcm(int a, int b) {
@@ -178,3 +188,8 @@ void bsa_release(buffer_size_adapter *adapter) {
   release_buffer(adapter->output_buffer);
   free(adapter);
 }
+
+audio_module_runner *bsa_get_runner(buffer_size_adapter *adapter) {
+  return adapter->amr;
+}
+

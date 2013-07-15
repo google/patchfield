@@ -23,7 +23,7 @@ JNIEXPORT jboolean JNICALL
 Java_com_noisepages_nettoyeur_patchbay_pd_PdModule_hasTimedOut
 (JNIEnv *env, jobject obj, jlong p) {
   buffer_size_adapter *bsa = (buffer_size_adapter *) p;
-  return am_has_timed_out(bsa->amr);
+  return am_has_timed_out(bsa_get_runner(bsa));
 }
 
 JNIEXPORT jint JNICALL
