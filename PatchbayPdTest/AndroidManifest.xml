@@ -8,7 +8,6 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="17" />
     <uses-permission android:name="com.noisepages.nettoyeur.patchbay.service.USE_PATCHBAY"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <application
         android:allowBackup="true"

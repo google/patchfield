@@ -17,18 +17,22 @@ public class PdModule extends AudioModule {
 	
 	private long ptr = 0;
 
+	private final int sampleRate;
 	private final int inputChannels;
 	private final int outputChannels;
 	
-	private PdModule(int inputChannels, int outputChannels, PendingIntent intent) {
+	private PdModule(int sampleRate, int inputChannels, int outputChannels, PendingIntent intent) {
 		super(intent);
+		this.sampleRate = sampleRate;
 		this.inputChannels = inputChannels;
 		this.outputChannels = outputChannels;
+		pdInitAudio(inputChannels, outputChannels, sampleRate);
+		PdBase.computeAudio(true);
 	}
 
-	public static PdModule getInstance(int inputChannels, int outputChannels, PendingIntent intent) {
+	public static PdModule getInstance(int sampleRate, int inputChannels, int outputChannels, PendingIntent intent) {
 		if (instance == null) {
-			return new PdModule(inputChannels, outputChannels, intent);
+			return new PdModule(sampleRate, inputChannels, outputChannels, intent);
 		} else if (instance.getInputChannels() >= inputChannels && instance.getOutputChannels() >= outputChannels
 				&& (intent == null || intent.equals(instance.getIntent()))) {
 			return instance;
@@ -76,6 +80,7 @@ public class PdModule extends AudioModule {
 		}
 	}
 
+	private native void pdInitAudio(int inputChannels, int outputChannels, int sampleRate);
 	private native boolean hasTimedOut(long ptr);
 	private native int getProtocolVersion(long ptr);
 	private native long configureModule(int version, int token, int index, int bufferSize, int blockSize,

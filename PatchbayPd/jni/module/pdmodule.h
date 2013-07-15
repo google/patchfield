@@ -9,6 +9,14 @@ extern "C" {
 #endif
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_pd_PdModule
+ * Method:    pdInitAudio
+ * Signature: (III)V
+ */
+JNIEXPORT void JNICALL Java_com_noisepages_nettoyeur_patchbay_pd_PdModule_pdInitAudio
+  (JNIEnv *, jobject, jint, jint, jint);
+
+/*
+ * Class:     com_noisepages_nettoyeur_patchbay_pd_PdModule
  * Method:    hasTimedOut
  * Signature: (J)Z
  */

@@ -29,7 +29,8 @@ public class MainActivity extends Activity {
 	private IPatchbayService patchbay = null;
 
 	private PdModule module = null;
-	
+	private final String label = "pdtest";
+
 	private ServiceConnection connection = new ServiceConnection() {
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
@@ -42,7 +43,6 @@ public class MainActivity extends Activity {
 			patchbay = IPatchbayService.Stub.asInterface(service);
 			int inputChannels = 2;
 			int outputChannels = 2;
-			module = PdModule.getInstance(inputChannels, outputChannels, null);
 			PdBase.setReceiver(new PdDispatcher() {
 				@Override
 				public void print(String s) {
@@ -50,21 +50,15 @@ public class MainActivity extends Activity {
 				}
 			});
 			try {
-				PdBase.openAudio(inputChannels, outputChannels, patchbay.getSampleRate());
-				PdBase.closeAudio();  // Shut down internal OpenSL instance; we don't need it here.
-				PdBase.computeAudio(true);
+				module = PdModule.getInstance(patchbay.getSampleRate(), inputChannels, outputChannels, null);
 				InputStream in = getResources().openRawResource(R.raw.test);
-				File patchFile = IoUtils.extractResource(in, "test.pd", getCacheDir());
-				PdBase.openPatch(patchFile);
+				File pdFile = IoUtils.extractResource(in, "test.pd", getCacheDir());
+				PdBase.openPatch(pdFile);
+				module.configure(patchbay, label);
+				patchbay.activateModule(label);
+			} catch (RemoteException e) {
+				e.printStackTrace();
 			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
-			try {
-				module.configure(patchbay, "PdTest");
-				patchbay.activateModule("PdTest");
-			} catch (RemoteException e) {
 				e.printStackTrace();
 			}
 		}
