@@ -55,7 +55,7 @@ public class PdModule extends AudioModule {
 		if (ptr != 0) {
 			throw new IllegalStateException("Module has already been configured.");
 		}
-		ptr = configureModule(version, token, index, bufferSize, PdBase.blockSize());
+		ptr = configureModule(version, token, index, bufferSize, PdBase.blockSize(), inputChannels, outputChannels);
 		return false;
 	}
 
@@ -68,6 +68,7 @@ public class PdModule extends AudioModule {
 
 	private native boolean hasTimedOut(long ptr);
 	private native int getProtocolVersion(long ptr);
-	private native long configureModule(int version, int token, int index, int bufferSize, int blockSize);
+	private native long configureModule(int version, int token, int index, int bufferSize, int blockSize,
+			int inputChannels, int outputChannels);
 	private native void release(long ptr);
 }
