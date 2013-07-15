@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
 				PdBase.computeAudio(true);
 				InputStream in = getResources().openRawResource(R.raw.test);
 				File patchFile = IoUtils.extractResource(in, "test.pd", getCacheDir());
-				PdBase.openPatch(patchFile);
+//				PdBase.openPatch(patchFile);
 				module.configure(patchbay, "PdTest");
 				patchbay.activateModule("PdTest");
 			} catch (RemoteException e) {
