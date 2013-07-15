@@ -1,3 +1,6 @@
 [submodule "Patchbay/jni/opensl_stream"]
 	path = Patchbay/jni/opensl_stream
 	url = https://github.com/nettoyeurny/opensl_stream.git
+[submodule "PatchbayPd/jni/libpd"]
+	path = PatchbayPd/jni/libpd
+	url = https://github.com/libpd/libpd.git
