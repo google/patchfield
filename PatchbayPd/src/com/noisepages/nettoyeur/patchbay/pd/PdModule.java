@@ -56,7 +56,7 @@ public class PdModule extends AudioModule {
 			throw new IllegalStateException("Module has already been configured.");
 		}
 		ptr = configureModule(version, token, index, bufferSize, PdBase.blockSize(), inputChannels, outputChannels);
-		return false;
+		return ptr != 0;
 	}
 
 	@Override
