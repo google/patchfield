@@ -71,7 +71,22 @@ buffer_size_adapter *bsa_create_adapter(
     adapter->output_buffer =
       create_buffer(host_buffer_frames, user_buffer_frames, output_channels);
     // TODO: Error checks.
-    // TODO: Choose optimal initial indices according to Letz's paper.
+
+    // Optimizing initial indices according to Stéphane Letz, "Callback
+    // adaptation techniques"
+    // (http://www.grame.fr/ressources/publications/CallbackAdaptation.pdf).
+    int r, w = 0;
+    int m = lcm(host_buffer_frames, user_buffer_frames);
+    int dmax = 0;
+    for (r = 0; r < m; r += host_buffer_frames) {
+      for (; w < r; w += user_buffer_frames);
+      int d = w - r;
+      if (d > dmax) {
+        dmax = d;
+        adapter->output_buffer->read_index = r;
+        adapter->output_buffer->write_index = w;
+      }
+    }
   }
   return adapter;
 }
@@ -86,7 +101,9 @@ void bsa_process(void *context, int sample_rate, int buffer_frames,
     int input_channels, const float *input_buffer,
     int output_channels, float *output_buffer) {
   buffer_size_adapter *adapter = (buffer_size_adapter *) context;
+
   // TODO: Write input samples to adapter->input_buffer.
+
   bsa_ring_buffer *ib = adapter->input_buffer;
   bsa_ring_buffer *ob = adapter->output_buffer;
   while (frames_available(adapter->input_buffer) >=
@@ -100,5 +117,6 @@ void bsa_process(void *context, int sample_rate, int buffer_frames,
     ob->write_index =
       (ob->write_index + adapter->user_buffer_frames) % ob->buffer_frames;
   }
+
   // TODO: Write output samples to output_buffer.
 }
