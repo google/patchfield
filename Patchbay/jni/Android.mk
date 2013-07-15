@@ -2,13 +2,6 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := buffersizeadapter
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH) $(LOCAL_PATH)/utils
-LOCAL_SRC_FILES := utils/buffer_size_adapter.c
-include $(BUILD_STATIC_LIBRARY)
-
-include $(CLEAR_VARS)
-
 LOCAL_MODULE := shared_memory_utils
 LOCAL_LDLIBS := -llog
 LOCAL_SRC_FILES := shared_memory_utils.c shared_memory_internal.c
@@ -29,6 +22,14 @@ LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
 LOCAL_EXPORT_LDLIBS := -lOpenSLES -llog
 LOCAL_SRC_FILES := audio_module.c audio_module_internal.c simple_barrier.c \
 	shared_memory_internal.c opensl_stream/opensl_stream.c
+include $(BUILD_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := buffersizeadapter
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
+LOCAL_SRC_FILES := utils/buffer_size_adapter.c
+LOCAL_STATIC_LIBRARIES := audiomodule
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
