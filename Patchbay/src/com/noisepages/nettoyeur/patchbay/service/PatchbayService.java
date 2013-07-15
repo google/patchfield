@@ -19,163 +19,160 @@ import com.noisepages.nettoyeur.patchbay.Patchbay;
  */
 public class PatchbayService extends Service {
 
-	private Patchbay patchbay = null;
-	
-	private final IPatchbayService.Stub binder = new IPatchbayService.Stub() {
-		
-		@Override
-		public int sendSharedMemoryFileDescriptor() {
-			return patchbay.sendSharedMemoryFileDescriptor();
-		}
-		
-		@Override
-		public void unregisterClient(IPatchbayClient client) throws RemoteException {
-			patchbay.unregisterClient(client);
-		}
-		
-		@Override
-		public void registerClient(IPatchbayClient client) throws RemoteException {
-			patchbay.registerClient(client);
-		}
-		
-		@Override
-		public int getSampleRate() {
-			return patchbay.getSampleRate();
-		}
-		
-		@Override
-		public int getBufferSize() {
-			return patchbay.getBufferSize();
-		}
-		
-		@Override
-		public int deleteModule(String module) throws RemoteException {
-			return patchbay.deleteModule(module);
-		}
-		
-		@Override
-		public int createModule(String module, int inputChannels, int outputChannels, PendingIntent intent)
-				throws RemoteException {
-			return patchbay.createModule(module, inputChannels, outputChannels, intent);
-		}
+  private Patchbay patchbay = null;
 
-		@Override
-		public int connectModules(String source, int sourcePort, String sink, int sinkPort)
-				throws RemoteException {
-			return patchbay.connectModules(source, sourcePort, sink, sinkPort);
-		}
+  private final IPatchbayService.Stub binder = new IPatchbayService.Stub() {
 
-		@Override
-		public int disconnectModules(String source, int sourcePort, String sink, int sinkPort)
-				throws RemoteException {
-			return patchbay.disconnectModules(source, sourcePort, sink, sinkPort);
-		}
-		
-		@Override
-		public List<String> getModules() throws RemoteException {
-			return patchbay.getModules();
-		}
+    @Override
+    public int sendSharedMemoryFileDescriptor() {
+      return patchbay.sendSharedMemoryFileDescriptor();
+    }
 
-		@Override
-		public int getInputChannels(String module) throws RemoteException {
-			return patchbay.getInputChannels(module);
-		}
+    @Override
+    public void unregisterClient(IPatchbayClient client) throws RemoteException {
+      patchbay.unregisterClient(client);
+    }
 
-		@Override
-		public int getOutputChannels(String module) throws RemoteException {
-			return patchbay.getOutputChannels(module);
-		}
+    @Override
+    public void registerClient(IPatchbayClient client) throws RemoteException {
+      patchbay.registerClient(client);
+    }
 
-		@Override
-		public PendingIntent getIntent(String module) throws RemoteException {
-			return patchbay.getIntent(module);
-		}
-		
-		@Override
-		public boolean isConnected(String source, int sourcePort, String sink, int sinkPort)
-				throws RemoteException {
-			return patchbay.isConnected(source, sourcePort, sink, sinkPort);
-		}
+    @Override
+    public int getSampleRate() {
+      return patchbay.getSampleRate();
+    }
 
-		@Override
-		public boolean isDependent(String source, String sink)
-				throws RemoteException {
-			return patchbay.isDependent(source, sink);
-		}
-		
-		@Override
-		public int start() {
-			return patchbay.start();
-		}
-		
-		@Override
-		public void stop() {
-			patchbay.stop();
-		}
-		
-		@Override
-		public boolean isRunning() {
-			return patchbay.isRunning();
-		}
+    @Override
+    public int getBufferSize() {
+      return patchbay.getBufferSize();
+    }
 
-		@Override
-		public int activateModule(String module) throws RemoteException {
-			return patchbay.activateModule(module);
-		}
+    @Override
+    public int deleteModule(String module) throws RemoteException {
+      return patchbay.deleteModule(module);
+    }
 
-		@Override
-		public int deactivateModule(String module) throws RemoteException {
-			return patchbay.deactivateModule(module);
-		}
+    @Override
+    public int createModule(String module, int inputChannels, int outputChannels,
+        PendingIntent intent) throws RemoteException {
+      return patchbay.createModule(module, inputChannels, outputChannels, intent);
+    }
 
-		@Override
-		public boolean isActive(String module) throws RemoteException {
-			return patchbay.isActive(module);
-		}
+    @Override
+    public int connectModules(String source, int sourcePort, String sink, int sinkPort)
+        throws RemoteException {
+      return patchbay.connectModules(source, sourcePort, sink, sinkPort);
+    }
 
-		@Override
-		public int getProtocolVersion() throws RemoteException {
-			return patchbay.getProtocolVersion();
-		}
+    @Override
+    public int disconnectModules(String source, int sourcePort, String sink, int sinkPort)
+        throws RemoteException {
+      return patchbay.disconnectModules(source, sourcePort, sink, sinkPort);
+    }
 
-		@Override
-		public void startForeground(int id, Notification notification)
-				throws RemoteException {
-			startForeground(id, notification);
-		}
+    @Override
+    public List<String> getModules() throws RemoteException {
+      return patchbay.getModules();
+    }
 
-		@Override
-		public void stopForeground(boolean removeNotification)
-				throws RemoteException {
-			stopForeground(removeNotification);
-		}
-	};
-	
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		try {
-			patchbay = new Patchbay(this, 1, 2);
-		} catch (IOException e) {
-			patchbay = null;
-		}
-	};
-	
-	@Override
-	public IBinder onBind(Intent intent) {
-		return (patchbay != null) ? binder : null;
-	}
+    @Override
+    public int getInputChannels(String module) throws RemoteException {
+      return patchbay.getInputChannels(module);
+    }
 
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		release();
-	}
-	
-	private void release() {
-		if (patchbay != null) {
-			patchbay.release();
-			patchbay = null;
-		}
-	}
+    @Override
+    public int getOutputChannels(String module) throws RemoteException {
+      return patchbay.getOutputChannels(module);
+    }
+
+    @Override
+    public PendingIntent getIntent(String module) throws RemoteException {
+      return patchbay.getIntent(module);
+    }
+
+    @Override
+    public boolean isConnected(String source, int sourcePort, String sink, int sinkPort)
+        throws RemoteException {
+      return patchbay.isConnected(source, sourcePort, sink, sinkPort);
+    }
+
+    @Override
+    public boolean isDependent(String source, String sink) throws RemoteException {
+      return patchbay.isDependent(source, sink);
+    }
+
+    @Override
+    public int start() {
+      return patchbay.start();
+    }
+
+    @Override
+    public void stop() {
+      patchbay.stop();
+    }
+
+    @Override
+    public boolean isRunning() {
+      return patchbay.isRunning();
+    }
+
+    @Override
+    public int activateModule(String module) throws RemoteException {
+      return patchbay.activateModule(module);
+    }
+
+    @Override
+    public int deactivateModule(String module) throws RemoteException {
+      return patchbay.deactivateModule(module);
+    }
+
+    @Override
+    public boolean isActive(String module) throws RemoteException {
+      return patchbay.isActive(module);
+    }
+
+    @Override
+    public int getProtocolVersion() throws RemoteException {
+      return patchbay.getProtocolVersion();
+    }
+
+    @Override
+    public void startForeground(int id, Notification notification) throws RemoteException {
+      startForeground(id, notification);
+    }
+
+    @Override
+    public void stopForeground(boolean removeNotification) throws RemoteException {
+      stopForeground(removeNotification);
+    }
+  };
+
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    try {
+      patchbay = new Patchbay(this, 1, 2);
+    } catch (IOException e) {
+      patchbay = null;
+    }
+  };
+
+  @Override
+  public IBinder onBind(Intent intent) {
+    return (patchbay != null) ? binder : null;
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    release();
+  }
+
+  private void release() {
+    if (patchbay != null) {
+      patchbay.release();
+      patchbay = null;
+    }
+  }
 }

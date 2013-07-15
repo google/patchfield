@@ -8,15 +8,15 @@ import android.app.PendingIntent;
  */
 oneway interface IPatchbayClient {
 
-    void onModuleCreated(String name, int inputChannels, int outputChannels, in PendingIntent intent);
-    void onModuleDeleted(String name);
+  void onModuleCreated(String name, int inputChannels, int outputChannels, in PendingIntent intent);
+  void onModuleDeleted(String name);
+  
+  void onModuleActivated(String name);
+  void onModuleDeactivated(String name);
     
-    void onModuleActivated(String name);
-    void onModuleDeactivated(String name);
+  void onModulesConnected(String source, int sourcePort, String sink, int sinkPort);
+  void onModulesDisconnected(String source, int sourcePort, String sink, int sinkPort);
     
-    void onModulesConnected(String source, int sourcePort, String sink, int sinkPort);
-    void onModulesDisconnected(String source, int sourcePort, String sink, int sinkPort);
-    
-    void onStart();
-    void onStop();
+  void onStart();
+  void onStop();
 }
