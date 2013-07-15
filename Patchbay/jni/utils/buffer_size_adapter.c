@@ -141,7 +141,7 @@ buffer_size_adapter *bsa_create(
         adapter->output_buffer = create_buffer(host_buffer_frames,
             user_buffer_frames, output_channels);
         if (adapter->output_buffer) {
-          // Optimizing initial indices according to Stéphane Letz, "Callback
+          // Optimizing initial indices according to St\'ephane Letz, "Callback
           // adaptation techniques"
           // (see www.grame.fr/ressources/publications/CallbackAdaptation.pdf).
           int r, w = 0;
