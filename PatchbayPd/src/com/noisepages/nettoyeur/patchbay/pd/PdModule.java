@@ -13,15 +13,28 @@ public class PdModule extends AudioModule {
 		System.loadLibrary("pdmodule");
 	}
 
+	private static PdModule instance = null;
+	
 	private long ptr = 0;
 
 	private final int inputChannels;
 	private final int outputChannels;
 	
-	PdModule(int inputChannels, int outputChannels, PendingIntent intent) {
+	private PdModule(int inputChannels, int outputChannels, PendingIntent intent) {
 		super(intent);
 		this.inputChannels = inputChannels;
 		this.outputChannels = outputChannels;
+	}
+
+	public static PdModule getInstance(int inputChannels, int outputChannels, PendingIntent intent) {
+		if (instance == null) {
+			return new PdModule(inputChannels, outputChannels, intent);
+		} else if (instance.getInputChannels() >= inputChannels && instance.getOutputChannels() >= outputChannels
+				&& (intent == null || intent.equals(instance.getIntent()))) {
+			return instance;
+		} else {
+			throw new IllegalStateException("PdModule instance can't be reconfigured once instantiated.");
+		}
 	}
 
 	@Override

@@ -155,6 +155,10 @@ public abstract class AudioModule {
 		return index;
 	}
 	
+	protected PendingIntent getIntent() {
+		return intent;
+	}
+
 	public abstract boolean hasTimedOut();
 	public abstract int getProtocolVersion();
 	public abstract int getInputChannels();
