@@ -70,24 +70,33 @@ buffer_size_adapter *bsa_create_adapter(
     if (host_buffer_frames != user_buffer_frames) {
       adapter->input_buffer =
         create_buffer(host_buffer_frames, user_buffer_frames, input_channels);
-      adapter->output_buffer =
-        create_buffer(host_buffer_frames, user_buffer_frames, output_channels);
-      // TODO: Error checks.
-
-      // Optimizing initial indices according to Stéphane Letz, "Callback
-      // adaptation techniques"
-      // (http://www.grame.fr/ressources/publications/CallbackAdaptation.pdf).
-      int r, w = 0;
-      int m = lcm(host_buffer_frames, user_buffer_frames);
-      int dmax = 0;
-      for (r = 0; r < m; r += host_buffer_frames) {
-        for (; w < r; w += user_buffer_frames);
-        int d = w - r;
-        if (d > dmax) {
-          dmax = d;
-          adapter->output_buffer->read_index = r;
-          adapter->output_buffer->write_index = w;
+      if (adapter->input_buffer) {
+        adapter->output_buffer = create_buffer(host_buffer_frames,
+            user_buffer_frames, output_channels);
+        if (adapter->output_buffer) {
+          // Optimizing initial indices according to Stéphane Letz, "Callback
+          // adaptation techniques"
+          // (see www.grame.fr/ressources/publications/CallbackAdaptation.pdf).
+          int r, w = 0;
+          int m = lcm(host_buffer_frames, user_buffer_frames);
+          int dmax = 0;
+          for (r = 0; r < m; r += host_buffer_frames) {
+            for (; w < r; w += user_buffer_frames);
+            int d = w - r;
+            if (d > dmax) {
+              dmax = d;
+              adapter->output_buffer->read_index = r;
+              adapter->output_buffer->write_index = w;
+            }
+          }
+        } else {
+          release_buffer(adapter->input_buffer);
+          free(adapter);
+          adapter = NULL;
         }
+      } else {
+        free(adapter);
+        adapter = NULL;
       }
     } else {
       adapter->input_buffer = NULL;
@@ -157,6 +166,8 @@ void bsa_process(void *context, int sample_rate, int buffer_frames,
           ob->v, ob->read_index, adapter->user_buffer_frames,
           output_buffer, 0, buffer_frames);
       ob->read_index = (ob->read_index + buffer_frames) % ob->buffer_frames;
+    } else {
+      memset(output_buffer, 0, buffer_frames * output_channels * sizeof(float));
     }
   } else {
     adapter->user_process(adapter->user_context, sample_rate, buffer_frames,
