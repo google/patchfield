@@ -47,9 +47,6 @@ public class PdModule extends AudioModule {
 
 	@Override
 	public int getProtocolVersion() {
-		if (ptr == 0) {
-			throw new IllegalStateException("Module is not configured.");
-		}
 		return getProtocolVersion(ptr);
 	}
 
