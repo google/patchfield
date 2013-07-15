@@ -16,5 +16,8 @@ bin/
 gen/
 obj/
 
+# Shared objects
+*.so
+
 # Local configuration file (sdk path, etc)
 local.properties
