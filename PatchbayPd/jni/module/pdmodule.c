@@ -31,7 +31,7 @@ Java_com_noisepages_nettoyeur_patchbay_pd_PdModule_configureModule
  jint sample_rate, jint buffer_size,
  jint input_channels, jint output_channels) {
   return (jlong) bsa_create(version, token, index,
-      buffer_size, libpd_blocksize(),
+      buffer_size, 64,
       input_channels, output_channels,
       process_pd, NULL);     
 }

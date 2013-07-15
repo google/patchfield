@@ -83,6 +83,7 @@ public class MainActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
+		PdBase.release();
 		unbindService(connection);
 	}
 	
