@@ -1,6 +1,7 @@
 #include "buffer_size_adapter.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct {
   int buffer_frames;
@@ -32,7 +33,7 @@ static int frames_available(bsa_ring_buffer *rb) {
 }
 
 static bsa_ring_buffer *create_buffer(
-    int host_buffer_frames, int user_buffer_frames, int channels) {
+    int host_buffer_frames, int user_buffer_frames, int nchannels) {
   bsa_ring_buffer *rb = malloc(sizeof(bsa_ring_buffer));
   if (rb) {
     rb->read_index = 0;
@@ -42,7 +43,7 @@ static bsa_ring_buffer *create_buffer(
       m *= 2;
     }
     rb->buffer_frames = m;
-    rb->v = calloc(rb->buffer_frames * channels, sizeof(float));
+    rb->v = calloc(rb->buffer_frames * nchannels, sizeof(float));
     if (!rb->v) {
       free(rb);
       rb = NULL;
@@ -97,17 +98,45 @@ void bsa_release(buffer_size_adapter *adapter) {
   free(adapter);
 }
 
+static void transfer_buffers(int nframes, int nchannels,
+    const float *source, int source_index, int source_frames,
+    float *sink, int sink_index, int sink_frames) {
+  int c, n, b;
+  while (nframes > 0) {
+    n = nframes;
+    b = source_frames - source_index % source_frames;
+    if (b < n) {
+      n = b;
+    }
+    b = sink_frames - sink_index % sink_frames;
+    if (b < n) {
+      n = b;
+    }
+    for (c = 0; c < nchannels; ++c) {
+      memcpy(
+          sink + (sink_index / sink_frames) * sink_frames * nchannels +
+          c * sink_frames + sink_index % sink_frames,
+          source + (source_index / source_frames) * source_frames * nchannels +
+          c * source_frames + source_index % source_frames,
+          n * sizeof(float));
+    }
+    nframes -= n;
+    source_index += n;
+    sink_index += n;
+  }
+}
+
 void bsa_process(void *context, int sample_rate, int buffer_frames,
     int input_channels, const float *input_buffer,
     int output_channels, float *output_buffer) {
   buffer_size_adapter *adapter = (buffer_size_adapter *) context;
-
-  // TODO: Write input samples to adapter->input_buffer.
-
   bsa_ring_buffer *ib = adapter->input_buffer;
   bsa_ring_buffer *ob = adapter->output_buffer;
-  while (frames_available(adapter->input_buffer) >=
-      adapter->user_buffer_frames) {
+  transfer_buffers(buffer_frames, input_channels,
+      input_buffer, 0, buffer_frames,
+      ib->v, ib->write_index, adapter->user_buffer_frames);
+  ib->write_index = (ib->write_index + buffer_frames) % ib->buffer_frames;
+  while (frames_available(ib) >= adapter->user_buffer_frames) {
     adapter->user_process(adapter->user_context, sample_rate,
         adapter->user_buffer_frames,
         input_channels, ib->v + ib->read_index * input_channels,
@@ -117,6 +146,10 @@ void bsa_process(void *context, int sample_rate, int buffer_frames,
     ob->write_index =
       (ob->write_index + adapter->user_buffer_frames) % ob->buffer_frames;
   }
-
-  // TODO: Write output samples to output_buffer.
+  if (frames_available(ob) >= buffer_frames) {
+    transfer_buffers(buffer_frames, output_channels,
+        ob->v, ob->read_index, adapter->user_buffer_frames,
+        output_buffer, 0, buffer_frames);
+    ob->read_index = (ob->read_index + buffer_frames) % ob->buffer_frames;
+  }
 }
