@@ -67,26 +67,31 @@ buffer_size_adapter *bsa_create_adapter(
     adapter->user_buffer_frames = user_buffer_frames;
     adapter->user_process = user_process;
     adapter->user_context = user_context;
-    adapter->input_buffer =
-      create_buffer(host_buffer_frames, user_buffer_frames, input_channels);
-    adapter->output_buffer =
-      create_buffer(host_buffer_frames, user_buffer_frames, output_channels);
-    // TODO: Error checks.
+    if (host_buffer_frames != user_buffer_frames) {
+      adapter->input_buffer =
+        create_buffer(host_buffer_frames, user_buffer_frames, input_channels);
+      adapter->output_buffer =
+        create_buffer(host_buffer_frames, user_buffer_frames, output_channels);
+      // TODO: Error checks.
 
-    // Optimizing initial indices according to Stéphane Letz, "Callback
-    // adaptation techniques"
-    // (http://www.grame.fr/ressources/publications/CallbackAdaptation.pdf).
-    int r, w = 0;
-    int m = lcm(host_buffer_frames, user_buffer_frames);
-    int dmax = 0;
-    for (r = 0; r < m; r += host_buffer_frames) {
-      for (; w < r; w += user_buffer_frames);
-      int d = w - r;
-      if (d > dmax) {
-        dmax = d;
-        adapter->output_buffer->read_index = r;
-        adapter->output_buffer->write_index = w;
+      // Optimizing initial indices according to Stéphane Letz, "Callback
+      // adaptation techniques"
+      // (http://www.grame.fr/ressources/publications/CallbackAdaptation.pdf).
+      int r, w = 0;
+      int m = lcm(host_buffer_frames, user_buffer_frames);
+      int dmax = 0;
+      for (r = 0; r < m; r += host_buffer_frames) {
+        for (; w < r; w += user_buffer_frames);
+        int d = w - r;
+        if (d > dmax) {
+          dmax = d;
+          adapter->output_buffer->read_index = r;
+          adapter->output_buffer->write_index = w;
+        }
       }
+    } else {
+      adapter->input_buffer = NULL;
+      adapter->output_buffer = NULL;
     }
   }
   return adapter;
@@ -130,26 +135,31 @@ void bsa_process(void *context, int sample_rate, int buffer_frames,
     int input_channels, const float *input_buffer,
     int output_channels, float *output_buffer) {
   buffer_size_adapter *adapter = (buffer_size_adapter *) context;
-  bsa_ring_buffer *ib = adapter->input_buffer;
-  bsa_ring_buffer *ob = adapter->output_buffer;
-  transfer_buffers(buffer_frames, input_channels,
-      input_buffer, 0, buffer_frames,
-      ib->v, ib->write_index, adapter->user_buffer_frames);
-  ib->write_index = (ib->write_index + buffer_frames) % ib->buffer_frames;
-  while (frames_available(ib) >= adapter->user_buffer_frames) {
-    adapter->user_process(adapter->user_context, sample_rate,
-        adapter->user_buffer_frames,
-        input_channels, ib->v + ib->read_index * input_channels,
-        output_channels, ob->v + ob->write_index * output_channels);
-    ib->read_index =
-      (ib->read_index + adapter->user_buffer_frames) % ib->buffer_frames;
-    ob->write_index =
-      (ob->write_index + adapter->user_buffer_frames) % ob->buffer_frames;
-  }
-  if (frames_available(ob) >= buffer_frames) {
-    transfer_buffers(buffer_frames, output_channels,
-        ob->v, ob->read_index, adapter->user_buffer_frames,
-        output_buffer, 0, buffer_frames);
-    ob->read_index = (ob->read_index + buffer_frames) % ob->buffer_frames;
+  if (adapter->host_buffer_frames != adapter->user_buffer_frames) {
+    bsa_ring_buffer *ib = adapter->input_buffer;
+    bsa_ring_buffer *ob = adapter->output_buffer;
+    transfer_buffers(buffer_frames, input_channels,
+        input_buffer, 0, buffer_frames,
+        ib->v, ib->write_index, adapter->user_buffer_frames);
+    ib->write_index = (ib->write_index + buffer_frames) % ib->buffer_frames;
+    while (frames_available(ib) >= adapter->user_buffer_frames) {
+      adapter->user_process(adapter->user_context, sample_rate,
+          adapter->user_buffer_frames,
+          input_channels, ib->v + ib->read_index * input_channels,
+          output_channels, ob->v + ob->write_index * output_channels);
+      ib->read_index =
+        (ib->read_index + adapter->user_buffer_frames) % ib->buffer_frames;
+      ob->write_index =
+        (ob->write_index + adapter->user_buffer_frames) % ob->buffer_frames;
+    }
+    if (frames_available(ob) >= buffer_frames) {
+      transfer_buffers(buffer_frames, output_channels,
+          ob->v, ob->read_index, adapter->user_buffer_frames,
+          output_buffer, 0, buffer_frames);
+      ob->read_index = (ob->read_index + buffer_frames) % ob->buffer_frames;
+    }
+  } else {
+    adapter->user_process(adapter->user_context, sample_rate, buffer_frames,
+        input_channels, input_buffer, output_channels, output_buffer);
   }
 }
