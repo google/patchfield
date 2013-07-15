@@ -33,7 +33,7 @@ public class PcmSource extends AudioModule {
 	}
 
 	@Override
-	protected boolean configure(String name, int version, int token, int index) {
+	protected boolean configure(String name, int version, int token, int index, int sampleRate, int bufferSize) {
 		ptr = createSource(version, token, index, buffer);
 		return ptr != 0;
 	}

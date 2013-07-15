@@ -29,7 +29,7 @@ public class LowpassModule extends AudioModule {
 	}
 
 	@Override
-	protected boolean configure(String name, int version, int token, int index) {
+	protected boolean configure(String name, int version, int token, int index, int sampleRate, int bufferSize) {
 		if (ptr != 0) {
 			throw new IllegalStateException("Module has already been configured.");
 		}

@@ -110,7 +110,7 @@ public abstract class AudioModule {
 			SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
 			return index;
 		}
-		if (!configure(name, version, token, index)) {
+		if (!configure(name, version, token, index, patchbay.getSampleRate(), patchbay.getBufferSize())) {
 			patchbay.deleteModule(name);
 			SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
 			return PatchbayException.FAILURE;
@@ -160,6 +160,7 @@ public abstract class AudioModule {
 	public abstract int getInputChannels();
 	public abstract int getOutputChannels();
 
-	protected abstract boolean configure(String name, int version, int token, int index);
+	protected abstract boolean configure(String name, int version, int token, int index,
+			int sampleRate, int bufferSize);
 	protected abstract void release();
 }
