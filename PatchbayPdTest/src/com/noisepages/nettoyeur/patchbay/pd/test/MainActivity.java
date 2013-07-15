@@ -40,26 +40,31 @@ public class MainActivity extends Activity {
 		public void onServiceConnected(ComponentName name, IBinder service) {
 			Log.i(TAG, "Service connected.");
 			patchbay = IPatchbayService.Stub.asInterface(service);
-			module = PdModule.getInstance(2, 2, null);
+			int inputChannels = 2;
+			int outputChannels = 2;
+			module = PdModule.getInstance(inputChannels, outputChannels, null);
+			PdBase.setReceiver(new PdDispatcher() {
+				@Override
+				public void print(String s) {
+					Log.i(TAG, s);
+				}
+			});
 			try {
-				PdBase.setReceiver(new PdDispatcher() {
-					@Override
-					public void print(String s) {
-						Log.i(TAG, s);
-					}
-				});
-				PdBase.openAudio(2, 2, patchbay.getSampleRate());
+				PdBase.openAudio(inputChannels, outputChannels, patchbay.getSampleRate());
 				PdBase.closeAudio();  // Shut down internal OpenSL instance; we don't need it here.
 				PdBase.computeAudio(true);
 				InputStream in = getResources().openRawResource(R.raw.test);
 				File patchFile = IoUtils.extractResource(in, "test.pd", getCacheDir());
-//				PdBase.openPatch(patchFile);
+				PdBase.openPatch(patchFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+			try {
 				module.configure(patchbay, "PdTest");
 				patchbay.activateModule("PdTest");
 			} catch (RemoteException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
