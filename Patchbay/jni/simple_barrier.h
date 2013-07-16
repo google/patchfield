@@ -1,8 +1,8 @@
 /*
  * An atomic blocking boolean, designed to be robust when the underlying memory
- * location is overwritten by buggy or malicious code. Integer return values are
- * 0 for success, -1 for failure (due to timeouts), and -2 for errors (if the
- * memory location has been tampered with).
+ * location is overwritten by buggy or malicious code. Integer return values
+ * are 0 for success, -1 for failure (due to timeouts), and -2 for errors (if
+ * the memory location has been tampered with).
  */
 
 #ifndef __SIMPLE_BARRIER_H__
