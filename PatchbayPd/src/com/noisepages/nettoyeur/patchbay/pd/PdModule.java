@@ -6,6 +6,18 @@ import android.app.PendingIntent;
 
 import com.noisepages.nettoyeur.patchbay.AudioModule;
 
+/**
+ * An audio module implementation that uses Pure Data (via libpd) internally.
+ * 
+ * Since Pd is currently limited to one instance per process, PdModule is a singleton of sorts. When
+ * it is first created, the sample rate and channel counts are configurable; once it has been
+ * created, the configuration is fixed for the lifetime of the process.
+ * 
+ * PdModule takes care of the initialization of libpd. In particular, make sure to create your
+ * PdModule instance before calling any methods on PdBase. Do _not_ call PdBase.openAudio(...) of
+ * PdBase.computeAudio(...). After the creation of your PdModule instance, you can use PdBase as
+ * usual.
+ */
 public class PdModule extends AudioModule {
 
   static {
