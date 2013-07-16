@@ -20,7 +20,7 @@ import com.noisepages.nettoyeur.patchbay.IPatchbayService;
 public class MainActivity extends Activity {
 
   @SuppressWarnings("unused")
-  private static final String TAG = "PatchbaySource";
+  private static final String TAG = "PatchbayPcm";
 
   private TextView mainText = null;
   private IPatchbayService patchbay = null;

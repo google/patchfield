@@ -1,5 +1,5 @@
 # Note that NDK_MODULE_PATH must contain the patchbay parent directory. The
-# makefile in PatchbaySource implicitly takes care of this.
+# makefile in PatchbayPcm implicitly takes care of this.
 
 LOCAL_PATH := $(call my-dir)
 
