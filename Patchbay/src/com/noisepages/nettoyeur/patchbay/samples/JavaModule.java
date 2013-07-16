@@ -30,7 +30,7 @@ public abstract class JavaModule extends AudioModule {
         if (Thread.interrupted()) {
           break;
         }
-        process(sampleRate, bufferSize, inputBuffer, outputBuffer);
+        process(sampleRate, bufferSize, inputChannels, inputBuffer, outputChannels, outputBuffer);
         sendOutputBuffer(ptr, outputBuffer);
       }
     }
@@ -42,7 +42,9 @@ public abstract class JavaModule extends AudioModule {
     this.outputChannels = outputChannels;
   }
 
-  protected abstract void process(int sampleRate, int bufferSize, float[] inputBuffer, float[] outputBuffer);
+  protected abstract void process(int sampleRate, int bufferSize,
+                                  int inputChannels, float[] inputBuffer,
+                                  int outputChannels, float[] outputBuffer);
 
   @Override
   public boolean hasTimedOut() {
