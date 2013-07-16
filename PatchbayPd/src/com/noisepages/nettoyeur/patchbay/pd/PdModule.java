@@ -64,11 +64,6 @@ public class PdModule extends AudioModule {
   }
 
   @Override
-  public int getProtocolVersion() {
-    return getProtocolVersion(ptr);
-  }
-
-  @Override
   public int getInputChannels() {
     return inputChannels;
   }
@@ -97,11 +92,12 @@ public class PdModule extends AudioModule {
     }
   }
 
+  @Override
+  public native int getProtocolVersion();
+
   private native void pdInitAudio(int inputChannels, int outputChannels, int sampleRate);
 
   private native boolean hasTimedOut(long ptr);
-
-  private native int getProtocolVersion(long ptr);
 
   private native long configureModule(int version, int token, int index, int bufferSize,
       int blockSize, int inputChannels, int outputChannels);

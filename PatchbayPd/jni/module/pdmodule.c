@@ -28,7 +28,7 @@ Java_com_noisepages_nettoyeur_patchbay_pd_PdModule_hasTimedOut
 
 JNIEXPORT jint JNICALL
 Java_com_noisepages_nettoyeur_patchbay_pd_PdModule_getProtocolVersion
-(JNIEnv *env, jobject obj, jlong p) {
+(JNIEnv *env, jobject obj) {
   return PATCHBAY_PROTOCOL_VERSION;
 }
 
