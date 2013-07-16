@@ -43,15 +43,16 @@ public class MainActivity extends Activity {
       patchbay = IPatchbayService.Stub.asInterface(service);
       int inputChannels = 2;
       int outputChannels = 2;
-      PdBase.setReceiver(new PdDispatcher() {
-        @Override
-        public void print(String s) {
-          Log.i(TAG, s);
-        }
-      });
       try {
+        // Create PdModule instance before invoking any methods on PdBase.
         module =
             PdModule.getInstance(patchbay.getSampleRate(), inputChannels, outputChannels, null);
+        PdBase.setReceiver(new PdDispatcher() {
+          @Override
+          public void print(String s) {
+            Log.i(TAG, s);
+          }
+        });
         InputStream in = getResources().openRawResource(R.raw.test);
         File pdFile = IoUtils.extractResource(in, "test.pd", getCacheDir());
         PdBase.openPatch(pdFile);
