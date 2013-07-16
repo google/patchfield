@@ -13,25 +13,25 @@ static void process_func(void *context, int sample_rate, int buffer_frames,
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_noisepages_nettoyeur_patchbay_samples_IdentityModule_createModule
+Java_com_noisepages_nettoyeur_patchbay_modules_IdentityModule_createModule
 (JNIEnv *env, jobject obj, jint version, jint token, jint index) {
   return (jlong) am_create(version, token, index, process_func, NULL);
 }
 
 JNIEXPORT void JNICALL
-Java_com_noisepages_nettoyeur_patchbay_samples_IdentityModule_release
+Java_com_noisepages_nettoyeur_patchbay_modules_IdentityModule_release
 (JNIEnv *env, jobject obj, jlong p) {
   am_release((audio_module_runner *) p);
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_noisepages_nettoyeur_patchbay_samples_IdentityModule_hasTimedOut
+Java_com_noisepages_nettoyeur_patchbay_modules_IdentityModule_hasTimedOut
 (JNIEnv *env, jobject obj, jlong p) {
   return am_has_timed_out((audio_module_runner *) p);
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchbay_samples_IdentityModule_getProtocolVersion
+Java_com_noisepages_nettoyeur_patchbay_modules_IdentityModule_getProtocolVersion
 (JNIEnv *env, jobject obj) {
   return PATCHBAY_PROTOCOL_VERSION;
 }

@@ -16,7 +16,7 @@ import android.view.Menu;
 
 import com.noisepages.nettoyeur.patchbay.AudioModule;
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
-import com.noisepages.nettoyeur.patchbay.samples.IdentityModule;
+import com.noisepages.nettoyeur.patchbay.modules.IdentityModule;
 
 public class MainActivity extends Activity {
 

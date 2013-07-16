@@ -1,7 +1,7 @@
 #include "javamodule.h"
 
 #include "audio_module.h"
-#include "simple_barrier.h"
+#include "internal/simple_barrier.h"
 
 #include <stddef.h>
 #include <string.h>
@@ -26,20 +26,20 @@ static void process_jm(void *context, int sample_rate, int buffer_frames,
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchbay_samples_JavaModule_getProtocolVersion
+Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_getProtocolVersion
 (JNIEnv *env, jobject obj) {
   return PATCHBAY_PROTOCOL_VERSION;
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_noisepages_nettoyeur_patchbay_samples_JavaModule_hasTimedOut
+Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_hasTimedOut
 (JNIEnv *env, jobject obj, jlong p) {
   jmodule *jm = (jmodule *) p;
   return am_has_timed_out(jm->amr);
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_noisepages_nettoyeur_patchbay_samples_JavaModule_configure
+Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_configure
 (JNIEnv *env, jobject obj, jint version, jint token, jint index) {
   jmodule *jm = malloc(sizeof(jmodule));
   if (jm) {
@@ -58,7 +58,7 @@ Java_com_noisepages_nettoyeur_patchbay_samples_JavaModule_configure
 }
 
 JNIEXPORT void JNICALL
-Java_com_noisepages_nettoyeur_patchbay_samples_JavaModule_release
+Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_release
 (JNIEnv *env, jobject obj, jlong p) {
   jmodule *jm = (jmodule *) p;
   am_release(jm->amr);
@@ -66,7 +66,7 @@ Java_com_noisepages_nettoyeur_patchbay_samples_JavaModule_release
 }
 
 JNIEXPORT void JNICALL
-Java_com_noisepages_nettoyeur_patchbay_samples_JavaModule_fillInputBuffer
+Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_fillInputBuffer
 (JNIEnv *env, jobject obj, jlong p, jfloatArray buffer) {
   jmodule *jm = (jmodule *) p;
   sb_wait_and_clear(&jm->wake, NULL);
@@ -79,7 +79,7 @@ Java_com_noisepages_nettoyeur_patchbay_samples_JavaModule_fillInputBuffer
 }
 
 JNIEXPORT void JNICALL
-Java_com_noisepages_nettoyeur_patchbay_samples_JavaModule_sendOutputBuffer
+Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_sendOutputBuffer
 (JNIEnv *env, jobject obj, jlong p, jfloatArray buffer) {
   jmodule *jm = (jmodule *) p;
   if (!jm->done) {
@@ -92,7 +92,7 @@ Java_com_noisepages_nettoyeur_patchbay_samples_JavaModule_sendOutputBuffer
 }
 
 JNIEXPORT void JNICALL
-Java_com_noisepages_nettoyeur_patchbay_samples_JavaModule_signalThread
+Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_signalThread
 (JNIEnv *env, jobject obj, jlong p) {
   jmodule *jm = (jmodule *) p;
   jm->done = 1;

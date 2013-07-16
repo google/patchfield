@@ -16,7 +16,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayClient;
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
-import com.noisepages.nettoyeur.patchbay.samples.LowpassModule;
+import com.noisepages.nettoyeur.patchbay.modules.LowpassModule;
 
 public class MainActivity extends Activity implements OnSeekBarChangeListener {
 

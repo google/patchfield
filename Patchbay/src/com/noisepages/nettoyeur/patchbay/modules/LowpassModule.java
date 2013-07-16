@@ -1,4 +1,4 @@
-package com.noisepages.nettoyeur.patchbay.samples;
+package com.noisepages.nettoyeur.patchbay.modules;
 
 import android.app.PendingIntent;
 

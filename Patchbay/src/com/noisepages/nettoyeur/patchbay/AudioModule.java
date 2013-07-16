@@ -4,6 +4,8 @@ import android.app.PendingIntent;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.noisepages.nettoyeur.patchbay.internal.SharedMemoryUtils;
+
 /**
  * <p>
  * Abstract base class for Patchbay audio modules. Subclasses must implement methods for creating

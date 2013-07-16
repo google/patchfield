@@ -15,6 +15,8 @@ import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.noisepages.nettoyeur.patchbay.internal.OpenSlParams;
+
 /**
  * The Java part of the Patchbay service implementation. This is mostly boilerplate; the action is
  * in the native code, Patchbay/jni/patchbay.c.

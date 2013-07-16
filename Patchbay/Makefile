@@ -1,12 +1,12 @@
 all:
-	javah -classpath bin/classes -o jni/patchbay.h \
+	javah -classpath bin/classes -o jni/internal/patchbay.h \
 		com.noisepages.nettoyeur.patchbay.Patchbay
-	javah -classpath bin/classes -o jni/shared_memory_utils.h \
-		com.noisepages.nettoyeur.patchbay.SharedMemoryUtils
-	javah -classpath bin/classes -o jni/samples/lowpass.h \
-		com.noisepages.nettoyeur.patchbay.samples.LowpassModule
-	javah -classpath bin/classes -o jni/samples/identity.h \
-		com.noisepages.nettoyeur.patchbay.samples.IdentityModule
-	javah -classpath bin/classes -o jni/javamodule.h \
-		com.noisepages.nettoyeur.patchbay.JavaModule
+	javah -classpath bin/classes -o jni/internal/shared_memory_utils.h \
+		com.noisepages.nettoyeur.patchbay.internal.SharedMemoryUtils
+	javah -classpath bin/classes -o jni/modules/lowpass.h \
+		com.noisepages.nettoyeur.patchbay.modules.LowpassModule
+	javah -classpath bin/classes -o jni/modules/identity.h \
+		com.noisepages.nettoyeur.patchbay.modules.IdentityModule
+	javah -classpath bin/classes -o jni/modules/javamodule.h \
+		com.noisepages.nettoyeur.patchbay.modules.JavaModule
 	ndk-build

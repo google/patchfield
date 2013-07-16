@@ -1,4 +1,4 @@
-package com.noisepages.nettoyeur.patchbay;
+package com.noisepages.nettoyeur.patchbay.internal;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -10,27 +10,24 @@ import android.util.Log;
  * This class illustrates how to query OpenSL config parameters on Jelly Bean MR1 while maintaining
  * backward compatibility with older versions of Android. The trick is to place the new API calls in
  * an inner class that will only be loaded if we're running on JB MR1 or later.
- * 
- * This class is package private because the dependency of Patchbay on OpenSL is an implementation
- * detail that is not part of the public interface.
  */
-abstract class OpenSlParams {
+public abstract class OpenSlParams {
 
   /**
    * @return The recommended sample rate in Hz.
    */
-  abstract int getSampleRate();
+  public abstract int getSampleRate();
 
   /**
    * @return The recommended buffer size in frames.
    */
-  abstract int getBufferSize();
+  public abstract int getBufferSize();
 
   /**
    * @param context, e.g., the current activity.
    * @return OpenSlParams instance for the given context.
    */
-  static OpenSlParams createInstance(Context context) {
+  public static OpenSlParams createInstance(Context context) {
     return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1)
         ? new JellyBeanMr1OpenSlParams(context)
         : new DefaultOpenSlParams();
@@ -64,12 +61,12 @@ abstract class OpenSlParams {
     }
 
     @Override
-    int getSampleRate() {
+    public int getSampleRate() {
       return sampleRate;
     }
 
     @Override
-    int getBufferSize() {
+    public int getBufferSize() {
       return bufferSize;
     }
   };
@@ -77,12 +74,12 @@ abstract class OpenSlParams {
   // Default factory for Jelly Bean or older.
   private static class DefaultOpenSlParams extends OpenSlParams {
     @Override
-    int getSampleRate() {
+    public int getSampleRate() {
       return 44100;
     }
 
     @Override
-    int getBufferSize() {
+    public int getBufferSize() {
       return 64;
     }
   };
