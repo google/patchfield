@@ -7,4 +7,6 @@ all:
 		com.noisepages.nettoyeur.patchbay.samples.LowpassModule
 	javah -classpath bin/classes -o jni/samples/identity.h \
 		com.noisepages.nettoyeur.patchbay.samples.IdentityModule
+	javah -classpath bin/classes -o jni/samples/javamodule.h \
+		com.noisepages.nettoyeur.patchbay.samples.JavaModule
 	ndk-build
