@@ -7,6 +7,7 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="17" />
+    <uses-permission android:name="com.noisepages.nettoyeur.patchbay.service.USE_PATCHBAY"/>
 
     <application
         android:allowBackup="true"

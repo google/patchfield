@@ -73,7 +73,7 @@ Java_com_noisepages_nettoyeur_patchbay_samples_JavaModule_fillInputBuffer
   if (!jm->done) {
     int n = (*env)->GetArrayLength(env, buffer);
     float *b = (*env)->GetFloatArrayElements(env, buffer, NULL);
-    memcpy(jm->output_buffer, b, n * sizeof(float));
+    memcpy(b, jm->input_buffer, n * sizeof(float));
     (*env)->ReleaseFloatArrayElements(env, buffer, b, 0);
   }
 }
@@ -85,7 +85,7 @@ Java_com_noisepages_nettoyeur_patchbay_samples_JavaModule_sendOutputBuffer
   if (!jm->done) {
     int n = (*env)->GetArrayLength(env, buffer);
     float *b = (*env)->GetFloatArrayElements(env, buffer, NULL);
-    memcpy(b, jm->input_buffer, n * sizeof(float));
+    memcpy(jm->output_buffer, b, n * sizeof(float));
     (*env)->ReleaseFloatArrayElements(env, buffer, b, 0);
     sb_wake(&jm->ready);
   }

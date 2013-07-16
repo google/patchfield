@@ -40,10 +40,9 @@ public class MainActivity extends Activity {
           @Override
           protected void process(int sampleRate, int bufferSize, int inputChannels,
               float[] inputBuffer, int outputChannels, float[] outputBuffer) {
-            for (int i = 0; i < bufferSize; ++i) {
-              outputBuffer[i] = inputBuffer[bufferSize + i];
-              outputBuffer[bufferSize + i] = inputBuffer[i];
-            }
+            // Switch channels.
+            System.arraycopy(inputBuffer, 0, outputBuffer, bufferSize, bufferSize);
+            System.arraycopy(inputBuffer, bufferSize, outputBuffer, 0, bufferSize);
           }
         };
         module.configure(patchbay, moduleLabel);
