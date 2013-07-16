@@ -34,6 +34,14 @@ include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 
+LOCAL_MODULE := javamodule
+LOCAL_LDLIBS := -llog
+LOCAL_SRC_FILES := javamodule.c
+LOCAL_STATIC_LIBRARIES := audiomodule
+include $(BUILD_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+
 LOCAL_MODULE := lowpass
 LOCAL_LDLIBS := -llog
 LOCAL_SRC_FILES := samples/lowpass.c
@@ -45,13 +53,5 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := identity
 LOCAL_LDLIBS := -llog
 LOCAL_SRC_FILES := samples/identity.c
-LOCAL_STATIC_LIBRARIES := audiomodule
-include $(BUILD_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := javamodule
-LOCAL_LDLIBS := -llog
-LOCAL_SRC_FILES := samples/javamodule.c
 LOCAL_STATIC_LIBRARIES := audiomodule
 include $(BUILD_SHARED_LIBRARY)
