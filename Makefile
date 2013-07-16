@@ -3,4 +3,4 @@
 all:
 	$(MAKE) -C Patchbay
 	$(MAKE) -C PatchbayPd
-	$(MAKE) -C PatchbayPcm
+	$(MAKE) -C PatchbayPcmSample
