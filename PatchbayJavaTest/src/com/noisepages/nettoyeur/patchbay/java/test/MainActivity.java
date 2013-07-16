@@ -12,7 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
-import com.noisepages.nettoyeur.patchbay.samples.JavaModule;
+import com.noisepages.nettoyeur.patchbay.JavaModule;
 
 public class MainActivity extends Activity {
 

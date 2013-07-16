@@ -1,4 +1,4 @@
-package com.noisepages.nettoyeur.patchbay.samples;
+package com.noisepages.nettoyeur.patchbay;
 
 import android.app.PendingIntent;
 
@@ -84,8 +84,8 @@ public abstract class JavaModule extends AudioModule {
   @Override
   protected void release() {
     if (renderThread != null) {
-      signalThread(ptr);
       renderThread.interrupt();
+      signalThread(ptr);
       try {
         renderThread.join();
       } catch (InterruptedException e) {
