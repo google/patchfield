@@ -4,6 +4,15 @@ import android.app.PendingIntent;
 
 import com.noisepages.nettoyeur.patchbay.AudioModule;
 
+/**
+ * An audio module subclass whose audio processing callback is to be implemented in Java (as opposed
+ * to native code).
+ * 
+ * Note: The Java processing callback cannot be invoked on a real-time thread, and so instances of
+ * this class run a higher risk of missing their deadlines and causing dropouts than audio modules
+ * that do their processing natively. Still, this class may be useful for applications that whose
+ * processing requirements are not too demanding.
+ */
 public abstract class JavaModule extends AudioModule {
 
   static {
@@ -34,6 +43,13 @@ public abstract class JavaModule extends AudioModule {
     }
   };
 
+  /**
+   * Constructor. For best performance, choose the buffer size equal to Patchbay.getBufferSize().
+   * When this is not an option, choose a smallish buffer size if possible (64 is a good value).
+   * Large buffers will not improve stability. In fact, large buffers may increase the risk of
+   * dropouts because the patchbay runs a fixed buffer size internally; mismatched buffer sizes
+   * place an uneven load on the internal processing callback.
+   */
   public JavaModule(int bufferSize, int inputChannels, int outputChannels, PendingIntent intent) {
     super(intent);
     this.bufferSize = bufferSize;
@@ -68,7 +84,8 @@ public abstract class JavaModule extends AudioModule {
   protected boolean configure(String name, int version, int token, int index, int sampleRate,
       int hostBufferSize) {
     this.sampleRate = sampleRate;
-    ptr = configure(version, token, index, hostBufferSize, bufferSize, inputChannels, outputChannels);
+    ptr =
+        configure(version, token, index, hostBufferSize, bufferSize, inputChannels, outputChannels);
     if (ptr != 0) {
       renderThread = new Thread(processor);
       renderThread.start();
