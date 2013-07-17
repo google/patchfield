@@ -10,7 +10,7 @@ import com.noisepages.nettoyeur.patchbay.AudioModule;
  * 
  * Note: The Java processing callback cannot be invoked on a real-time thread, and so instances of
  * this class run a higher risk of missing their deadlines and causing dropouts than audio modules
- * that do their processing natively. Still, this class may be useful for applications that whose
+ * that do their processing natively. Still, this class may be useful for applications whose
  * processing requirements are not too demanding.
  */
 public abstract class JavaModule extends AudioModule {
