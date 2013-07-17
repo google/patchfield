@@ -93,7 +93,8 @@ static int add_module(patchbay *pb,
       sb_clobber(ami_get_barrier(pb->shm_ptr, module->wake));
       module->ready = module->report + 2;
       sb_clobber(ami_get_barrier(pb->shm_ptr, module->ready));
-      memset(module->input_connections, 0, MAX_CONNECTIONS * sizeof(connection));
+      memset(module->input_connections, 0,
+          MAX_CONNECTIONS * sizeof(connection));
       __sync_bool_compare_and_swap(&module->status, 0, 1);
       return i;
     }
@@ -220,8 +221,8 @@ static void process(void *context, int sample_rate, int buffer_frames,
     module->in_use =
       __sync_or_and_fetch(&module->status, 0) == 1 &&
       __sync_or_and_fetch(&module->active, 0) &&
-      ((i < 2) || sb_wait_and_clear(ami_get_barrier(pb->shm_ptr, module->report),
-         &deadline) == 0);
+      ((i < 2) || sb_wait_and_clear(
+        ami_get_barrier(pb->shm_ptr, module->report), &deadline) == 0);
     if (module->in_use) {
       sb_clobber(ami_get_barrier(pb->shm_ptr, module->ready));
       for (j = 0; j < MAX_CONNECTIONS; ++j) {
@@ -258,7 +259,8 @@ static void process(void *context, int sample_rate, int buffer_frames,
     float *b = ami_get_audio_buffer(pb->shm_ptr, output->input_buffer);
     for (i = 0; i < output_channels; ++i) {
       for (j = 0; j < buffer_frames; ++j) {
-        output_buffer[i + j * output_channels] = (short) (float_to_short * b[j]);
+        output_buffer[i + j * output_channels] =
+          (short) (float_to_short * b[j]);
       }
       b += buffer_frames;
     }
