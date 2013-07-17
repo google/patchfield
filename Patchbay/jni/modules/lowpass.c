@@ -3,6 +3,7 @@
 #include "audio_module.h"
 
 #include <stddef.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define RANGE 1000000

@@ -10,7 +10,7 @@ typedef struct {
   int read_index;
 } bsa_ring_buffer;
 
-typedef struct _buffer_size_adapter {
+struct _buffer_size_adapter {
   audio_module_runner *amr;
   int host_buffer_frames;
   int user_buffer_frames;

@@ -3,6 +3,7 @@
 #include "audio_module.h"
 
 #include <stddef.h>
+#include <stdlib.h>
 
 typedef struct {
   audio_module_runner *handle;

@@ -5,6 +5,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := audiomodule
+LOCAL_EXPORT_CFLAGS := -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
 LOCAL_EXPORT_LDLIBS := -lOpenSLES -llog
 LOCAL_SRC_FILES := audio_module.c internal/audio_module_internal.c \
@@ -53,6 +54,7 @@ include $(BUILD_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := patchbay
+LOCAL_CFLAGS := -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast
 LOCAL_C_INCLUDES := $(LOCAL_PATH)
 LOCAL_LDLIBS := -lOpenSLES -llog
 LOCAL_SRC_FILES := internal/patchbay.c internal/shared_memory_internal.c \

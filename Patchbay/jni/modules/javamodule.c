@@ -5,13 +5,14 @@
 #include "internal/simple_barrier.h"
 
 #include <stddef.h>
+#include <stdlib.h>
 #include <string.h>
 
 typedef struct {
   buffer_size_adapter *bsa;
   simple_barrier_t wake;
   simple_barrier_t ready;
-  float *input_buffer;
+  const float *input_buffer;
   float *output_buffer;
   int done;
 } jmodule;
@@ -58,7 +59,7 @@ Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_configure
       jm = NULL;
     }
   }
-  return jm;
+  return (jlong) jm;
 }
 
 JNIEXPORT void JNICALL
