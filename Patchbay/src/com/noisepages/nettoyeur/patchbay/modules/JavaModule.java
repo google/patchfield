@@ -44,7 +44,7 @@ public abstract class JavaModule extends AudioModule {
   };
 
   /**
-   * Constructor. For best performance, choose the buffer size equal to Patchbay.getBufferSize().
+   * Constructor. For best performance, make the buffer size equal to Patchbay.getBufferSize().
    * When this is not an option, choose a smallish buffer size if possible (64 is a good value).
    * Large buffers will not improve stability. In fact, large buffers may increase the risk of
    * dropouts because the patchbay runs a fixed buffer size internally; mismatched buffer sizes
