@@ -59,6 +59,10 @@ public abstract class JavaModule extends AudioModule {
     outputBuffer = new float[bufferSize * outputChannels];
   }
 
+  /**
+   * Audio processing callback. The size of each buffer is the buffer size (in frames) times the
+   * number of channels. Buffers are non-interleaved.
+   */
   protected abstract void process(int sampleRate, int bufferSize, int inputChannels,
       float[] inputBuffer, int outputChannels, float[] outputBuffer);
 

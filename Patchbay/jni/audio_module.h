@@ -23,7 +23,7 @@ extern "C" {
  * whatever data you want to pass to the callback), the sample rate, the buffer
  * size in frames, the number of input and output channels, as well as input
  * and output buffers whose size is the number of channels times the number of
- * frames per buffer.
+ * frames per buffer. Buffers are non-interleaved.
  *
  * This function will be invoked on a dedicated audio thread, and so any data
  * in the context that may be modified concurrently must be protected (e.g., by
