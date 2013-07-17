@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
       patchbay = IPatchbayService.Stub.asInterface(service);
       try {
         Log.i(TAG, "Creating runner.");
-        module = new JavaModule(2, 2, null) {
+        module = new JavaModule(64, 2, 2, null) {
           @Override
           protected void process(int sampleRate, int bufferSize, int inputChannels,
               float[] inputBuffer, int outputChannels, float[] outputBuffer) {

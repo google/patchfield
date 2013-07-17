@@ -26,10 +26,10 @@ JNIEXPORT jboolean JNICALL Java_com_noisepages_nettoyeur_patchbay_modules_JavaMo
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_modules_JavaModule
  * Method:    configure
- * Signature: (III)J
+ * Signature: (IIIIIII)J
  */
 JNIEXPORT jlong JNICALL Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_configure
-  (JNIEnv *, jobject, jint, jint, jint);
+  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint);
 
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_modules_JavaModule

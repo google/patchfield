@@ -12,14 +12,12 @@ public abstract class JavaModule extends AudioModule {
 
   private final int inputChannels;
   private final int outputChannels;
-
-  private long ptr = 0;
-
+  private final int bufferSize;
   private float[] inputBuffer = null;
   private float[] outputBuffer = null;
+
+  private long ptr = 0;
   private int sampleRate;
-  private int bufferSize;
-  
   private Thread renderThread = null;
 
   private final Runnable processor = new Runnable() {
@@ -36,15 +34,17 @@ public abstract class JavaModule extends AudioModule {
     }
   };
 
-  public JavaModule(int inputChannels, int outputChannels, PendingIntent intent) {
+  public JavaModule(int bufferSize, int inputChannels, int outputChannels, PendingIntent intent) {
     super(intent);
+    this.bufferSize = bufferSize;
     this.inputChannels = inputChannels;
     this.outputChannels = outputChannels;
+    inputBuffer = new float[bufferSize * inputChannels];
+    outputBuffer = new float[bufferSize * outputChannels];
   }
 
-  protected abstract void process(int sampleRate, int bufferSize,
-                                  int inputChannels, float[] inputBuffer,
-                                  int outputChannels, float[] outputBuffer);
+  protected abstract void process(int sampleRate, int bufferSize, int inputChannels,
+      float[] inputBuffer, int outputChannels, float[] outputBuffer);
 
   @Override
   public boolean hasTimedOut() {
@@ -66,13 +66,10 @@ public abstract class JavaModule extends AudioModule {
 
   @Override
   protected boolean configure(String name, int version, int token, int index, int sampleRate,
-      int bufferSize) {
+      int hostBufferSize) {
     this.sampleRate = sampleRate;
-    this.bufferSize = bufferSize;
-    ptr = configure(version, token, index);
+    ptr = configure(version, token, index, hostBufferSize, bufferSize, inputChannels, outputChannels);
     if (ptr != 0) {
-      inputBuffer = new float[bufferSize * inputChannels];
-      outputBuffer = new float[bufferSize * outputChannels];
       renderThread = new Thread(processor);
       renderThread.start();
       return true;
@@ -104,7 +101,8 @@ public abstract class JavaModule extends AudioModule {
 
   private native boolean hasTimedOut(long ptr);
 
-  private native long configure(int version, int token, int index);
+  private native long configure(int version, int token, int index, int hostBufferSize,
+      int bufferSize, int inputChannels, int outputChannels);
 
   private native void release(long ptr);
 

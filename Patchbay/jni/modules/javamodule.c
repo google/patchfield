@@ -1,13 +1,14 @@
 #include "javamodule.h"
 
 #include "audio_module.h"
+#include "utils/buffer_size_adapter.h"
 #include "internal/simple_barrier.h"
 
 #include <stddef.h>
 #include <string.h>
 
 typedef struct {
-  audio_module_runner *amr;
+  buffer_size_adapter *bsa;
   simple_barrier_t wake;
   simple_barrier_t ready;
   float *input_buffer;
@@ -35,12 +36,14 @@ JNIEXPORT jboolean JNICALL
 Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_hasTimedOut
 (JNIEnv *env, jobject obj, jlong p) {
   jmodule *jm = (jmodule *) p;
-  return am_has_timed_out(jm->amr);
+  return am_has_timed_out(bsa_get_runner(jm->bsa));
 }
 
 JNIEXPORT jlong JNICALL
 Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_configure
-(JNIEnv *env, jobject obj, jint version, jint token, jint index) {
+(JNIEnv *env, jobject obj, jint version, jint token, jint index, jint
+ host_buffer_size, jint user_buffer_size, jint input_channels, jint
+ output_channels) {
   jmodule *jm = malloc(sizeof(jmodule));
   if (jm) {
     sb_clobber(&jm->wake);
@@ -48,8 +51,9 @@ Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_configure
     jm->input_buffer = NULL;
     jm->output_buffer = NULL;
     jm->done = 0;
-    jm->amr = am_create(version, token, index, process_jm, jm);
-    if (!jm->amr) {
+    jm->bsa = bsa_create(version, token, index, host_buffer_size,
+        user_buffer_size, input_channels, output_channels, process_jm, jm);
+    if (!jm->bsa) {
       free(jm);
       jm = NULL;
     }
@@ -61,7 +65,7 @@ JNIEXPORT void JNICALL
 Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_release
 (JNIEnv *env, jobject obj, jlong p) {
   jmodule *jm = (jmodule *) p;
-  am_release(jm->amr);
+  bsa_release(jm->bsa);
   free(jm);
 }
 
