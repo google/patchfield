@@ -25,8 +25,8 @@ import com.noisepages.nettoyeur.patchbay.internal.SharedMemoryUtils;
  * following steps (in native code):
  * </p>
  * <ol>
- * <li>Call au_release(void *p) to release the data structure that connects your local audio module
- * to its representation in the remote service.</li>
+ * <li>Call au_release(...) to release the data structure that connects your local audio module to
+ * its representation in the remote service.</li>
  * 
  * <li>If the processing context of your audio module is mutable, make sure it is intact. (The
  * timeout interrupts the processing callback with a real-time signal and then exits the rendering
