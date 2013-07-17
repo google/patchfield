@@ -8,7 +8,7 @@ package com.noisepages.nettoyeur.patchbay;
  */
 public class PatchbayException extends Exception {
 
-  // WARNING: Do not change these constants without updating references in patchbay.c
+  // WARNING: Do not change these constants without updating references in patchbay.c.
   public static final int SUCCESS = 0;
   public static final int FAILURE = -1;
   public static final int INVALID_PARAMETERS = -2;
