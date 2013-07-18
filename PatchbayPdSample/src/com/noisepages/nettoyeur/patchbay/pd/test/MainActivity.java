@@ -9,6 +9,7 @@ import org.puredata.core.utils.IoUtils;
 import org.puredata.core.utils.PdDispatcher;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -43,10 +44,14 @@ public class MainActivity extends Activity {
       patchbay = IPatchbayService.Stub.asInterface(service);
       int inputChannels = 2;
       int outputChannels = 2;
+      Notification notification = new Notification.Builder(MainActivity.this)
+          .setSmallIcon(R.drawable.pd_icon)
+          .setContentTitle("PdModule")
+          .build();
       try {
         // Create PdModule instance before invoking any methods on PdBase.
         module =
-            PdModule.getInstance(patchbay.getSampleRate(), inputChannels, outputChannels, null);
+            PdModule.getInstance(patchbay.getSampleRate(), inputChannels, outputChannels, notification);
         PdBase.setReceiver(new PdDispatcher() {
           @Override
           public void print(String s) {

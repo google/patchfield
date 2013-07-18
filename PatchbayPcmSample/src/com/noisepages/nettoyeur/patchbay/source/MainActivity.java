@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -46,7 +47,11 @@ public class MainActivity extends Activity {
         e.printStackTrace();
         return;
       }
-      source = new PcmSource(2, buffer, null);
+      Notification notification = new Notification.Builder(MainActivity.this)
+          .setSmallIcon(android.R.drawable.ic_media_play)
+          .setContentTitle("Relaxation Spa Treatment")
+          .build();
+      source = new PcmSource(2, buffer, notification);
       mainText.setText("Relaxation Spa Treatment");
       try {
         source.configure(patchbay, moduleName);

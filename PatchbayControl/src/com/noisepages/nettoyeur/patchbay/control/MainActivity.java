@@ -1,6 +1,8 @@
 package com.noisepages.nettoyeur.patchbay.control;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.Notification;
@@ -13,6 +15,8 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
@@ -30,6 +34,8 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
   private TextView displayLine;
   private ToggleButton playButton;
   private PatchView patchView;
+  private ViewGroup iconView;
+  private Map<String, View> moduleViews = new HashMap<String, View>();
 
   private IPatchbayClient.Stub receiver = new IPatchbayClient.Stub() {
 
@@ -63,6 +69,11 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
         @Override
         public void run() {
           patchView.addModule(module, inputs, outputs, notification);
+          if (notification != null) {
+            View view = notification.contentView.apply(MainActivity.this, iconView);
+            moduleViews.put(module, view);
+            iconView.addView(view);
+          }
         }
       });
     }
@@ -76,6 +87,10 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
         @Override
         public void run() {
           patchView.deleteModule(module);
+          View view = moduleViews.remove(module);
+          if (view != null) {
+            iconView.removeView(view);
+          }
         }
       });
     }
@@ -138,6 +153,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     playButton = (ToggleButton) findViewById(R.id.playButton);
     playButton.setOnCheckedChangeListener(this);
     patchView = (PatchView) findViewById(R.id.patchView);
+    iconView = (ViewGroup) findViewById(R.id.iconView);
     bindService(new Intent("IPatchbayService"), connection, Context.BIND_AUTO_CREATE);
   }
 
