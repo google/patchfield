@@ -87,10 +87,14 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
     public void onServiceConnected(ComponentName name, IBinder service) {
       Log.i(TAG, "Service connected.");
       patchbay = IPatchbayService.Stub.asInterface(service);
+      Notification notification = new Notification.Builder(MainActivity.this)
+          .setSmallIcon(android.R.drawable.ic_menu_add)
+          .setContentTitle("LowpassModule")
+          .build();
       try {
         patchbay.registerClient(receiver);
         Log.i(TAG, "Creating runner.");
-        module = new LowpassModule(2, null);
+        module = new LowpassModule(2, notification);
         module.configure(patchbay, moduleLabel);
         patchbay.activateModule(moduleLabel);
       } catch (RemoteException e) {

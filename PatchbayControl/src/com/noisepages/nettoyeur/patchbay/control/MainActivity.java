@@ -69,12 +69,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
       runOnUiThread(new Runnable() {
         @Override
         public void run() {
-          patchView.addModule(module, inputs, outputs, notification);
-          if (notification != null) {
-            View view = notification.contentView.apply(MainActivity.this, iconView);
-            moduleViews.put(module, view);
-            iconView.addView(view);
-          }
+          addModule(module, inputs, outputs, notification);
         }
       });
     }
@@ -144,7 +139,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
             + patchbay.getBufferSize() + ", protocol version: " + patchbay.getProtocolVersion());
         List<String> modules = patchbay.getModules();
         for (String module : modules) {
-          patchView.addModule(module, patchbay.getInputChannels(module),
+          addModule(module, patchbay.getInputChannels(module),
               patchbay.getOutputChannels(module), patchbay.getNotification(module));
         }
       } catch (RemoteException e) {
@@ -170,7 +165,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     super.onDestroy();
     if (patchbay != null) {
       try {
-        patchbay.stopForeground(true);
+        patchbay.stopForeground(false);
         patchbay.unregisterClient(receiver);
       } catch (RemoteException e) {
         e.printStackTrace();
@@ -200,6 +195,16 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
       }
     } catch (RemoteException e) {
       e.printStackTrace();
+    }
+  }
+
+  private void addModule(final String module, final int inputs, final int outputs,
+      final Notification notification) {
+    patchView.addModule(module, inputs, outputs, notification);
+    if (notification != null) {
+      View view = notification.contentView.apply(MainActivity.this, iconView);
+      moduleViews.put(module, view);
+      iconView.addView(view);
     }
   }
 }
