@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Notification;
+import android.app.PendingIntent.CanceledException;
 import android.content.Context;
 import android.os.IBinder;
 import android.os.RemoteCallbackList;
@@ -170,7 +171,14 @@ public class Patchbay implements IPatchbayService {
     int result = deleteModule(streamPtr, modules.get(module));
     if (result == 0) {
       modules.remove(module);
-      notifications.remove(module);
+      Notification notification = notifications.remove(module);
+      if (notification != null && notification.deleteIntent != null) {
+        try {
+          notification.deleteIntent.send();
+        } catch (CanceledException e) {
+          // Do nothing.
+        }
+      }
       int i = clients.beginBroadcast();
       while (--i >= 0) {
         try {
