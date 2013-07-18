@@ -2,7 +2,7 @@ package com.noisepages.nettoyeur.patchbay.pd;
 
 import org.puredata.core.PdBase;
 
-import android.app.PendingIntent;
+import android.app.Notification;
 
 import com.noisepages.nettoyeur.patchbay.AudioModule;
 
@@ -33,8 +33,8 @@ public class PdModule extends AudioModule {
   private final int inputChannels;
   private final int outputChannels;
 
-  private PdModule(int sampleRate, int inputChannels, int outputChannels, PendingIntent intent) {
-    super(intent);
+  private PdModule(int sampleRate, int inputChannels, int outputChannels, Notification notification) {
+    super(notification);
     this.sampleRate = sampleRate;
     this.inputChannels = inputChannels;
     this.outputChannels = outputChannels;
@@ -43,12 +43,12 @@ public class PdModule extends AudioModule {
   }
 
   public static PdModule getInstance(int sampleRate, int inputChannels, int outputChannels,
-      PendingIntent intent) {
+      Notification notification) {
     if (instance == null) {
-      return new PdModule(sampleRate, inputChannels, outputChannels, intent);
+      return new PdModule(sampleRate, inputChannels, outputChannels, notification);
     } else if (instance.getInputChannels() >= inputChannels
         && instance.getOutputChannels() >= outputChannels
-        && (intent == null || intent.equals(instance.getIntent()))) {
+        && (notification == null || notification.equals(instance.getNotification()))) {
       return instance;
     } else {
       throw new IllegalStateException("PdModule instance can't be reconfigured once instantiated.");

@@ -1,6 +1,6 @@
 package com.noisepages.nettoyeur.patchbay;
 
-import android.app.PendingIntent;
+import android.app.Notification;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -46,7 +46,7 @@ public abstract class AudioModule {
   private int token = -1;
   private int index = -1;
 
-  private final PendingIntent intent;
+  private final Notification notification;
 
   private class FdReceiverThread extends Thread {
     @Override
@@ -57,11 +57,11 @@ public abstract class AudioModule {
   }
 
   /**
-   * @param intent Pending intent to be passed to the Patchbay service, so that the service can
+   * @param notification to be passed to the Patchbay service, so that the service can
    *        associate an audio module with an app. May be null.
    */
-  protected AudioModule(PendingIntent intent) {
-    this.intent = intent;
+  protected AudioModule(Notification notification) {
+    this.notification = notification;
   }
 
   /**
@@ -102,7 +102,7 @@ public abstract class AudioModule {
     if (token < 0) {
       return token;
     }
-    index = patchbay.createModule(name, getInputChannels(), getOutputChannels(), intent);
+    index = patchbay.createModule(name, getInputChannels(), getOutputChannels(), notification);
     if (index < 0) {
       SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
       return index;
@@ -151,8 +151,8 @@ public abstract class AudioModule {
     return index;
   }
 
-  protected PendingIntent getIntent() {
-    return intent;
+  protected Notification getNotification() {
+    return notification;
   }
 
   public abstract boolean hasTimedOut();

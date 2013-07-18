@@ -1,6 +1,6 @@
 package com.noisepages.nettoyeur.patchbay.modules;
 
-import android.app.PendingIntent;
+import android.app.Notification;
 
 import com.noisepages.nettoyeur.patchbay.AudioModule;
 
@@ -17,8 +17,8 @@ public class IdentityModule extends AudioModule {
 
   private long ptr = 0;
 
-  public IdentityModule(PendingIntent intent) {
-    super(intent);
+  public IdentityModule(Notification notification) {
+    super(notification);
   }
 
   @Override

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import android.app.PendingIntent;
+import android.app.Notification;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -28,7 +28,7 @@ public final class PatchView extends View {
   private final List<String> modules = new ArrayList<String>();
   private final Map<String, Integer> inputs = new HashMap<String, Integer>();
   private final Map<String, Integer> outputs = new HashMap<String, Integer>();
-  private final Map<String, PendingIntent> intents = new HashMap<String, PendingIntent>();
+  private final Map<String, Notification> notifications = new HashMap<String, Notification>();
   private final Map<Pair<String, Integer>, List<Pair<String, Integer>>> connections =
       new HashMap<Pair<String, Integer>, List<Pair<String, Integer>>>();
 
@@ -83,7 +83,7 @@ public final class PatchView extends View {
     this.patchbay = patchbay;
   }
 
-  public void addModule(String module, int inputChannels, int outputChannels, PendingIntent intent) {
+  public void addModule(String module, int inputChannels, int outputChannels, Notification notification) {
     for (String u : modules) {
       int sinks = 0;
       try {
@@ -125,7 +125,7 @@ public final class PatchView extends View {
     modules.add(module);
     inputs.put(module, inputChannels);
     outputs.put(module, outputChannels);
-    intents.put(module, intent);
+    notifications.put(module, notification);
     invalidate();
   }
 
@@ -147,7 +147,7 @@ public final class PatchView extends View {
     modules.remove(module);
     inputs.remove(module);
     outputs.remove(module);
-    intents.remove(module);
+    notifications.remove(module);
     invalidate();
   }
 

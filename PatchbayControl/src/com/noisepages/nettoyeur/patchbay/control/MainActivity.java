@@ -3,7 +3,7 @@ package com.noisepages.nettoyeur.patchbay.control;
 import java.util.List;
 
 import android.app.Activity;
-import android.app.PendingIntent;
+import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -58,11 +58,11 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
     @Override
     public void onModuleCreated(final String module, final int inputs, final int outputs,
-        final PendingIntent intent) throws RemoteException {
+        final Notification notification) throws RemoteException {
       runOnUiThread(new Runnable() {
         @Override
         public void run() {
-          patchView.addModule(module, inputs, outputs, intent);
+          patchView.addModule(module, inputs, outputs, notification);
         }
       });
     }
@@ -122,7 +122,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
         List<String> modules = patchbay.getModules();
         for (String module : modules) {
           patchView.addModule(module, patchbay.getInputChannels(module),
-              patchbay.getOutputChannels(module), patchbay.getIntent(module));
+              patchbay.getOutputChannels(module), patchbay.getNotification(module));
         }
       } catch (RemoteException e) {
         e.printStackTrace();

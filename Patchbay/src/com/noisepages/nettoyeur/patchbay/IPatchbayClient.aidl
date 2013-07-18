@@ -1,6 +1,6 @@
 package com.noisepages.nettoyeur.patchbay;
 
-import android.app.PendingIntent;
+import android.app.Notification;
 
 /**
  * Patchbay client interface for handling notifications when the state of the
@@ -8,7 +8,7 @@ import android.app.PendingIntent;
  */
 oneway interface IPatchbayClient {
 
-  void onModuleCreated(String name, int inputChannels, int outputChannels, in PendingIntent intent);
+  void onModuleCreated(String name, int inputChannels, int outputChannels, in Notification notification);
   void onModuleDeleted(String name);
   
   void onModuleActivated(String name);

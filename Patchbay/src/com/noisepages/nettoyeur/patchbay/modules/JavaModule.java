@@ -1,6 +1,6 @@
 package com.noisepages.nettoyeur.patchbay.modules;
 
-import android.app.PendingIntent;
+import android.app.Notification;
 
 import com.noisepages.nettoyeur.patchbay.AudioModule;
 
@@ -50,8 +50,8 @@ public abstract class JavaModule extends AudioModule {
    * because the patchbay runs a fixed buffer size internally; mismatched buffer sizes place an
    * uneven load on the internal processing callback.
    */
-  public JavaModule(int bufferSize, int inputChannels, int outputChannels, PendingIntent intent) {
-    super(intent);
+  public JavaModule(int bufferSize, int inputChannels, int outputChannels, Notification notification) {
+    super(notification);
     this.bufferSize = bufferSize;
     this.inputChannels = inputChannels;
     this.outputChannels = outputChannels;

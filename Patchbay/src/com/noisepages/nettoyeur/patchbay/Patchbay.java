@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.os.IBinder;
 import android.os.RemoteCallbackList;
@@ -32,7 +31,7 @@ public class Patchbay implements IPatchbayService {
   private final OpenSlParams params;
   private long streamPtr;
   private final Map<String, Integer> modules = new LinkedHashMap<String, Integer>();
-  private final Map<String, PendingIntent> intents = new LinkedHashMap<String, PendingIntent>();
+  private final Map<String, Notification> notifications = new LinkedHashMap<String, Notification>();
   private final RemoteCallbackList<IPatchbayClient> clients =
       new RemoteCallbackList<IPatchbayClient>();
 
@@ -132,7 +131,7 @@ public class Patchbay implements IPatchbayService {
 
   @Override
   public synchronized int createModule(String module, int inputChannels, int outputChannels,
-      PendingIntent intent) {
+      Notification notification) {
     if (streamPtr == 0) {
       throw new IllegalStateException("Stream closed.");
     }
@@ -145,12 +144,12 @@ public class Patchbay implements IPatchbayService {
     int index = createModule(streamPtr, inputChannels, outputChannels);
     if (index >= 0) {
       modules.put(module, index);
-      intents.put(module, intent);
+      notifications.put(module, notification);
       int i = clients.beginBroadcast();
       while (--i >= 0) {
         try {
           clients.getBroadcastItem(i)
-              .onModuleCreated(module, inputChannels, outputChannels, intent);
+              .onModuleCreated(module, inputChannels, outputChannels, notification);
         } catch (RemoteException e) {
           // Do nothing; RemoteCallbackList will take care of the cleanup.
         }
@@ -171,7 +170,7 @@ public class Patchbay implements IPatchbayService {
     int result = deleteModule(streamPtr, modules.get(module));
     if (result == 0) {
       modules.remove(module);
-      intents.remove(module);
+      notifications.remove(module);
       int i = clients.beginBroadcast();
       while (--i >= 0) {
         try {
@@ -303,8 +302,8 @@ public class Patchbay implements IPatchbayService {
   }
 
   @Override
-  public synchronized PendingIntent getIntent(String module) {
-    return intents.get(module);
+  public synchronized Notification getNotification(String module) {
+    return notifications.get(module);
   }
 
   @Override
