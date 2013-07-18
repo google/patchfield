@@ -138,12 +138,12 @@ public class PatchbayService extends Service {
 
     @Override
     public void startForeground(int id, Notification notification) throws RemoteException {
-      startForeground(id, notification);
+      PatchbayService.this.startForeground(id, notification);
     }
 
     @Override
     public void stopForeground(boolean removeNotification) throws RemoteException {
-      stopForeground(removeNotification);
+      PatchbayService.this.stopForeground(removeNotification);
     }
   };
 

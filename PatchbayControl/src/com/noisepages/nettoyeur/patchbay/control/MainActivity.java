@@ -6,6 +6,7 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -129,7 +130,14 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
       Log.i(TAG, "Service connected.");
       patchbay = IPatchbayService.Stub.asInterface(service);
       patchView.setPatchbay(patchbay);
+      Notification notification = new Notification.Builder(MainActivity.this)
+          .setSmallIcon(android.R.drawable.ic_media_play)
+          .setContentTitle("PatchbayControl")
+          .setContentIntent(PendingIntent.getActivity(MainActivity.this, 0,
+            new Intent(MainActivity.this, MainActivity.class), 0))
+          .build();
       try {
+        patchbay.startForeground(1, notification);
         patchbay.registerClient(receiver);
         playButton.setChecked(patchbay.isRunning());
         displayLine.setText("Sample rate: " + patchbay.getSampleRate() + ", buffer size: "
@@ -162,6 +170,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     super.onDestroy();
     if (patchbay != null) {
       try {
+        patchbay.stopForeground(true);
         patchbay.unregisterClient(receiver);
       } catch (RemoteException e) {
         e.printStackTrace();
