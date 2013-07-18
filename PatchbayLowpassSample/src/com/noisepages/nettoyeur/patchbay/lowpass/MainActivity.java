@@ -1,4 +1,4 @@
-package com.noisepages.nettoyeur.patchbay.client;
+package com.noisepages.nettoyeur.patchbay.lowpass;
 
 import android.app.Activity;
 import android.app.Notification;
