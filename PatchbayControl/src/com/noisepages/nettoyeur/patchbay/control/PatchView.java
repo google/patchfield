@@ -16,7 +16,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.RemoteException;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -333,29 +332,28 @@ public final class PatchView extends FrameLayout {
         canvas.drawPath(path, paint);
         canvas.drawCircle(x0, y0, 20, circlePaint);
         canvas.drawCircle(x1, y1, 20, circlePaint);
-        Log.i("onDraw", "x0: " + x0 + ", y0: " + y0 + ", x1: " + x1 + ", y1: " + y1);
       }
     }
   }
 
-  private void getInputPortCoordinates(String module, int i, int[] r) {
-    getCoordinates(module, i, r, 2);
+  private void getInputPortCoordinates(String module, int index, int[] coords) {
+    getCoordinates(module, index, coords, 2);
   }
 
-  private void getOutputPortCoordinates(String module, int i, int[] r) {
-    getCoordinates(module, i, r, 0);
+  private void getOutputPortCoordinates(String module, int index, int[] coords) {
+    getCoordinates(module, index, coords, 0);
   }
 
-  private void getCoordinates(String module, int i, int[] r, int j) {
-    LinearLayout mv = moduleViews.get(module);
-    LinearLayout row = (LinearLayout) mv.getChildAt(j);
-    View button = row.getChildAt(i);
-    int x = mv.getLeft() + row.getLeft() + button.getLeft();
-    int y = mv.getTop() + row.getTop() + button.getTop();
-    r[0] = x;
-    r[1] = y;
-    r[2] = x + button.getWidth();
-    r[3] = y + button.getHeight();
+  private void getCoordinates(String module, int index, int[] coords, int child) {
+    LinearLayout m = moduleViews.get(module);
+    LinearLayout c = (LinearLayout) m.getChildAt(child);
+    View v = c.getChildAt(index);
+    int x = m.getLeft() + c.getLeft() + v.getLeft();
+    int y = m.getTop() + c.getTop() + v.getTop();
+    coords[0] = x;
+    coords[1] = y;
+    coords[2] = x + v.getWidth();
+    coords[3] = y + v.getHeight();
   }
   
   private void invalidateAll() {
