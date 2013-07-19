@@ -47,6 +47,16 @@ public class Patchbay implements IPatchbayService {
     Log.i(TAG, "Created stream with ptr " + streamPtr);
     modules.put("system_in", 0);
     modules.put("system_out", 1);
+    Notification micNotification = new Notification.Builder(context)
+        .setSmallIcon(android.R.drawable.ic_btn_speak_now)
+        .setContentTitle("Microphone")
+        .build();
+    notifications.put("system_in", micNotification);
+    Notification speakerNotification = new Notification.Builder(context)
+        .setSmallIcon(android.R.drawable.ic_lock_silent_mode_off)
+        .setContentTitle("Speakers")
+        .build();
+    notifications.put("system_out", speakerNotification);
   }
 
   public synchronized void release() {
