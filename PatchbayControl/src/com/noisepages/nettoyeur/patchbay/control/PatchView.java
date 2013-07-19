@@ -19,7 +19,6 @@ import android.os.RemoteException;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
@@ -157,10 +156,13 @@ public final class PatchView extends FrameLayout {
   }
 
   
+  // --------------------------------------------------------------------------------
   // Crude, hacky GUI code below.
-  // TODO: Fix this!!!
+  // TODO: Implement this properly!!!
   
   private final Map<String, LinearLayout> moduleViews = new HashMap<String, LinearLayout>();
+  private final Map<String, List<View>> inputPorts = new HashMap<String, List<View>>();
+  private final Map<String, List<View>> outputPorts = new HashMap<String, List<View>>();
   private PatchOverlay overlay = null;
   private ToggleButton selectedButton = null;
   private String selectedModule = null;
@@ -182,14 +184,15 @@ public final class PatchView extends FrameLayout {
     moduleViews.put(module, moduleView);
 
     LinearLayout buttonLayout = (LinearLayout) moduleView.getChildAt(0);
-    List<Button> buttons = new ArrayList<Button>();
+    List<View> buttons = new ArrayList<View>();
+    inputPorts.put(module, buttons);
     for (int i = 0; i < inputChannels; ++i) {
       final ToggleButton button = new ToggleButton(getContext());
+      buttons.add(button);
       button.setBackgroundResource(android.R.drawable.btn_radio);
       button.setTextOn("");
       button.setTextOff("");
       button.setChecked(false);
-      buttons.add(button);
       buttonLayout.addView(button);
       final int j = i;
       button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -256,14 +259,15 @@ public final class PatchView extends FrameLayout {
     frame.addView(view);
 
     buttonLayout = (LinearLayout) moduleView.getChildAt(2);
-    buttons = new ArrayList<Button>();
+    buttons = new ArrayList<View>();
+    outputPorts.put(module, buttons);
     for (int i = 0; i < outputChannels; ++i) {
       final ToggleButton button = new ToggleButton(getContext());
+      buttons.add(button);
       button.setBackgroundResource(android.R.drawable.btn_radio);
       button.setTextOn("");
       button.setTextOff("");
       button.setChecked(false);
-      buttons.add(button);
       buttonLayout.addView(button);
       final int j = i;
       button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -321,15 +325,15 @@ public final class PatchView extends FrameLayout {
     Paint paint = new Paint();
     paint.setAntiAlias(true);
     paint.setColor(Color.RED);
-    paint.setStrokeWidth(10);
+    paint.setStrokeWidth(12);
     paint.setStyle(Paint.Style.STROKE);
     paint.setStrokeCap(Cap.ROUND);
     for (Pair<String, Integer> p : connections.keySet()) {
-      getOutputPortCoordinates(p.first, p.second, a);
+      getCoordinates(outputPorts.get(p.first).get(p.second), a);
       int x0 = (a[0] + a[2]) / 2;
       int y0 = (a[1] + a[3]) / 2;
       for (Pair<String, Integer> q : connections.get(p)) {
-        getInputPortCoordinates(q.first, q.second, b);
+        getCoordinates(inputPorts.get(q.first).get(q.second), b);
         int x1 = (b[0] + b[2]) / 2;
         int y1 = (b[1] + b[3]) / 2;
         Path path = new Path();
@@ -340,24 +344,16 @@ public final class PatchView extends FrameLayout {
     }
   }
 
-  private void getInputPortCoordinates(String module, int index, int[] coords) {
-    getCoordinates(module, index, coords, 0);
-  }
-
-  private void getOutputPortCoordinates(String module, int index, int[] coords) {
-    getCoordinates(module, index, coords, 2);
-  }
-
-  private void getCoordinates(String module, int index, int[] coords, int child) {
-    LinearLayout m = moduleViews.get(module);
-    LinearLayout c = (LinearLayout) m.getChildAt(child);
-    View v = c.getChildAt(index);
-    int x = m.getLeft() + c.getLeft() + v.getLeft();
-    int y = m.getTop() + c.getTop() + v.getTop();
-    coords[0] = x;
-    coords[1] = y;
-    coords[2] = x + v.getWidth();
-    coords[3] = y + v.getHeight();
+  private void getCoordinates(View v, int coords[]) {
+    int p[] = new int[2];
+    v.getLocationOnScreen(p);
+    coords[0] = p[0];
+    coords[1] = p[1];
+    getLocationOnScreen(p);
+    coords[0] -= p[0];
+    coords[1] -= p[1];
+    coords[2] = coords[0] + v.getWidth();
+    coords[3] = coords[1] + v.getHeight();
   }
   
   private void invalidateAll() {
