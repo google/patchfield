@@ -11,8 +11,12 @@ import android.app.Notification;
 import android.app.PendingIntent.CanceledException;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.os.RemoteException;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -34,9 +38,7 @@ public final class PatchView extends LinearLayout {
   private final Map<Pair<String, Integer>, List<Pair<String, Integer>>> connections =
       new HashMap<Pair<String, Integer>, List<Pair<String, Integer>>>();
 
-  private final Map<String, View> moduleViews = new HashMap<String, View>();
-  private final Map<String, List<Button>> inputPorts = new HashMap<String, List<Button>>();
-  private final Map<String, List<Button>> outputPorts = new HashMap<String, List<Button>>();
+  private final Map<String, LinearLayout> moduleViews = new HashMap<String, LinearLayout>();
 
   private ToggleButton selectedButton = null;
   private String selectedModule = null;
@@ -125,9 +127,11 @@ public final class PatchView extends LinearLayout {
 
     LinearLayout buttonLayout = (LinearLayout) moduleView.getChildAt(0);
     List<Button> buttons = new ArrayList<Button>();
-    inputPorts.put(module, buttons);
     for (int i = 0; i < inputChannels; ++i) {
       final ToggleButton button = new ToggleButton(getContext());
+      button.setTextOn("");
+      button.setTextOff("");
+      button.setChecked(false);
       buttons.add(button);
       buttonLayout.addView(button);
       final int j = i;
@@ -144,7 +148,7 @@ public final class PatchView extends LinearLayout {
                 if (patchbay.isConnected(selectedModule, selectedOutput, module, j)) {
                   patchbay.disconnectModules(selectedModule, selectedOutput, module, j);
                 } else {
-                  patchbay.disconnectModules(selectedModule, selectedOutput, module, j);
+                  patchbay.connectModules(selectedModule, selectedOutput, module, j);
                 }
               } catch (RemoteException e) {
                 e.printStackTrace();
@@ -196,9 +200,11 @@ public final class PatchView extends LinearLayout {
 
     buttonLayout = (LinearLayout) moduleView.getChildAt(2);
     buttons = new ArrayList<Button>();
-    outputPorts.put(module, buttons);
     for (int i = 0; i < outputChannels; ++i) {
       final ToggleButton button = new ToggleButton(getContext());
+      button.setTextOn("");
+      button.setTextOff("");
+      button.setChecked(false);
       buttons.add(button);
       buttonLayout.addView(button);
       final int j = i;
@@ -264,8 +270,6 @@ public final class PatchView extends LinearLayout {
     if (moduleView != null) {
       removeView(moduleView);
     }
-    inputPorts.remove(module);
-    outputPorts.remove(module);
     invalidate();
   }
 
@@ -296,6 +300,54 @@ public final class PatchView extends LinearLayout {
 
   @Override
   protected void onDraw(Canvas canvas) {
+    int a[] = new int[4];
+    int b[] = new int[4]; 
+    Paint circlePaint = new Paint();
+    circlePaint.setColor(Color.RED);
+    circlePaint.setStrokeWidth(10);
+    circlePaint.setStyle(Paint.Style.FILL);
+    Paint paint = new Paint();
+    paint.setAntiAlias(true);
+    paint.setColor(Color.RED);
+    paint.setStrokeWidth(10);
+    paint.setStyle(Paint.Style.STROKE);
+    for (Pair<String, Integer> p : connections.keySet()) {
+      getOutputPortCoordinates(p.first, p.second, a);
+      int x0 = (a[0] + a[2]) / 2;
+      int y0 = (a[1] + a[3]) / 2;
+      canvas.drawCircle(x0, y0, 20, circlePaint);
+      for (Pair<String, Integer> q : connections.get(p)) {
+        getInputPortCoordinates(q.first, q.second, b);
+        int x1 = (b[0] + b[2]) / 2;
+        int y1 = (b[1] + b[3]) / 2;
+        Path path = new Path();
+        path.moveTo(x0, y0);
+        path.lineTo(x1, y1);
+        canvas.drawPath(path, paint);
+        canvas.drawCircle(x1, y1, 20, circlePaint);
+        Log.i("onDraw", "x0: " + x0 + ", y0: " + y0 + ", x1: " + x1 + ", y1: " + y1);
+      }
+    }
     super.onDraw(canvas);
+  }
+
+  private void getInputPortCoordinates(String module, int i, int[] r) {
+    getCoordinates(module, i, r, 0);
+  }
+
+  private void getOutputPortCoordinates(String module, int i, int[] r) {
+    getCoordinates(module, i, r, 2);
+  }
+
+  private void getCoordinates(String module, int i, int[] r, int j) {
+    LinearLayout mv = moduleViews.get(module);
+    LinearLayout row = (LinearLayout) mv.getChildAt(j);
+    View button = row.getChildAt(i);
+    int x = row.getLeft() + button.getLeft();
+    int y = row.getTop() + button.getTop();
+    r[0] = x;
+    r[1] = y;
+    r[2] = x + button.getWidth();
+    r[3] = y + button.getHeight();
   }
 }
