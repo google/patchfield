@@ -132,7 +132,7 @@ public final class PatchView extends FrameLayout {
     moduleList.addView(moduleView);
     moduleViews.put(module, moduleView);
 
-    LinearLayout buttonLayout = (LinearLayout) moduleView.getChildAt(0);
+    LinearLayout buttonLayout = (LinearLayout) moduleView.getChildAt(2);
     List<Button> buttons = new ArrayList<Button>();
     for (int i = 0; i < inputChannels; ++i) {
       final ToggleButton button = new ToggleButton(getContext());
@@ -205,7 +205,7 @@ public final class PatchView extends FrameLayout {
     }
     frame.addView(view);
 
-    buttonLayout = (LinearLayout) moduleView.getChildAt(2);
+    buttonLayout = (LinearLayout) moduleView.getChildAt(0);
     buttons = new ArrayList<Button>();
     for (int i = 0; i < outputChannels; ++i) {
       final ToggleButton button = new ToggleButton(getContext());
@@ -339,11 +339,11 @@ public final class PatchView extends FrameLayout {
   }
 
   private void getInputPortCoordinates(String module, int i, int[] r) {
-    getCoordinates(module, i, r, 0);
+    getCoordinates(module, i, r, 2);
   }
 
   private void getOutputPortCoordinates(String module, int i, int[] r) {
-    getCoordinates(module, i, r, 2);
+    getCoordinates(module, i, r, 0);
   }
 
   private void getCoordinates(String module, int i, int[] r, int j) {
