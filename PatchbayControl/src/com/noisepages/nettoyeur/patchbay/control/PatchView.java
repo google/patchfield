@@ -20,7 +20,6 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
@@ -108,12 +107,11 @@ public final class PatchView extends LinearLayout {
     modules.add(module);
     inputs.put(module, inputChannels);
     outputs.put(module, outputChannels);
-    
+
     if (notification == null) {
-      notification = new Notification.Builder(getContext()).
-          setContentTitle(module).
-          setSmallIcon(android.R.drawable.ic_media_play).
-          build();
+      notification =
+          new Notification.Builder(getContext()).setContentTitle(module)
+              .setSmallIcon(android.R.drawable.ic_media_play).build();
     }
     notifications.put(module, notification);
     addModuleView(module, inputChannels, outputChannels, notification);
@@ -144,9 +142,9 @@ public final class PatchView extends LinearLayout {
             } else if (selectedOutput >= 0) {
               try {
                 if (patchbay.isConnected(selectedModule, selectedOutput, module, j)) {
-                  disconnect(selectedModule, selectedOutput, module, j);
+                  patchbay.disconnectModules(selectedModule, selectedOutput, module, j);
                 } else {
-                  connect(selectedModule, selectedOutput, module, j);
+                  patchbay.disconnectModules(selectedModule, selectedOutput, module, j);
                 }
               } catch (RemoteException e) {
                 e.printStackTrace();
@@ -167,9 +165,9 @@ public final class PatchView extends LinearLayout {
 
     FrameLayout frame = (FrameLayout) moduleView.getChildAt(1);
     View view = notification.contentView.apply(getContext(), frame);
-    view.setOnClickListener(new OnClickListener() {
+    view.setOnLongClickListener(new OnLongClickListener() {
       @Override
-      public void onClick(View v) {
+      public boolean onLongClick(View v) {
         try {
           if (patchbay.isActive(module)) {
             patchbay.deactivateModule(module);
@@ -179,23 +177,21 @@ public final class PatchView extends LinearLayout {
         } catch (RemoteException e) {
           e.printStackTrace();
         }
+        return true;
       }
     });
-    view.setOnLongClickListener(new OnLongClickListener() {
-      @Override
-      public boolean onLongClick(View v) {
-        if (notification.contentIntent != null) {
+    if (notification.contentIntent != null) {
+      view.setOnClickListener(new OnClickListener() {
+        @Override
+        public void onClick(View v) {
           try {
             notification.contentIntent.send();
           } catch (CanceledException e) {
             e.printStackTrace();
-            return false;
           }
-          return true;
         }
-        return false;
-      }
-    });
+      });
+    }
     frame.addView(view);
 
     buttonLayout = (LinearLayout) moduleView.getChildAt(2);
@@ -217,9 +213,9 @@ public final class PatchView extends LinearLayout {
             } else if (selectedInput >= 0) {
               try {
                 if (patchbay.isConnected(module, j, selectedModule, selectedInput)) {
-                  disconnect(module, j, selectedModule, selectedInput);
+                  patchbay.disconnectModules(module, j, selectedModule, selectedInput);
                 } else {
-                  connect(module, j, selectedModule, selectedInput);
+                  patchbay.connectModules(module, j, selectedModule, selectedInput);
                 }
               } catch (RemoteException e) {
                 e.printStackTrace();
@@ -301,13 +297,5 @@ public final class PatchView extends LinearLayout {
   @Override
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
-  }
-
-  private void connect(String source, int sourcePort, String sink, int sinkPort) throws RemoteException {
-    patchbay.connectModules(source, sourcePort, sink, sinkPort);
-  }
-
-  private void disconnect(String source, int sourcePort, String sink, int sinkPort) throws RemoteException {
-    patchbay.disconnectModules(source, sourcePort, sink, sinkPort);
   }
 }
