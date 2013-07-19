@@ -318,6 +318,7 @@ public final class PatchView extends FrameLayout {
     paint.setColor(Color.RED);
     paint.setStrokeWidth(10);
     paint.setStyle(Paint.Style.STROKE);
+    int N = 3;
     for (Pair<String, Integer> p : connections.keySet()) {
       getOutputPortCoordinates(p.first, p.second, a);
       int x0 = (a[0] + a[2]) / 2;
@@ -328,7 +329,7 @@ public final class PatchView extends FrameLayout {
         int y1 = (b[1] + b[3]) / 2;
         Path path = new Path();
         path.moveTo(x0, y0);
-        path.lineTo(x1, y1);
+        path.cubicTo((x0 * (N - 1) + x1) / N, y0, (x0 + x1 * (N - 1)) / N, y1, x1, y1);
         canvas.drawPath(path, paint);
         canvas.drawCircle(x0, y0, 20, circlePaint);
         canvas.drawCircle(x1, y1, 20, circlePaint);
