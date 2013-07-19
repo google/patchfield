@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import android.app.Notification;
+import android.app.PendingIntent.CanceledException;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.os.RemoteException;
@@ -119,7 +120,7 @@ public final class PatchView extends LinearLayout {
   }
 
   private void addModuleView(final String module, int inputChannels, int outputChannels,
-      Notification notification) {
+      final Notification notification) {
     LinearLayout moduleView = (LinearLayout) inflate(getContext(), R.layout.module, null);
     addView(moduleView);
     moduleViews.put(module, moduleView);
@@ -165,14 +166,7 @@ public final class PatchView extends LinearLayout {
     }
 
     FrameLayout frame = (FrameLayout) moduleView.getChildAt(1);
-    View view;
-    if (notification != null && notification.contentView != null) {
-      view = notification.contentView.apply(getContext(), frame);
-    } else {
-      TextView tv = new TextView(getContext());
-      tv.setText(module);
-      view = tv;
-    }
+    View view = notification.contentView.apply(getContext(), frame);
     view.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -185,6 +179,21 @@ public final class PatchView extends LinearLayout {
         } catch (RemoteException e) {
           e.printStackTrace();
         }
+      }
+    });
+    view.setOnLongClickListener(new OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View v) {
+        if (notification.contentIntent != null) {
+          try {
+            notification.contentIntent.send();
+          } catch (CanceledException e) {
+            e.printStackTrace();
+            return false;
+          }
+          return true;
+        }
+        return false;
       }
     });
     frame.addView(view);

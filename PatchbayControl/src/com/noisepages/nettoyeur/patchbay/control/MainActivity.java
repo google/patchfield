@@ -115,12 +115,13 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
       Log.i(TAG, "Service connected.");
       patchbay = IPatchbayService.Stub.asInterface(service);
       patchView.setPatchbay(patchbay);
-      Notification notification = new Notification.Builder(MainActivity.this)
-          .setSmallIcon(android.R.drawable.ic_media_play)
-          .setContentTitle("PatchbayControl")
-          .setContentIntent(PendingIntent.getActivity(MainActivity.this, 0,
-            new Intent(MainActivity.this, MainActivity.class), 0))
-          .build();
+      PendingIntent pi =
+          PendingIntent.getActivity(MainActivity.this, 0, new Intent(MainActivity.this,
+              MainActivity.class), 0);
+      Notification notification =
+          new Notification.Builder(MainActivity.this)
+              .setSmallIcon(android.R.drawable.ic_media_play).setContentTitle("PatchbayControl")
+              .setContentIntent(pi).build();
       try {
         patchbay.startForeground(1, notification);
         patchbay.registerClient(receiver);
@@ -129,8 +130,8 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
             + patchbay.getBufferSize() + ", protocol version: " + patchbay.getProtocolVersion());
         List<String> modules = patchbay.getModules();
         for (String module : modules) {
-          addModule(module, patchbay.getInputChannels(module),
-              patchbay.getOutputChannels(module), patchbay.getNotification(module));
+          addModule(module, patchbay.getInputChannels(module), patchbay.getOutputChannels(module),
+              patchbay.getNotification(module));
         }
       } catch (RemoteException e) {
         e.printStackTrace();

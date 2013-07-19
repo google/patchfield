@@ -2,6 +2,7 @@ package com.noisepages.nettoyeur.patchbay.lowpass;
 
 import android.app.Activity;
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -87,10 +88,12 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
     public void onServiceConnected(ComponentName name, IBinder service) {
       Log.i(TAG, "Service connected.");
       patchbay = IPatchbayService.Stub.asInterface(service);
-      Notification notification = new Notification.Builder(MainActivity.this)
-          .setSmallIcon(android.R.drawable.ic_menu_add)
-          .setContentTitle("LowpassModule")
-          .build();
+      PendingIntent pi =
+          PendingIntent.getActivity(MainActivity.this, 0, new Intent(MainActivity.this,
+              MainActivity.class), 0);
+      Notification notification =
+          new Notification.Builder(MainActivity.this).setSmallIcon(android.R.drawable.ic_menu_add)
+              .setContentTitle("LowpassModule").setContentIntent(pi).build();
       try {
         patchbay.registerClient(receiver);
         Log.i(TAG, "Creating runner.");
