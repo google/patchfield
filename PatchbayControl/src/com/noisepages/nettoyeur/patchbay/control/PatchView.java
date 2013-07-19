@@ -328,6 +328,7 @@ public final class PatchView extends FrameLayout {
     paint.setStrokeWidth(12);
     paint.setStyle(Paint.Style.STROKE);
     paint.setStrokeCap(Cap.ROUND);
+    Path path = new Path();
     for (Pair<String, Integer> p : connections.keySet()) {
       getCoordinates(outputPorts.get(p.first).get(p.second), a);
       int x0 = (a[0] + a[2]) / 2;
@@ -336,12 +337,11 @@ public final class PatchView extends FrameLayout {
         getCoordinates(inputPorts.get(q.first).get(q.second), b);
         int x1 = (b[0] + b[2]) / 2;
         int y1 = (b[1] + b[3]) / 2;
-        Path path = new Path();
         path.moveTo(x0, y0);
         path.cubicTo((x0 + x1) / 2, y0, (x0 + x1 ) / 2, y1, x1, y1);
-        canvas.drawPath(path, paint);
       }
     }
+    canvas.drawPath(path, paint);
   }
 
   private void getCoordinates(View v, int coords[]) {
