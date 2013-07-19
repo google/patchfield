@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 
 import android.app.Activity;
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -47,9 +48,13 @@ public class MainActivity extends Activity {
         e.printStackTrace();
         return;
       }
+      PendingIntent pi =
+          PendingIntent.getActivity(MainActivity.this, 0, new Intent(MainActivity.this,
+              MainActivity.class), 0);
       Notification notification = new Notification.Builder(MainActivity.this)
           .setSmallIcon(android.R.drawable.ic_media_play)
           .setContentTitle("Relaxation Spa Treatment")
+          .setContentIntent(pi)
           .build();
       source = new PcmSource(2, buffer, notification);
       mainText.setText("Relaxation Spa Treatment");

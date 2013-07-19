@@ -28,7 +28,7 @@ import android.widget.ToggleButton;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
 
-public final class PatchView extends LinearLayout {
+public final class PatchView extends FrameLayout {
 
   private IPatchbayService patchbay;
   private final List<String> modules = new ArrayList<String>();
@@ -37,9 +37,10 @@ public final class PatchView extends LinearLayout {
   private final Map<String, Notification> notifications = new HashMap<String, Notification>();
   private final Map<Pair<String, Integer>, List<Pair<String, Integer>>> connections =
       new HashMap<Pair<String, Integer>, List<Pair<String, Integer>>>();
-
+  
   private final Map<String, LinearLayout> moduleViews = new HashMap<String, LinearLayout>();
 
+  private PatchOverlay overlay = null;
   private ToggleButton selectedButton = null;
   private String selectedModule = null;
   private int selectedInput = -1;;
@@ -60,7 +61,8 @@ public final class PatchView extends LinearLayout {
     init();
   }
 
-  private void init() {}
+  private void init() {
+  }
 
   public void setPatchbay(IPatchbayService patchbay) {
     this.patchbay = patchbay;
@@ -121,8 +123,13 @@ public final class PatchView extends LinearLayout {
 
   private void addModuleView(final String module, int inputChannels, int outputChannels,
       final Notification notification) {
+    if (overlay == null) {
+      overlay = (PatchOverlay) getChildAt(1);
+      overlay.setPatchView(this);
+    }
+    LinearLayout moduleList = (LinearLayout) getChildAt(0);
     LinearLayout moduleView = (LinearLayout) inflate(getContext(), R.layout.module, null);
-    addView(moduleView);
+    moduleList.addView(moduleView);
     moduleViews.put(module, moduleView);
 
     LinearLayout buttonLayout = (LinearLayout) moduleView.getChildAt(0);
@@ -240,7 +247,7 @@ public final class PatchView extends LinearLayout {
       });
     }
 
-    invalidate();
+    invalidateAll();
   }
 
   public void deleteModule(String module) {
@@ -266,11 +273,12 @@ public final class PatchView extends LinearLayout {
   }
 
   private void deleteModuleView(String module) {
+    LinearLayout moduleList = (LinearLayout) getChildAt(0);
     View moduleView = moduleViews.remove(module);
     if (moduleView != null) {
-      removeView(moduleView);
+      moduleList.removeView(moduleView);
     }
-    invalidate();
+    invalidateAll();
   }
 
   public void addConnection(String source, int sourcePort, String sink, int sinkPort) {
@@ -284,7 +292,7 @@ public final class PatchView extends LinearLayout {
     if (!c.contains(b)) {
       c.add(b);
     }
-    invalidate();
+    invalidateAll();
   }
 
   public void removeConnection(String source, int sourcePort, String sink, int sinkPort) {
@@ -295,11 +303,10 @@ public final class PatchView extends LinearLayout {
     }
     Pair<String, Integer> b = new Pair<String, Integer>(sink, sinkPort);
     c.remove(b);
-    invalidate();
+    invalidateAll();
   }
 
-  @Override
-  protected void onDraw(Canvas canvas) {
+  void drawOverlay(Canvas canvas) {
     int a[] = new int[4];
     int b[] = new int[4]; 
     Paint circlePaint = new Paint();
@@ -315,7 +322,6 @@ public final class PatchView extends LinearLayout {
       getOutputPortCoordinates(p.first, p.second, a);
       int x0 = (a[0] + a[2]) / 2;
       int y0 = (a[1] + a[3]) / 2;
-      canvas.drawCircle(x0, y0, 20, circlePaint);
       for (Pair<String, Integer> q : connections.get(p)) {
         getInputPortCoordinates(q.first, q.second, b);
         int x1 = (b[0] + b[2]) / 2;
@@ -324,11 +330,11 @@ public final class PatchView extends LinearLayout {
         path.moveTo(x0, y0);
         path.lineTo(x1, y1);
         canvas.drawPath(path, paint);
+        canvas.drawCircle(x0, y0, 20, circlePaint);
         canvas.drawCircle(x1, y1, 20, circlePaint);
         Log.i("onDraw", "x0: " + x0 + ", y0: " + y0 + ", x1: " + x1 + ", y1: " + y1);
       }
     }
-    super.onDraw(canvas);
   }
 
   private void getInputPortCoordinates(String module, int i, int[] r) {
@@ -343,11 +349,18 @@ public final class PatchView extends LinearLayout {
     LinearLayout mv = moduleViews.get(module);
     LinearLayout row = (LinearLayout) mv.getChildAt(j);
     View button = row.getChildAt(i);
-    int x = row.getLeft() + button.getLeft();
-    int y = row.getTop() + button.getTop();
+    int x = mv.getLeft() + row.getLeft() + button.getLeft();
+    int y = mv.getTop() + row.getTop() + button.getTop();
     r[0] = x;
     r[1] = y;
     r[2] = x + button.getWidth();
     r[3] = y + button.getHeight();
+  }
+  
+  private void invalidateAll() {
+    invalidate();
+    if (overlay != null) {
+      overlay.invalidate();
+    }
   }
 }

@@ -10,10 +10,20 @@
 
     <com.noisepages.nettoyeur.patchbay.control.PatchView
         android:id="@+id/patchView"
-        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/playButton" />
+        android:layout_below="@+id/playButton"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" />
+
+        <com.noisepages.nettoyeur.patchbay.control.PatchOverlay
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+    </com.noisepages.nettoyeur.patchbay.control.PatchView>
 
     <ToggleButton
         android:id="@+id/playButton"
