@@ -13,6 +13,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Cap;
 import android.graphics.Path;
 import android.os.RemoteException;
 import android.util.AttributeSet;
@@ -140,6 +141,7 @@ public final class PatchView extends FrameLayout {
     List<Button> buttons = new ArrayList<Button>();
     for (int i = 0; i < inputChannels; ++i) {
       final ToggleButton button = new ToggleButton(getContext());
+      button.setBackgroundResource(android.R.drawable.btn_radio);
       button.setTextOn("");
       button.setTextOff("");
       button.setChecked(false);
@@ -213,6 +215,7 @@ public final class PatchView extends FrameLayout {
     buttons = new ArrayList<Button>();
     for (int i = 0; i < outputChannels; ++i) {
       final ToggleButton button = new ToggleButton(getContext());
+      button.setBackgroundResource(android.R.drawable.btn_radio);
       button.setTextOn("");
       button.setTextOff("");
       button.setChecked(false);
@@ -318,15 +321,12 @@ public final class PatchView extends FrameLayout {
   void drawOverlay(Canvas canvas) {
     int a[] = new int[4];
     int b[] = new int[4]; 
-    Paint circlePaint = new Paint();
-    circlePaint.setColor(Color.RED);
-    circlePaint.setStrokeWidth(10);
-    circlePaint.setStyle(Paint.Style.FILL);
     Paint paint = new Paint();
     paint.setAntiAlias(true);
     paint.setColor(Color.RED);
     paint.setStrokeWidth(10);
     paint.setStyle(Paint.Style.STROKE);
+    paint.setStrokeCap(Cap.ROUND);
     for (Pair<String, Integer> p : connections.keySet()) {
       getOutputPortCoordinates(p.first, p.second, a);
       int x0 = (a[0] + a[2]) / 2;
@@ -339,8 +339,6 @@ public final class PatchView extends FrameLayout {
         path.moveTo(x0, y0);
         path.cubicTo((x0 + x1) / 2, y0, (x0 + x1 ) / 2, y1, x1, y1);
         canvas.drawPath(path, paint);
-        canvas.drawCircle(x0, y0, 20, circlePaint);
-        canvas.drawCircle(x1, y1, 20, circlePaint);
       }
     }
   }
