@@ -8,22 +8,31 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <com.noisepages.nettoyeur.patchbay.control.PatchView
-        android:id="@+id/patchView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_below="@+id/playButton"
-        android:orientation="vertical" >
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
-        <LinearLayout
+        <com.noisepages.nettoyeur.patchbay.control.PatchView
+            android:id="@+id/patchView"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-        <com.noisepages.nettoyeur.patchbay.control.PatchOverlay
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
-    </com.noisepages.nettoyeur.patchbay.control.PatchView>
+            <LinearLayout
+	            android:id="@+id/moduleLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical" />
+
+            <com.noisepages.nettoyeur.patchbay.control.PatchOverlay
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+
+        </com.noisepages.nettoyeur.patchbay.control.PatchView>
+
+    </ScrollView>
 
     <ToggleButton
         android:id="@+id/playButton"
