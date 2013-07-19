@@ -15,7 +15,6 @@ import android.view.Menu;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-import com.noisepages.nettoyeur.patchbay.IPatchbayClient;
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
 import com.noisepages.nettoyeur.patchbay.modules.LowpassModule;
 
@@ -28,55 +27,6 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
   private LowpassModule module = null;
 
   private final String moduleLabel = "lowpass";
-
-  private IPatchbayClient.Stub receiver = new IPatchbayClient.Stub() {
-
-    @Override
-    public void onStart() throws RemoteException {
-      Log.i(TAG, "Start!");
-    }
-
-    @Override
-    public void onStop() throws RemoteException {
-      Log.i(TAG, "Stop!");
-    }
-
-    @Override
-    public void onModuleActivated(String module) throws RemoteException {
-      Log.i(TAG, "Module activated: " + module);
-    }
-
-    @Override
-    public void onModuleCreated(String module, int ins, int outs, Notification notification)
-        throws RemoteException {
-      Log.i(TAG, "Module created: name=" + module + ", ins=" + ins + ", outs=" + outs
-          + ", notification: " + notification);
-    }
-
-    @Override
-    public void onModuleDeactivated(String module) throws RemoteException {
-      Log.i(TAG, "Module deactivated: " + module);
-    }
-
-    @Override
-    public void onModuleDeleted(String module) throws RemoteException {
-      Log.i(TAG, "Module deleted: " + module);
-    }
-
-    @Override
-    public void onModulesConnected(String source, int sourcePort, String sink, int sinkPort)
-        throws RemoteException {
-      Log.i(TAG, "Modules connected: " + source + ":" + sourcePort + ", " + sink + ":" + sinkPort);
-    }
-
-    @Override
-    public void onModulesDisconnected(String source, int sourcePort, String sink, int sinkPort)
-        throws RemoteException {
-      Log.i(TAG, "Modules disconnected: " + source + ":" + sourcePort + ", " + sink + ":"
-          + sinkPort);
-    }
-
-  };
 
   private ServiceConnection connection = new ServiceConnection() {
     @Override
@@ -92,10 +42,9 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
           PendingIntent.getActivity(MainActivity.this, 0, new Intent(MainActivity.this,
               MainActivity.class), 0);
       Notification notification =
-          new Notification.Builder(MainActivity.this).setSmallIcon(android.R.drawable.ic_menu_add)
+          new Notification.Builder(MainActivity.this).setSmallIcon(R.drawable.emo_im_happy)
               .setContentTitle("LowpassModule").setContentIntent(pi).build();
       try {
-        patchbay.registerClient(receiver);
         Log.i(TAG, "Creating runner.");
         module = new LowpassModule(2, notification);
         module.configure(patchbay, moduleLabel);
@@ -122,11 +71,6 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
     if (patchbay != null) {
       try {
         module.release(patchbay);
-      } catch (RemoteException e) {
-        e.printStackTrace();
-      }
-      try {
-        patchbay.unregisterClient(receiver);
       } catch (RemoteException e) {
         e.printStackTrace();
       }

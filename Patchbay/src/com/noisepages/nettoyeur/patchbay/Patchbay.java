@@ -48,12 +48,12 @@ public class Patchbay implements IPatchbayService {
     modules.put("system_in", 0);
     modules.put("system_out", 1);
     Notification micNotification = new Notification.Builder(context)
-        .setSmallIcon(android.R.drawable.ic_btn_speak_now)
+        .setSmallIcon(R.drawable.perm_group_microphone)
         .setContentTitle("Microphone")
         .build();
     notifications.put("system_in", micNotification);
     Notification speakerNotification = new Notification.Builder(context)
-        .setSmallIcon(android.R.drawable.ic_lock_silent_mode_off)
+        .setSmallIcon(R.drawable.perm_group_audio_settings)
         .setContentTitle("Speakers")
         .build();
     notifications.put("system_out", speakerNotification);

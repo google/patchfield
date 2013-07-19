@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
           PendingIntent.getActivity(MainActivity.this, 0, new Intent(MainActivity.this,
               MainActivity.class), 0);
       Notification notification = new Notification.Builder(MainActivity.this)
-          .setSmallIcon(android.R.drawable.ic_media_play)
+          .setSmallIcon(R.drawable.perm_group_voicemail)
           .setContentTitle("Relaxation Spa Treatment")
           .setContentIntent(pi)
           .build();
