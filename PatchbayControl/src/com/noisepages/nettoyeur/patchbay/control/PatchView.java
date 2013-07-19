@@ -189,9 +189,8 @@ public final class PatchView extends FrameLayout {
     for (int i = 0; i < inputChannels; ++i) {
       final ToggleButton button = new ToggleButton(getContext());
       buttons.add(button);
-      button.setBackgroundResource(android.R.drawable.btn_radio);
-      button.setTextOn("");
-      button.setTextOff("");
+      button.setTextOn("In" + i);
+      button.setTextOff("In" + i);
       button.setChecked(false);
       buttonLayout.addView(button);
       final int j = i;
@@ -264,9 +263,8 @@ public final class PatchView extends FrameLayout {
     for (int i = 0; i < outputChannels; ++i) {
       final ToggleButton button = new ToggleButton(getContext());
       buttons.add(button);
-      button.setBackgroundResource(android.R.drawable.btn_radio);
-      button.setTextOn("");
-      button.setTextOff("");
+      button.setTextOn("Out" + i);
+      button.setTextOff("Out" + i);
       button.setChecked(false);
       buttonLayout.addView(button);
       final int j = i;
