@@ -131,11 +131,8 @@ public final class PatchView extends FrameLayout {
     GridLayout moduleLayout = (GridLayout) getChildAt(0);
     LinearLayout moduleView = (LinearLayout) inflate(getContext(), R.layout.module, null);
     // Warning: Atrocious hack to place view in the desired place.
-    int index = moduleViews.size();
-    if (index % 2 == 1) {
-      moduleLayout.addView(new Space(getContext()));
-      moduleLayout.addView(new Space(getContext()));
-    }
+    moduleLayout.addView(new Space(getContext()));
+    moduleLayout.addView(new Space(getContext()));
     moduleLayout.addView(moduleView);
     moduleViews.put(module, moduleView);
 
