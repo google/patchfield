@@ -22,7 +22,9 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.FrameLayout;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.Space;
 import android.widget.ToggleButton;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
@@ -126,9 +128,15 @@ public final class PatchView extends FrameLayout {
       overlay = (PatchOverlay) getChildAt(1);
       overlay.setPatchView(this);
     }
-    LinearLayout moduleList = (LinearLayout) getChildAt(0);
+    GridLayout moduleLayout = (GridLayout) getChildAt(0);
     LinearLayout moduleView = (LinearLayout) inflate(getContext(), R.layout.module, null);
-    moduleList.addView(moduleView);
+    // Warning: Atrocious hack to place view in the desired place.
+    int index = moduleViews.size();
+    if (index % 2 == 1) {
+      moduleLayout.addView(new Space(getContext()));
+      moduleLayout.addView(new Space(getContext()));
+    }
+    moduleLayout.addView(moduleView);
     moduleViews.put(module, moduleView);
 
     LinearLayout buttonLayout = (LinearLayout) moduleView.getChildAt(0);
@@ -272,10 +280,15 @@ public final class PatchView extends FrameLayout {
   }
 
   private void deleteModuleView(String module) {
-    LinearLayout moduleList = (LinearLayout) getChildAt(0);
+    GridLayout moduleLayout = (GridLayout) getChildAt(0);
     View moduleView = moduleViews.remove(module);
     if (moduleView != null) {
-      moduleList.removeView(moduleView);
+      int index;
+      for (index = 0; !moduleView.equals(moduleLayout.getChildAt(index)); ++index);
+      moduleLayout.removeView(moduleView);
+      while (index > 0 && moduleLayout.getChildAt(--index) instanceof Space) {
+        moduleLayout.removeViewAt(index);
+      }
     }
     invalidateAll();
   }

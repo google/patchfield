@@ -10,28 +10,33 @@
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_below="@+id/playButton"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/playButton" >
 
-        <com.noisepages.nettoyeur.patchbay.control.PatchView
-            android:id="@+id/patchView"
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView1"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="wrap_content" >
 
-            <LinearLayout
-	            android:id="@+id/moduleLayout"
-                android:layout_width="fill_parent"
+            <com.noisepages.nettoyeur.patchbay.control.PatchView
+                android:id="@+id/patchView"
+                android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:orientation="vertical" />
+                android:orientation="vertical" >
 
-            <com.noisepages.nettoyeur.patchbay.control.PatchOverlay
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" />
+                <GridLayout
+                    android:id="@+id/moduleLayout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:rowCount="32"
+                    android:columnCount="2" />
 
-        </com.noisepages.nettoyeur.patchbay.control.PatchView>
-
+                <com.noisepages.nettoyeur.patchbay.control.PatchOverlay
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" />
+            </com.noisepages.nettoyeur.patchbay.control.PatchView>
+        </HorizontalScrollView>
     </ScrollView>
 
     <ToggleButton
@@ -39,8 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="PlayButton" />
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:id="@+id/displayLine"
