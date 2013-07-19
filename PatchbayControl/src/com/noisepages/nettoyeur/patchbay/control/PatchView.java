@@ -156,6 +156,10 @@ public final class PatchView extends FrameLayout {
     invalidateAll();
   }
 
+  
+  // Crude, hacky GUI code below.
+  // TODO: Fix this!!!
+  
   private final Map<String, LinearLayout> moduleViews = new HashMap<String, LinearLayout>();
   private PatchOverlay overlay = null;
   private ToggleButton selectedButton = null;
