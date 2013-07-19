@@ -10,9 +10,9 @@
 
     <com.noisepages.nettoyeur.patchbay.control.PatchView
         android:id="@+id/patchView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/playButton"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_below="@+id/playButton" />
 
     <ToggleButton

@@ -10,19 +10,21 @@ import java.util.Map.Entry;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Typeface;
 import android.os.RemoteException;
 import android.util.AttributeSet;
 import android.util.Pair;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
 
-public final class PatchView extends View {
+public final class PatchView extends LinearLayout {
 
   private IPatchbayService patchbay;
   private final List<String> modules = new ArrayList<String>();
@@ -32,15 +34,14 @@ public final class PatchView extends View {
   private final Map<Pair<String, Integer>, List<Pair<String, Integer>>> connections =
       new HashMap<Pair<String, Integer>, List<Pair<String, Integer>>>();
 
-  private final Path path = new Path();
-  private final Paint linePaint = new Paint();
-  private final Paint drawPaint = new Paint();
-  private final Paint labelPaint = new Paint();
-  private final Paint portPaint = new Paint();
+  private final Map<String, View> moduleViews = new HashMap<String, View>();
+  private final Map<String, List<Button>> inputPorts = new HashMap<String, List<Button>>();
+  private final Map<String, List<Button>> outputPorts = new HashMap<String, List<Button>>();
 
-  private int width, height;
-  private float x0, y0, x1 = -1, y1 = -1;
-  private Pair<String, Integer> outputPort = null;
+  private ToggleButton selectedButton = null;
+  private String selectedModule = null;
+  private int selectedInput = -1;;
+  private int selectedOutput = -1;;
 
   public PatchView(Context context) {
     super(context);
@@ -57,33 +58,14 @@ public final class PatchView extends View {
     init();
   }
 
-  private void init() {
-    linePaint.setAntiAlias(true);
-    linePaint.setColor(Color.BLACK);
-    linePaint.setStrokeWidth(5);
-    linePaint.setStyle(Paint.Style.STROKE);
-
-    drawPaint.setAntiAlias(true);
-    drawPaint.setColor(Color.BLUE);
-    drawPaint.setStrokeWidth(5);
-    drawPaint.setStyle(Paint.Style.STROKE);
-
-    labelPaint.setAntiAlias(true);
-    labelPaint.setColor(Color.BLACK);
-    labelPaint.setTextAlign(Paint.Align.CENTER);
-    labelPaint.setTypeface(Typeface.MONOSPACE);
-    labelPaint.setTextSize(24);
-
-    portPaint.setAntiAlias(true);
-    portPaint.setColor(Color.BLACK);
-    portPaint.setStyle(Paint.Style.FILL);
-  }
+  private void init() {}
 
   public void setPatchbay(IPatchbayService patchbay) {
     this.patchbay = patchbay;
   }
 
-  public void addModule(String module, int inputChannels, int outputChannels, Notification notification) {
+  public void addModule(String module, int inputChannels, int outputChannels,
+      Notification notification) {
     for (String u : modules) {
       int sinks = 0;
       try {
@@ -126,6 +108,106 @@ public final class PatchView extends View {
     inputs.put(module, inputChannels);
     outputs.put(module, outputChannels);
     notifications.put(module, notification);
+    addModuleView(module, inputChannels, outputChannels, notification);
+  }
+
+  private void addModuleView(final String module, int inputChannels, int outputChannels,
+      Notification notification) {
+    LinearLayout moduleView = (LinearLayout) inflate(getContext(), R.layout.module, null);
+    addView(moduleView);
+    moduleViews.put(module, moduleView);
+
+    LinearLayout buttonLayout = (LinearLayout) moduleView.getChildAt(0);
+    List<Button> buttons = new ArrayList<Button>();
+    inputPorts.put(module, buttons);
+    for (int i = 0; i < inputChannels; ++i) {
+      final ToggleButton button = new ToggleButton(getContext());
+      buttons.add(button);
+      buttonLayout.addView(button);
+      final int j = i;
+      button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+          if (isChecked) {
+            if (selectedButton == null) {
+              selectedButton = button;
+              selectedModule = module;
+              selectedInput = j;
+              return;
+            } else if (selectedOutput >= 0) {
+              try {
+                if (patchbay.isConnected(selectedModule, selectedOutput, module, j)) {
+                  disconnect(selectedModule, selectedOutput, module, j);
+                } else {
+                  connect(selectedModule, selectedOutput, module, j);
+                }
+              } catch (RemoteException e) {
+                e.printStackTrace();
+              }
+            }
+          }
+          button.setChecked(false);
+          if (selectedButton != null) {
+            selectedButton.setChecked(false);
+            selectedButton = null;
+            selectedModule = null;
+            selectedInput = -1;
+            selectedOutput = -1;
+          }
+        }
+      });
+    }
+
+    FrameLayout frame = (FrameLayout) moduleView.getChildAt(1);
+    View view;
+    if (notification != null && notification.contentView != null) {
+      view = notification.contentView.apply(getContext(), frame);
+    } else {
+      TextView tv = new TextView(getContext());
+      tv.setText(module);
+      view = tv;
+    }
+    frame.addView(view);
+
+    buttonLayout = (LinearLayout) moduleView.getChildAt(2);
+    buttons = new ArrayList<Button>();
+    outputPorts.put(module, buttons);
+    for (int i = 0; i < outputChannels; ++i) {
+      final ToggleButton button = new ToggleButton(getContext());
+      buttons.add(button);
+      buttonLayout.addView(button);
+      final int j = i;
+      button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+          if (isChecked) {
+            if (selectedButton == null) {
+              selectedButton = button;
+              selectedModule = module;
+              selectedOutput = j;
+              return;
+            } else if (selectedInput >= 0) {
+              try {
+                if (patchbay.isConnected(module, j, selectedModule, selectedInput)) {
+                  disconnect(module, j, selectedModule, selectedInput);
+                } else {
+                  connect(module, j, selectedModule, selectedInput);
+                }
+              } catch (RemoteException e) {
+                e.printStackTrace();
+              }
+            }
+          }
+          button.setChecked(false);
+          if (selectedButton != null) {
+            selectedButton.setChecked(false);
+            selectedButton = null;
+            selectedModule = null;
+            selectedInput = -1;
+            selectedOutput = -1;
+          }
+        }
+      });
+    }
+
     invalidate();
   }
 
@@ -148,6 +230,16 @@ public final class PatchView extends View {
     inputs.remove(module);
     outputs.remove(module);
     notifications.remove(module);
+    deleteModuleView(module);
+  }
+
+  private void deleteModuleView(String module) {
+    View moduleView = moduleViews.remove(module);
+    if (moduleView != null) {
+      removeView(moduleView);
+    }
+    inputPorts.remove(module);
+    outputPorts.remove(module);
     invalidate();
   }
 
@@ -177,148 +269,15 @@ public final class PatchView extends View {
   }
 
   @Override
-  protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-    width = w;
-    height = h;
-  }
-
-  private Pair<Float, Float> getInputLabelLocation(String module) {
-    int i = modules.indexOf(module);
-    float w = width / (modules.size() + 1);
-    float x = (i + 1) * w;
-    float y = 9 * height / 10;
-    return new Pair<Float, Float>(x, y);
-  }
-
-  private Pair<Float, Float> getOutputLabelLocation(String module) {
-    int i = modules.indexOf(module);
-    float w = width / (modules.size() + 1);
-    float x = (i + 1) * w;
-    float y = height / 10;
-    return new Pair<Float, Float>(x, y);
-  }
-
-  private Pair<Float, Float> getOutputPortLocation(String module, int port) {
-    int i = modules.indexOf(module);
-    float w = width / (modules.size() + 1);
-    float xm = (i + 1) * w;
-    int n = outputs.get(module);
-    float x = xm;
-    if (n > 1) {
-      float w2 = w * 0.5f;
-      x = xm - w2 / 2 + ((float) port / (n - 1)) * w2;
-    }
-    float y = 2 * height / 10;
-    return new Pair<Float, Float>(x, y);
-  }
-
-  private Pair<Float, Float> getInputPortLocation(String module, int port) {
-    int i = modules.indexOf(module);
-    float w = width / (modules.size() + 1);
-    float xm = (i + 1) * w;
-    int n = inputs.get(module);
-    float x = xm;
-    if (n > 1) {
-      float w2 = w * 0.5f;
-      x = xm - w2 / 2 + ((float) port / (n - 1)) * w2;
-    }
-    float y = 8 * height / 10;
-    return new Pair<Float, Float>(x, y);
-  }
-
-  @Override
   protected void onDraw(Canvas canvas) {
-    if (x1 >= 0 && y1 >= 0) {
-      path.reset();
-      path.moveTo(x0, y0);
-      path.lineTo(x1, y1);
-      canvas.drawPath(path, drawPaint);
-    }
-    for (String module : modules) {
-      if (inputs.get(module) > 0) {
-        Pair<Float, Float> p = getInputLabelLocation(module);
-        canvas.drawText(module, p.first, p.second, labelPaint);
-        for (int i = 0; i < inputs.get(module); ++i) {
-          Pair<Float, Float> p0 = getInputPortLocation(module, i);
-          canvas.drawCircle(p0.first, p0.second, 15, portPaint);
-        }
-      }
-      if (outputs.get(module) > 0) {
-        Pair<Float, Float> p = getOutputLabelLocation(module);
-        canvas.drawText(module, p.first, p.second, labelPaint);
-        for (int i = 0; i < outputs.get(module); ++i) {
-          Pair<Float, Float> p0 = getOutputPortLocation(module, i);
-          canvas.drawCircle(p0.first, p0.second, 15, portPaint);
-          Pair<String, Integer> port = new Pair<String, Integer>(module, i);
-          if (connections.containsKey(port)) {
-            for (Pair<String, Integer> sink : connections.get(port)) {
-              Pair<Float, Float> p1 = getInputPortLocation(sink.first, sink.second);
-              path.reset();
-              path.moveTo(p0.first, p0.second);
-              path.lineTo(p1.first, p1.second);
-              canvas.drawPath(path, linePaint);
-            }
-          }
-        }
-      }
-    }
+    super.onDraw(canvas);
   }
 
-  @Override
-  public boolean onTouchEvent(MotionEvent event) {
-    float x = event.getX();
-    float y = event.getY();
-    switch (event.getAction()) {
-      case MotionEvent.ACTION_DOWN:
-        outputPort = null;
-        for (String module : modules) {
-          for (int i = 0; i < outputs.get(module); ++i) {
-            Pair<Float, Float> p = getOutputPortLocation(module, i);
-            float dx = p.first - x;
-            float dy = p.second - y;
-            if (dx * dx + dy * dy < 900) {
-              x0 = p.first;
-              y0 = p.second;
-              outputPort = new Pair<String, Integer>(module, i);
-            }
-          }
-        }
-        break;
-      case MotionEvent.ACTION_MOVE:
-        if (outputPort != null) {
-          x1 = x;
-          y1 = y;
-        }
-        break;
-      case MotionEvent.ACTION_UP:
-        if (outputPort != null) {
-          for (String module : modules) {
-            for (int i = 0; i < inputs.get(module); ++i) {
-              Pair<Float, Float> p = getInputPortLocation(module, i);
-              float dx = p.first - x;
-              float dy = p.second - y;
-              if (dx * dx + dy * dy < 900) {
-                try {
-                  if (patchbay.isConnected(outputPort.first, outputPort.second, module, i)) {
-                    patchbay.disconnectModules(outputPort.first, outputPort.second, module, i);
-                  } else {
-                    patchbay.connectModules(outputPort.first, outputPort.second, module, i);
-                  }
-                } catch (RemoteException e) {
-                  e.printStackTrace();
-                }
-              }
-            }
-          }
-        }
-        x1 = -1;
-        y1 = -1;
-        outputPort = null;
-        break;
-      default:
-        break;
-    }
-    invalidate();
-    return true;
+  private void connect(String source, int sourcePort, String sink, int sinkPort) throws RemoteException {
+    patchbay.connectModules(source, sourcePort, sink, sinkPort);
+  }
+
+  private void disconnect(String source, int sourcePort, String sink, int sinkPort) throws RemoteException {
+    patchbay.disconnectModules(source, sourcePort, sink, sinkPort);
   }
 }
