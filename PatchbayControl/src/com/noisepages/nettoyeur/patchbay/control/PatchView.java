@@ -107,6 +107,13 @@ public final class PatchView extends LinearLayout {
     modules.add(module);
     inputs.put(module, inputChannels);
     outputs.put(module, outputChannels);
+    
+    if (notification == null) {
+      notification = new Notification.Builder(getContext()).
+          setContentTitle(module).
+          setSmallIcon(android.R.drawable.ic_media_play).
+          build();
+    }
     notifications.put(module, notification);
     addModuleView(module, inputChannels, outputChannels, notification);
   }
@@ -166,6 +173,20 @@ public final class PatchView extends LinearLayout {
       tv.setText(module);
       view = tv;
     }
+    view.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        try {
+          if (patchbay.isActive(module)) {
+            patchbay.deactivateModule(module);
+          } else {
+            patchbay.activateModule(module);
+          }
+        } catch (RemoteException e) {
+          e.printStackTrace();
+        }
+      }
+    });
     frame.addView(view);
 
     buttonLayout = (LinearLayout) moduleView.getChildAt(2);
