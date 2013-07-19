@@ -40,30 +40,16 @@ public final class PatchView extends FrameLayout {
   private final Map<Pair<String, Integer>, List<Pair<String, Integer>>> connections =
       new HashMap<Pair<String, Integer>, List<Pair<String, Integer>>>();
   
-  private final Map<String, LinearLayout> moduleViews = new HashMap<String, LinearLayout>();
-
-  private PatchOverlay overlay = null;
-  private ToggleButton selectedButton = null;
-  private String selectedModule = null;
-  private int selectedInput = -1;;
-  private int selectedOutput = -1;;
-
   public PatchView(Context context) {
     super(context);
-    init();
   }
 
   public PatchView(Context context, AttributeSet attrs) {
     super(context, attrs);
-    init();
   }
 
   public PatchView(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
-    init();
-  }
-
-  private void init() {
   }
 
   public void setPatchbay(IPatchbayService patchbay) {
@@ -122,6 +108,60 @@ public final class PatchView extends FrameLayout {
     notifications.put(module, notification);
     addModuleView(module, inputChannels, outputChannels, notification);
   }
+
+  public void deleteModule(String module) {
+    for (Iterator<Entry<Pair<String, Integer>, List<Pair<String, Integer>>>> iter =
+        connections.entrySet().iterator(); iter.hasNext();) {
+      Entry<Pair<String, Integer>, List<Pair<String, Integer>>> entry = iter.next();
+      if (entry.getKey().first.equals(module)) {
+        iter.remove();
+      } else {
+        for (Iterator<Pair<String, Integer>> iter2 = entry.getValue().iterator(); iter2.hasNext();) {
+          Pair<String, Integer> q = iter2.next();
+          if (q.first.equals(module)) {
+            iter2.remove();
+          }
+        }
+      }
+    }
+    modules.remove(module);
+    inputs.remove(module);
+    outputs.remove(module);
+    notifications.remove(module);
+    deleteModuleView(module);
+  }
+
+  public void addConnection(String source, int sourcePort, String sink, int sinkPort) {
+    Pair<String, Integer> a = new Pair<String, Integer>(source, sourcePort);
+    List<Pair<String, Integer>> c = connections.get(a);
+    if (c == null) {
+      c = new ArrayList<Pair<String, Integer>>();
+      connections.put(a, c);
+    }
+    Pair<String, Integer> b = new Pair<String, Integer>(sink, sinkPort);
+    if (!c.contains(b)) {
+      c.add(b);
+    }
+    invalidateAll();
+  }
+
+  public void removeConnection(String source, int sourcePort, String sink, int sinkPort) {
+    Pair<String, Integer> a = new Pair<String, Integer>(source, sourcePort);
+    List<Pair<String, Integer>> c = connections.get(a);
+    if (c == null) {
+      return;
+    }
+    Pair<String, Integer> b = new Pair<String, Integer>(sink, sinkPort);
+    c.remove(b);
+    invalidateAll();
+  }
+
+  private final Map<String, LinearLayout> moduleViews = new HashMap<String, LinearLayout>();
+  private PatchOverlay overlay = null;
+  private ToggleButton selectedButton = null;
+  private String selectedModule = null;
+  private int selectedInput = -1;;
+  private int selectedOutput = -1;;
 
   private void addModuleView(final String module, int inputChannels, int outputChannels,
       final Notification notification) {
@@ -257,28 +297,6 @@ public final class PatchView extends FrameLayout {
     invalidateAll();
   }
 
-  public void deleteModule(String module) {
-    for (Iterator<Entry<Pair<String, Integer>, List<Pair<String, Integer>>>> iter =
-        connections.entrySet().iterator(); iter.hasNext();) {
-      Entry<Pair<String, Integer>, List<Pair<String, Integer>>> entry = iter.next();
-      if (entry.getKey().first.equals(module)) {
-        iter.remove();
-      } else {
-        for (Iterator<Pair<String, Integer>> iter2 = entry.getValue().iterator(); iter2.hasNext();) {
-          Pair<String, Integer> q = iter2.next();
-          if (q.first.equals(module)) {
-            iter2.remove();
-          }
-        }
-      }
-    }
-    modules.remove(module);
-    inputs.remove(module);
-    outputs.remove(module);
-    notifications.remove(module);
-    deleteModuleView(module);
-  }
-
   private void deleteModuleView(String module) {
     GridLayout moduleLayout = (GridLayout) getChildAt(0);
     View moduleView = moduleViews.remove(module);
@@ -290,31 +308,6 @@ public final class PatchView extends FrameLayout {
         moduleLayout.removeViewAt(index);
       }
     }
-    invalidateAll();
-  }
-
-  public void addConnection(String source, int sourcePort, String sink, int sinkPort) {
-    Pair<String, Integer> a = new Pair<String, Integer>(source, sourcePort);
-    List<Pair<String, Integer>> c = connections.get(a);
-    if (c == null) {
-      c = new ArrayList<Pair<String, Integer>>();
-      connections.put(a, c);
-    }
-    Pair<String, Integer> b = new Pair<String, Integer>(sink, sinkPort);
-    if (!c.contains(b)) {
-      c.add(b);
-    }
-    invalidateAll();
-  }
-
-  public void removeConnection(String source, int sourcePort, String sink, int sinkPort) {
-    Pair<String, Integer> a = new Pair<String, Integer>(source, sourcePort);
-    List<Pair<String, Integer>> c = connections.get(a);
-    if (c == null) {
-      return;
-    }
-    Pair<String, Integer> b = new Pair<String, Integer>(sink, sinkPort);
-    c.remove(b);
     invalidateAll();
   }
 
