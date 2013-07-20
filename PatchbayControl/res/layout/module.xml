@@ -14,7 +14,7 @@
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/moduleView"
+        android:id="@+id/moduleFrame"
         android:layout_margin="12dip"
         android:layout_gravity="center"
         android:layout_width="wrap_content"

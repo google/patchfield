@@ -27,13 +27,14 @@
                 android:orientation="vertical" >
 
                 <GridLayout
-                    android:id="@+id/moduleLayout"
+                    android:id="@+id/moduleGrid"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:rowCount="32"
                     android:columnCount="2" />
 
                 <com.noisepages.nettoyeur.patchbay.control.PatchOverlay
+                    android:id="@+id/patchOverlay"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent" />
             </com.noisepages.nettoyeur.patchbay.control.PatchView>

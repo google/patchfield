@@ -172,18 +172,18 @@ public final class PatchView extends FrameLayout {
   private void addModuleView(final String module, int inputChannels, int outputChannels,
       final Notification notification) {
     if (overlay == null) {
-      overlay = (PatchOverlay) getChildAt(1);
+      overlay = (PatchOverlay) findViewById(R.id.patchOverlay);
       overlay.setPatchView(this);
     }
-    GridLayout moduleLayout = (GridLayout) getChildAt(0);
+    GridLayout moduleLayout = (GridLayout) findViewById(R.id.moduleGrid);
     LinearLayout moduleView = (LinearLayout) inflate(getContext(), R.layout.module, null);
-    // Warning: Atrocious hack to place view in the desired place.
+    // Warning: Atrocious hack to place view in the desired place, Part I.
     moduleLayout.addView(new Space(getContext()));
     moduleLayout.addView(new Space(getContext()));
     moduleLayout.addView(moduleView);
     moduleViews.put(module, moduleView);
 
-    LinearLayout buttonLayout = (LinearLayout) moduleView.getChildAt(0);
+    LinearLayout buttonLayout = (LinearLayout) moduleView.findViewById(R.id.inputPorts);
     List<View> buttons = new ArrayList<View>();
     inputPorts.put(module, buttons);
     for (int i = 0; i < inputChannels; ++i) {
@@ -226,7 +226,7 @@ public final class PatchView extends FrameLayout {
       });
     }
 
-    FrameLayout frame = (FrameLayout) moduleView.getChildAt(1);
+    FrameLayout frame = (FrameLayout) moduleView.findViewById(R.id.moduleFrame);
     View view = notification.contentView.apply(getContext(), frame);
     view.setOnLongClickListener(new OnLongClickListener() {
       @Override
@@ -257,7 +257,7 @@ public final class PatchView extends FrameLayout {
     }
     frame.addView(view);
 
-    buttonLayout = (LinearLayout) moduleView.getChildAt(2);
+    buttonLayout = (LinearLayout) moduleView.findViewById(R.id.outputPorts);
     buttons = new ArrayList<View>();
     outputPorts.put(module, buttons);
     for (int i = 0; i < outputChannels; ++i) {
@@ -304,12 +304,13 @@ public final class PatchView extends FrameLayout {
   }
 
   private void deleteModuleView(String module) {
-    GridLayout moduleLayout = (GridLayout) getChildAt(0);
+    GridLayout moduleLayout = (GridLayout) findViewById(R.id.moduleGrid);
     View moduleView = moduleViews.remove(module);
     if (moduleView != null) {
       int index;
       for (index = 0; !moduleView.equals(moduleLayout.getChildAt(index)); ++index);
       moduleLayout.removeView(moduleView);
+      // Warning: Atrocious hack to place view in the desired place, Part II.
       while (index > 0 && moduleLayout.getChildAt(--index) instanceof Space) {
         moduleLayout.removeViewAt(index);
       }
