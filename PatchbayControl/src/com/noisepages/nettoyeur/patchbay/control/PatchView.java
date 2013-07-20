@@ -33,10 +33,6 @@ public final class PatchView extends FrameLayout {
 
   private IPatchbayService patchbay;
   private final List<String> modules = new ArrayList<String>();
-  private final Map<String, Boolean> activations = new HashMap<String, Boolean>();
-  private final Map<String, Integer> inputs = new HashMap<String, Integer>();
-  private final Map<String, Integer> outputs = new HashMap<String, Integer>();
-  private final Map<String, Notification> notifications = new HashMap<String, Notification>();
   private final Map<Pair<String, Integer>, List<Pair<String, Integer>>> connections =
       new HashMap<Pair<String, Integer>, List<Pair<String, Integer>>>();
 
@@ -96,21 +92,14 @@ public final class PatchView extends FrameLayout {
         }
       }
     }
+
     modules.add(module);
-    try {
-      activations.put(module, patchbay.isActive(module));
-    } catch (RemoteException e) {
-      activations.put(module, false);
-    }
-    inputs.put(module, inputChannels);
-    outputs.put(module, outputChannels);
 
     if (notification == null) {
       notification =
           new Notification.Builder(getContext()).setContentTitle(module)
               .setSmallIcon(android.R.drawable.ic_media_play).build();
     }
-    notifications.put(module, notification);
     addModuleView(module, inputChannels, outputChannels, notification);
   }
 
@@ -130,19 +119,14 @@ public final class PatchView extends FrameLayout {
       }
     }
     modules.remove(module);
-    inputs.remove(module);
-    outputs.remove(module);
-    notifications.remove(module);
     deleteModuleView(module);
   }
 
   public void activateModule(String module) {
-    activations.put(module, true);
-    updateModuleView(module);
+    updateModuleView(module, true);
   }
   public void deactivateModule(String module) {
-    activations.put(module, false);
-    updateModuleView(module);
+    updateModuleView(module, false);
   }
 
   public void addConnection(String source, int sourcePort, String sink, int sinkPort) {
@@ -315,7 +299,13 @@ public final class PatchView extends FrameLayout {
       });
     }
 
-    updateModuleView(module);
+    boolean isActive = false;
+    try {
+      isActive = patchbay.isActive(module);
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    }
+    updateModuleView(module, isActive);
   }
 
   private void deleteModuleView(String module) {
@@ -370,10 +360,10 @@ public final class PatchView extends FrameLayout {
     coords[3] = coords[1] + v.getHeight();
   }
 
-  private void updateModuleView(String module) {
+  private void updateModuleView(String module, boolean isActive) {
     View moduleView = moduleViews.get(module);
     FrameLayout frame = (FrameLayout) moduleView.findViewById(R.id.moduleFrame);
-    frame.setAlpha(activations.get(module) ? 1.0f : 0.3f);
+    frame.setAlpha(isActive ? 1.0f : 0.3f);
     invalidateAll();
   }
 
