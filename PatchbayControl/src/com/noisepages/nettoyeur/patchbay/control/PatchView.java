@@ -357,7 +357,7 @@ public final class PatchView extends FrameLayout {
         int x1 = (b[0] + b[2]) / 2;
         int y1 = (b[1] + b[3]) / 2;
         path.moveTo(x0, y0);
-        path.cubicTo((x0 + x1) / 2, y0, (x0 + x1) / 2, y1, x1, y1);
+        path.cubicTo(x0, (y0 + y1) / 2, x1, (y0 + y1) / 2, x1, y1);
       }
     }
     canvas.drawPath(path, paint);
