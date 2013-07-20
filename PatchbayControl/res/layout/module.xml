@@ -1,32 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#ffbbbbbb"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal" >
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="12dip"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center" >
 
     <LinearLayout
-        android:id="@+id/inputPorts"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffbbbbbb"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/inputPorts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical" >
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/moduleFrame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="12dip" >
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/outputPorts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical" >
+        </LinearLayout>
+
     </LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/moduleFrame"
-        android:layout_margin="12dip"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/outputPorts"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-    </LinearLayout>
-
-</LinearLayout>
+</FrameLayout>

@@ -160,7 +160,7 @@ public final class PatchView extends FrameLayout {
   // Crude, hacky GUI code below.
   // TODO: Implement this properly!!!
   
-  private final Map<String, LinearLayout> moduleViews = new HashMap<String, LinearLayout>();
+  private final Map<String, View> moduleViews = new HashMap<String, View>();
   private final Map<String, List<View>> inputPorts = new HashMap<String, List<View>>();
   private final Map<String, List<View>> outputPorts = new HashMap<String, List<View>>();
   private PatchOverlay overlay = null;
@@ -176,7 +176,7 @@ public final class PatchView extends FrameLayout {
       overlay.setPatchView(this);
     }
     GridLayout moduleLayout = (GridLayout) findViewById(R.id.moduleGrid);
-    LinearLayout moduleView = (LinearLayout) inflate(getContext(), R.layout.module, null);
+    View moduleView = inflate(getContext(), R.layout.module, null);
     // Warning: Atrocious hack to place view in the desired place, Part I.
     moduleLayout.addView(new Space(getContext()));
     moduleLayout.addView(new Space(getContext()));
