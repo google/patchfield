@@ -15,7 +15,7 @@
 
     <FrameLayout
         android:id="@+id/moduleView"
-        android:layout_margin="8dip"
+        android:layout_margin="12dip"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >

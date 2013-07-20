@@ -16,8 +16,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayClient;
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
@@ -29,7 +29,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
   private IPatchbayService patchbay = null;
 
   private TextView displayLine;
-  private ToggleButton playButton;
+  private Switch playButton;
   private PatchView patchView;
 
   private IPatchbayClient.Stub receiver = new IPatchbayClient.Stub() {
@@ -144,7 +144,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     displayLine = (TextView) findViewById(R.id.displayLine);
-    playButton = (ToggleButton) findViewById(R.id.playButton);
+    playButton = (Switch) findViewById(R.id.playButton);
     playButton.setOnCheckedChangeListener(this);
     patchView = (PatchView) findViewById(R.id.patchView);
     bindService(new Intent("IPatchbayService"), connection, Context.BIND_AUTO_CREATE);
