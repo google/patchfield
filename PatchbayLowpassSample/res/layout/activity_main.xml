@@ -8,18 +8,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <TextView
-        android:id="@+id/mainText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
-
     <SeekBar
         android:id="@+id/cutoffBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/mainText"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/mainText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/mainText"
-        android:layout_marginTop="75dp" />
+        android:layout_alignParentTop="true"
+        android:text="@string/hello_world"
+        android:textSize="32sp" />
 
 </RelativeLayout>

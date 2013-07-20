@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
 import com.noisepages.nettoyeur.patchbay.modules.LowpassModule;
@@ -26,7 +27,11 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
 
   private LowpassModule module = null;
 
+  private TextView textView;
+
   private final String moduleLabel = "lowpass";
+  
+  private int sampleRate;
 
   private ServiceConnection connection = new ServiceConnection() {
     @Override
@@ -49,6 +54,8 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
         module = new LowpassModule(2, notification);
         module.configure(patchbay, moduleLabel);
         patchbay.activateModule(moduleLabel);
+        sampleRate = patchbay.getSampleRate();
+        textView.setText("Cutoff frequency: " + sampleRate + "Hz");
       } catch (RemoteException e) {
         e.printStackTrace();
       }
@@ -59,6 +66,7 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    textView = (TextView) findViewById(R.id.mainText);
     SeekBar cutoffBar = (SeekBar) findViewById(R.id.cutoffBar);
     cutoffBar.setOnSeekBarChangeListener(this);
     cutoffBar.setProgress(100);
@@ -89,7 +97,9 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
   public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
     if (module != null) {
       double q = progress * 0.01;
-      module.setCutoff(q * q * q * q);
+      q = q * q * q * q * q;
+      textView.setText("Cutoff frequency: " + (int) (q * sampleRate) + "Hz");
+      module.setCutoff(q);
     }
   }
 
