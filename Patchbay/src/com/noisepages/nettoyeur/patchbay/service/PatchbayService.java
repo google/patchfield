@@ -151,7 +151,7 @@ public class PatchbayService extends Service {
   public void onCreate() {
     super.onCreate();
     try {
-      patchbay = new Patchbay(this, 1, 2);
+      patchbay = new Patchbay(this, 2, 2);
     } catch (IOException e) {
       patchbay = null;
     }

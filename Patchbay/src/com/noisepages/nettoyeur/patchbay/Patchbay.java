@@ -49,7 +49,7 @@ public class Patchbay implements IPatchbayService {
     modules.put("system_out", 1);
     Notification micNotification = new Notification.Builder(context)
         .setSmallIcon(R.drawable.perm_group_microphone)
-        .setContentTitle("Microphone")
+        .setContentTitle("Microphones")
         .build();
     notifications.put("system_in", micNotification);
     Notification speakerNotification = new Notification.Builder(context)
