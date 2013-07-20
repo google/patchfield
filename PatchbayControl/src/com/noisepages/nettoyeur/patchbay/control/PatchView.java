@@ -25,6 +25,7 @@ import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.Space;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
@@ -35,6 +36,16 @@ public final class PatchView extends FrameLayout {
   private final List<String> modules = new ArrayList<String>();
   private final Map<Pair<String, Integer>, List<Pair<String, Integer>>> connections =
       new HashMap<Pair<String, Integer>, List<Pair<String, Integer>>>();
+
+  private Toast toast = null;
+
+  private void toast(String msg) {
+    if (toast == null) {
+      toast = Toast.makeText(getContext(), "", Toast.LENGTH_SHORT);
+    }
+    toast.setText(msg);
+    toast.show();
+  }
 
   public PatchView(Context context) {
     super(context);
@@ -125,6 +136,7 @@ public final class PatchView extends FrameLayout {
   public void activateModule(String module) {
     updateModuleView(module, true);
   }
+
   public void deactivateModule(String module) {
     updateModuleView(module, false);
   }
@@ -242,18 +254,21 @@ public final class PatchView extends FrameLayout {
         return true;
       }
     });
-    if (notification.contentIntent != null) {
-      view.setOnClickListener(new OnClickListener() {
-        @Override
-        public void onClick(View v) {
+    view.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (notification.contentIntent != null) {
           try {
             notification.contentIntent.send();
           } catch (CanceledException e) {
             e.printStackTrace();
+            toast("Unable to launch app: " + e);
           }
+        } else {
+          toast("Unable to launch app: App did not provide launch info.");
         }
-      });
-    }
+      }
+    });
     frame.addView(view);
 
     buttonLayout = (LinearLayout) moduleView.findViewById(R.id.outputPorts);
