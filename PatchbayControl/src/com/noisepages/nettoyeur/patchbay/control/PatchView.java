@@ -98,7 +98,7 @@ public final class PatchView extends FrameLayout {
     if (notification == null) {
       notification =
           new Notification.Builder(getContext()).setContentTitle(module)
-              .setSmallIcon(android.R.drawable.ic_media_play).build();
+              .setSmallIcon(R.drawable.emo_im_happy).build();
     }
     addModuleView(module, inputChannels, outputChannels, notification);
   }
