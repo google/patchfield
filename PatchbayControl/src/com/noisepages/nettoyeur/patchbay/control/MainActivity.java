@@ -55,9 +55,6 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     }
 
     @Override
-    public void onModuleActivated(String arg0) throws RemoteException {}
-
-    @Override
     public void onModuleCreated(final String module, final int inputs, final int outputs,
         final Notification notification) throws RemoteException {
       runOnUiThread(new Runnable() {
@@ -69,7 +66,24 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     }
 
     @Override
-    public void onModuleDeactivated(String module) throws RemoteException {}
+    public void onModuleActivated(final String module) throws RemoteException {
+      runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          patchView.activateModule(module);
+        }
+      });
+    }
+
+    @Override
+    public void onModuleDeactivated(final String module) throws RemoteException {
+      runOnUiThread(new Runnable() {
+        @Override
+        public void run() {
+          patchView.deactivateModule(module);
+        }
+      });
+    }
 
     @Override
     public void onModuleDeleted(final String module) throws RemoteException {

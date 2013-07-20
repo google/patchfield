@@ -33,6 +33,7 @@ public final class PatchView extends FrameLayout {
 
   private IPatchbayService patchbay;
   private final List<String> modules = new ArrayList<String>();
+  private final Map<String, Boolean> activations = new HashMap<String, Boolean>();
   private final Map<String, Integer> inputs = new HashMap<String, Integer>();
   private final Map<String, Integer> outputs = new HashMap<String, Integer>();
   private final Map<String, Notification> notifications = new HashMap<String, Notification>();
@@ -96,6 +97,11 @@ public final class PatchView extends FrameLayout {
       }
     }
     modules.add(module);
+    try {
+      activations.put(module, patchbay.isActive(module));
+    } catch (RemoteException e) {
+      activations.put(module, false);
+    }
     inputs.put(module, inputChannels);
     outputs.put(module, outputChannels);
 
@@ -128,6 +134,15 @@ public final class PatchView extends FrameLayout {
     outputs.remove(module);
     notifications.remove(module);
     deleteModuleView(module);
+  }
+
+  public void activateModule(String module) {
+    activations.put(module, true);
+    updateModuleView(module);
+  }
+  public void deactivateModule(String module) {
+    activations.put(module, false);
+    updateModuleView(module);
   }
 
   public void addConnection(String source, int sourcePort, String sink, int sinkPort) {
@@ -300,7 +315,7 @@ public final class PatchView extends FrameLayout {
       });
     }
 
-    invalidateAll();
+    updateModuleView(module);
   }
 
   private void deleteModuleView(String module) {
@@ -353,6 +368,13 @@ public final class PatchView extends FrameLayout {
     coords[1] -= p[1];
     coords[2] = coords[0] + v.getWidth();
     coords[3] = coords[1] + v.getHeight();
+  }
+
+  private void updateModuleView(String module) {
+    View moduleView = moduleViews.get(module);
+    FrameLayout frame = (FrameLayout) moduleView.findViewById(R.id.moduleFrame);
+    frame.setAlpha(activations.get(module) ? 1.0f : 0.3f);
+    invalidateAll();
   }
 
   private void invalidateAll() {
