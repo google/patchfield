@@ -41,20 +41,21 @@
         </HorizontalScrollView>
     </ScrollView>
 
-    <TextView
-        android:id="@+id/displayLine"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/hello_world"
-        android:textSize="20sp" />
-
     <Switch
         android:id="@+id/playButton"
+        android:layout_marginTop="12dip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
+
+    <TextView
+        android:id="@+id/displayLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/scrollView"
+        android:layout_alignTop="@+id/playButton"
+        android:text="@string/hello_world"
+        android:textSize="20sp" />
 
 </RelativeLayout>
