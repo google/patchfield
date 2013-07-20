@@ -15,7 +15,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.view.Menu;
-import android.widget.TextView;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
 
@@ -24,7 +26,6 @@ public class MainActivity extends Activity {
   @SuppressWarnings("unused")
   private static final String TAG = "PatchbayPcmSample";
 
-  private TextView mainText = null;
   private IPatchbayService patchbay = null;
   private PcmSource source = null;
   private final String moduleName = "source";
@@ -51,13 +52,10 @@ public class MainActivity extends Activity {
       PendingIntent pi =
           PendingIntent.getActivity(MainActivity.this, 0, new Intent(MainActivity.this,
               MainActivity.class), 0);
-      Notification notification = new Notification.Builder(MainActivity.this)
-          .setSmallIcon(R.drawable.perm_group_voicemail)
-          .setContentTitle("Relaxation Spa Treatment")
-          .setContentIntent(pi)
-          .build();
+      Notification notification =
+          new Notification.Builder(MainActivity.this).setSmallIcon(R.drawable.perm_group_voicemail)
+              .setContentTitle("Relaxation Spa Treatment").setContentIntent(pi).build();
       source = new PcmSource(2, buffer, notification);
-      mainText.setText("Dan the Automator: Relaxation Spa Treatment");
       try {
         source.configure(patchbay, moduleName);
         patchbay.activateModule(moduleName);
@@ -71,7 +69,20 @@ public class MainActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    mainText = (TextView) findViewById(R.id.mainText);
+    Button button = (Button) findViewById(R.id.connectButton);
+    button.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (patchbay != null) {
+          try {
+            patchbay.connectModules(moduleName, 0, "system_out", 0);
+            patchbay.connectModules(moduleName, 1, "system_out", 1);
+          } catch (RemoteException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+    });
     bindService(new Intent("IPatchbayService"), connection, Context.BIND_AUTO_CREATE);
   }
 

@@ -12,6 +12,9 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -70,6 +73,20 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
     SeekBar cutoffBar = (SeekBar) findViewById(R.id.cutoffBar);
     cutoffBar.setOnSeekBarChangeListener(this);
     cutoffBar.setProgress(100);
+    Button button = (Button) findViewById(R.id.connectButton);
+    button.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        if (patchbay != null) {
+          try {
+            patchbay.connectModules(moduleLabel, 0, "system_out", 0);
+            patchbay.connectModules(moduleLabel, 1, "system_out", 1);
+          } catch (RemoteException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+    });
     bindService(new Intent("IPatchbayService"), connection, Context.BIND_AUTO_CREATE);
   }
 
