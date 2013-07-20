@@ -216,9 +216,9 @@ public final class PatchView extends FrameLayout {
             } else if (selectedOutput >= 0) {
               try {
                 if (patchbay.isConnected(selectedModule, selectedOutput, module, j)) {
-                  patchbay.disconnectModules(selectedModule, selectedOutput, module, j);
+                  patchbay.disconnectPorts(selectedModule, selectedOutput, module, j);
                 } else {
-                  patchbay.connectModules(selectedModule, selectedOutput, module, j);
+                  patchbay.connectPorts(selectedModule, selectedOutput, module, j);
                 }
               } catch (RemoteException e) {
                 e.printStackTrace();
@@ -293,9 +293,9 @@ public final class PatchView extends FrameLayout {
             } else if (selectedInput >= 0) {
               try {
                 if (patchbay.isConnected(module, j, selectedModule, selectedInput)) {
-                  patchbay.disconnectModules(module, j, selectedModule, selectedInput);
+                  patchbay.disconnectPorts(module, j, selectedModule, selectedInput);
                 } else {
-                  patchbay.connectModules(module, j, selectedModule, selectedInput);
+                  patchbay.connectPorts(module, j, selectedModule, selectedInput);
                 }
               } catch (RemoteException e) {
                 e.printStackTrace();

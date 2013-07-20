@@ -59,15 +59,15 @@ public class PatchbayService extends Service {
     }
 
     @Override
-    public int connectModules(String source, int sourcePort, String sink, int sinkPort)
+    public int connectPorts(String source, int sourcePort, String sink, int sinkPort)
         throws RemoteException {
-      return patchbay.connectModules(source, sourcePort, sink, sinkPort);
+      return patchbay.connectPorts(source, sourcePort, sink, sinkPort);
     }
 
     @Override
-    public int disconnectModules(String source, int sourcePort, String sink, int sinkPort)
+    public int disconnectPorts(String source, int sourcePort, String sink, int sinkPort)
         throws RemoteException {
-      return patchbay.disconnectModules(source, sourcePort, sink, sinkPort);
+      return patchbay.disconnectPorts(source, sourcePort, sink, sinkPort);
     }
 
     @Override

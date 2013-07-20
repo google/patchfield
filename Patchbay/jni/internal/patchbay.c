@@ -375,7 +375,7 @@ Java_com_noisepages_nettoyeur_patchbay_Patchbay_createModule
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchbay_Patchbay_connectModules
+Java_com_noisepages_nettoyeur_patchbay_Patchbay_connectPorts
 (JNIEnv *env, jobject obj, jlong p,
  jint source_index, jint source_port, jint sink_index, jint sink_port) {
   patchbay *pb = (patchbay *) p;
@@ -383,7 +383,7 @@ Java_com_noisepages_nettoyeur_patchbay_Patchbay_connectModules
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchbay_Patchbay_disconnectModules
+Java_com_noisepages_nettoyeur_patchbay_Patchbay_disconnectPorts
 (JNIEnv *env, jobject obj, jlong p,
  jint source_index, jint source_port, jint sink_index, jint sink_port) {
   patchbay *pb = (patchbay *) p;

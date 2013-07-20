@@ -203,7 +203,7 @@ public class Patchbay implements IPatchbayService {
   }
 
   @Override
-  public synchronized int connectModules(String source, int sourcePort, String sink, int sinkPort) {
+  public synchronized int connectPorts(String source, int sourcePort, String sink, int sinkPort) {
     if (streamPtr == 0) {
       throw new IllegalStateException("Stream closed.");
     }
@@ -226,7 +226,7 @@ public class Patchbay implements IPatchbayService {
       return PatchbayException.CYCLIC_DEPENDENCY;
     }
     int result =
-        connectModules(streamPtr, modules.get(source), sourcePort, modules.get(sink), sinkPort);
+        connectPorts(streamPtr, modules.get(source), sourcePort, modules.get(sink), sinkPort);
     if (result == 0) {
       int i = clients.beginBroadcast();
       while (--i >= 0) {
@@ -242,7 +242,7 @@ public class Patchbay implements IPatchbayService {
   }
 
   @Override
-  public synchronized int disconnectModules(String source, int sourcePort, String sink, int sinkPort) {
+  public synchronized int disconnectPorts(String source, int sourcePort, String sink, int sinkPort) {
     if (streamPtr == 0) {
       throw new IllegalStateException("Stream closed.");
     }
@@ -262,7 +262,7 @@ public class Patchbay implements IPatchbayService {
       return 0;
     }
     int result =
-        disconnectModules(streamPtr, modules.get(source), sourcePort, modules.get(sink), sinkPort);
+        disconnectPorts(streamPtr, modules.get(source), sourcePort, modules.get(sink), sinkPort);
     if (result == 0) {
       int i = clients.beginBroadcast();
       while (--i >= 0) {
@@ -403,10 +403,10 @@ public class Patchbay implements IPatchbayService {
 
   private native int deleteModule(long streamPtr, int index);
 
-  private native int connectModules(long streamPtr, int sourceIndex, int sourcePort, int sinkIndex,
+  private native int connectPorts(long streamPtr, int sourceIndex, int sourcePort, int sinkIndex,
       int sinkPort);
 
-  private native int disconnectModules(long streamPtr, int sourceIndex, int sourcePort,
+  private native int disconnectPorts(long streamPtr, int sourceIndex, int sourcePort,
       int sinkIndex, int sinkPort);
 
   private native int activateModule(long streamPtr, int index);

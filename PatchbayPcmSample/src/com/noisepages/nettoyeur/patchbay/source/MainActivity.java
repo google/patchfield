@@ -75,8 +75,8 @@ public class MainActivity extends Activity {
       public void onClick(View v) {
         if (patchbay != null) {
           try {
-            patchbay.connectModules(moduleName, 0, "system_out", 0);
-            patchbay.connectModules(moduleName, 1, "system_out", 1);
+            patchbay.connectPorts(moduleName, 0, "system_out", 0);
+            patchbay.connectPorts(moduleName, 1, "system_out", 1);
           } catch (RemoteException e) {
             e.printStackTrace();
           }

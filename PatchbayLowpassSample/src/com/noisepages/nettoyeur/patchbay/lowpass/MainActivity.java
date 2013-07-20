@@ -79,8 +79,8 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
       public void onClick(View v) {
         if (patchbay != null) {
           try {
-            patchbay.connectModules(moduleLabel, 0, "system_out", 0);
-            patchbay.connectModules(moduleLabel, 1, "system_out", 1);
+            patchbay.connectPorts(moduleLabel, 0, "system_out", 0);
+            patchbay.connectPorts(moduleLabel, 1, "system_out", 1);
           } catch (RemoteException e) {
             e.printStackTrace();
           }

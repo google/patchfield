@@ -54,14 +54,14 @@ interface IPatchbayService {
    *
    * @return 0 on success, or a negative error code on failure.
    */
-  int connectModules(String source, int sourcePort, String sink, int sinkPort);
+  int connectPorts(String source, int sourcePort, String sink, int sinkPort);
       
   /**
    * Disconnects the given source port from the given sink port.
    *
    * @return 0 on success, or a negative error code on failure.
    */
-  int disconnectModules(String source, int sourcePort, String sink, int sinkPort);
+  int disconnectPorts(String source, int sourcePort, String sink, int sinkPort);
       
   /**
    * @return True if the Patchbay is currently rendering audio.

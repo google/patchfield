@@ -49,18 +49,18 @@ JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_Patchbay_deleteMod
 
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_Patchbay
- * Method:    connectModules
+ * Method:    connectPorts
  * Signature: (JIIII)I
  */
-JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_Patchbay_connectModules
+JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_Patchbay_connectPorts
   (JNIEnv *, jobject, jlong, jint, jint, jint, jint);
 
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_Patchbay
- * Method:    disconnectModules
+ * Method:    disconnectPorts
  * Signature: (JIIII)I
  */
-JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_Patchbay_disconnectModules
+JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_Patchbay_disconnectPorts
   (JNIEnv *, jobject, jlong, jint, jint, jint, jint);
 
 /*
