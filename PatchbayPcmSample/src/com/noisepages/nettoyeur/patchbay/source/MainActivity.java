@@ -57,7 +57,7 @@ public class MainActivity extends Activity {
           .setContentIntent(pi)
           .build();
       source = new PcmSource(2, buffer, notification);
-      mainText.setText("Relaxation Spa Treatment");
+      mainText.setText("Dan the Automator: Relaxation Spa Treatment");
       try {
         source.configure(patchbay, moduleName);
         patchbay.activateModule(moduleName);
