@@ -38,7 +38,7 @@ public final class PatchView extends FrameLayout {
   private final Map<String, Notification> notifications = new HashMap<String, Notification>();
   private final Map<Pair<String, Integer>, List<Pair<String, Integer>>> connections =
       new HashMap<Pair<String, Integer>, List<Pair<String, Integer>>>();
-  
+
   public PatchView(Context context) {
     super(context);
   }
@@ -155,11 +155,11 @@ public final class PatchView extends FrameLayout {
     invalidateAll();
   }
 
-  
+
   // --------------------------------------------------------------------------------
   // Crude, hacky GUI code below.
   // TODO: Implement this properly!!!
-  
+
   private final Map<String, View> moduleViews = new HashMap<String, View>();
   private final Map<String, List<View>> inputPorts = new HashMap<String, List<View>>();
   private final Map<String, List<View>> outputPorts = new HashMap<String, List<View>>();
@@ -320,7 +320,7 @@ public final class PatchView extends FrameLayout {
 
   void drawOverlay(Canvas canvas) {
     int a[] = new int[4];
-    int b[] = new int[4]; 
+    int b[] = new int[4];
     Paint paint = new Paint();
     paint.setAntiAlias(true);
     paint.setColor(Color.RED);
@@ -337,7 +337,7 @@ public final class PatchView extends FrameLayout {
         int x1 = (b[0] + b[2]) / 2;
         int y1 = (b[1] + b[3]) / 2;
         path.moveTo(x0, y0);
-        path.cubicTo((x0 + x1) / 2, y0, (x0 + x1 ) / 2, y1, x1, y1);
+        path.cubicTo((x0 + x1) / 2, y0, (x0 + x1) / 2, y1, x1, y1);
       }
     }
     canvas.drawPath(path, paint);
@@ -354,7 +354,7 @@ public final class PatchView extends FrameLayout {
     coords[2] = coords[0] + v.getWidth();
     coords[3] = coords[1] + v.getHeight();
   }
-  
+
   private void invalidateAll() {
     invalidate();
     if (overlay != null) {

@@ -10,10 +10,10 @@
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_marginTop="32dip"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@+id/playButton" >
+        android:layout_below="@+id/playButton"
+        android:layout_marginTop="32dip" >
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView1"
@@ -30,8 +30,8 @@
                     android:id="@+id/moduleGrid"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:rowCount="32"
-                    android:columnCount="2" />
+                    android:columnCount="2"
+                    android:rowCount="32" />
 
                 <com.noisepages.nettoyeur.patchbay.control.PatchOverlay
                     android:id="@+id/patchOverlay"
