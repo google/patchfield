@@ -191,17 +191,16 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
   @Override
   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-    if (patchbay == null) {
-      return;
-    }
-    try {
-      if (isChecked) {
-        patchbay.start();
-      } else {
-        patchbay.stop();
+    if (patchbay != null) {
+      try {
+        if (isChecked) {
+          patchbay.start();
+        } else {
+          patchbay.stop();
+        }
+      } catch (RemoteException e) {
+        e.printStackTrace();
       }
-    } catch (RemoteException e) {
-      e.printStackTrace();
     }
   }
 }
