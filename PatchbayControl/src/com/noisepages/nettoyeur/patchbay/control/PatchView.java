@@ -36,16 +36,6 @@ public final class PatchView extends GridLayout {
   private final Map<Pair<String, Integer>, List<Pair<String, Integer>>> connections =
       new HashMap<Pair<String, Integer>, List<Pair<String, Integer>>>();
 
-  private Toast toast = null;
-
-  private void toast(String msg) {
-    if (toast == null) {
-      toast = Toast.makeText(getContext(), "", Toast.LENGTH_SHORT);
-    }
-    toast.setText(msg);
-    toast.show();
-  }
-
   public PatchView(Context context) {
     super(context);
   }
@@ -161,6 +151,16 @@ public final class PatchView extends GridLayout {
   // --------------------------------------------------------------------------------
   // Crude, hacky GUI code below.
   // --------------------------------------------------------------------------------
+
+  private Toast toast = null;
+
+  private void toast(String msg) {
+    if (toast == null) {
+      toast = Toast.makeText(getContext(), "", Toast.LENGTH_SHORT);
+    }
+    toast.setText(msg);
+    toast.show();
+  }
 
   private class Overlay extends View {
 
