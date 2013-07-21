@@ -148,9 +148,25 @@ public final class PatchView extends GridLayout {
   }
 
 
-  // --------------------------------------------------------------------------------
-  // Crude, hacky GUI code below.
-  // --------------------------------------------------------------------------------
+  /*
+   * Crude GUI code below.
+   * 
+   * Ideas for improvements:
+   * 
+   * - Improve support for screen formats: The current layout works best with landscape orientation
+   * on large tablets.
+   * 
+   * - Improve the visual appearance of play button and status line.
+   * 
+   * - Improve the placement of modules. Instead of misusing GridLayout, consider
+   * letting users move modules around, or use a graph layout algorithm to place modules.
+   * 
+   * - Improve drawing of patch cords so that they won't obscure modules views.
+   * 
+   * - Add support for deleting modules. (what gesture would be appropriate?)
+   * 
+   * - Implement support for saving and restoring patches.
+   */
 
   private Toast toast = null;
 
@@ -274,22 +290,7 @@ public final class PatchView extends GridLayout {
     moduleViews.put(module, moduleView);
 
     LinearLayout buttonLayout = (LinearLayout) moduleView.findViewById(R.id.inputPorts);
-    List<View> buttons = new ArrayList<View>();
-    inputPorts.put(module, buttons);
-    for (int i = 0; i < inputChannels; ++i) {
-      final ToggleButton button = new ToggleButton(getContext());
-      buttons.add(button);
-      button.setTextOn("In" + i);
-      button.setTextOff("In" + i);
-      button.setChecked(false);
-      buttonLayout.addView(button);
-      final int j = i;
-      button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-          handlePortEvent(buttonView, module, j, false, isChecked);
-        }
-      });
-    }
+    inputPorts.put(module, createPorts(module, inputChannels, buttonLayout, false));
 
     FrameLayout frame = (FrameLayout) moduleView.findViewById(R.id.moduleFrame);
     View view = notification.contentView.apply(getContext(), frame);
@@ -326,22 +327,7 @@ public final class PatchView extends GridLayout {
     frame.addView(view);
 
     buttonLayout = (LinearLayout) moduleView.findViewById(R.id.outputPorts);
-    buttons = new ArrayList<View>();
-    outputPorts.put(module, buttons);
-    for (int i = 0; i < outputChannels; ++i) {
-      final ToggleButton button = new ToggleButton(getContext());
-      buttons.add(button);
-      button.setTextOn("Out" + i);
-      button.setTextOff("Out" + i);
-      button.setChecked(false);
-      buttonLayout.addView(button);
-      final int j = i;
-      button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-          handlePortEvent(buttonView, module, j, true, isChecked);
-        }
-      });
-    }
+    outputPorts.put(module, createPorts(module, outputChannels, buttonLayout, true));
 
     boolean isActive = false;
     try {
@@ -350,6 +336,27 @@ public final class PatchView extends GridLayout {
       e.printStackTrace();
     }
     updateModuleView(module, isActive);
+  }
+
+  private ArrayList<View> createPorts(final String module, int channels, LinearLayout buttonLayout,
+      final boolean isOutput) {
+    ArrayList<View> buttons = new ArrayList<View>();
+    for (int i = 0; i < channels; ++i) {
+      final ToggleButton button = new ToggleButton(getContext());
+      buttons.add(button);
+      String text = (isOutput ? "Out" : "In") + i;
+      button.setTextOn(text);
+      button.setTextOff(text);
+      button.setChecked(false);
+      buttonLayout.addView(button);
+      final int j = i;
+      button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+          handlePortEvent(buttonView, module, j, isOutput, isChecked);
+        }
+      });
+    }
+    return buttons;
   }
 
   private void deleteModuleView(String module) {
