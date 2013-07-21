@@ -163,7 +163,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     playButton.setOnCheckedChangeListener(this);
     FrameLayout frame = (FrameLayout) findViewById(R.id.moduleFrame);
     patchView = new PatchView(this);
-    frame.addView(patchView);
+    patchView.init(this, frame);
     bindService(new Intent("IPatchbayService"), connection, Context.BIND_AUTO_CREATE);
   }
 

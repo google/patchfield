@@ -49,22 +49,23 @@ public final class PatchView extends GridLayout {
 
   public PatchView(Context context) {
     super(context);
-    init();
   }
 
   public PatchView(Context context, AttributeSet attrs) {
     super(context, attrs);
-    init();
   }
 
   public PatchView(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
-    init();
   }
 
-  private void init() {
+  public void init(Context context, FrameLayout frame) {
     setColumnCount(2);
     setRowCount(32);
+    frame.addView(this);
+    overlay = new PatchOverlay(context);
+    overlay.setPatchView(this);
+    frame.addView(overlay);
   }
 
   public void setPatchbay(IPatchbayService patchbay) {
