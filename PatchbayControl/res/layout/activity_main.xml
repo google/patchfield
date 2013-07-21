@@ -20,24 +20,11 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
 
-            <com.noisepages.nettoyeur.patchbay.control.PatchView
-                android:id="@+id/patchView"
+            <FrameLayout
+                android:id="@+id/moduleFrame"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:orientation="vertical" >
+                android:layout_height="fill_parent" />
 
-                <GridLayout
-                    android:id="@+id/moduleGrid"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:columnCount="2"
-                    android:rowCount="32" />
-
-                <com.noisepages.nettoyeur.patchbay.control.PatchOverlay
-                    android:id="@+id/patchOverlay"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent" />
-            </com.noisepages.nettoyeur.patchbay.control.PatchView>
         </HorizontalScrollView>
     </ScrollView>
 

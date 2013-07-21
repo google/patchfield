@@ -30,7 +30,7 @@ import android.widget.ToggleButton;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
 
-public final class PatchView extends FrameLayout {
+public final class PatchView extends GridLayout {
 
   private IPatchbayService patchbay;
   private final List<String> modules = new ArrayList<String>();
@@ -49,14 +49,22 @@ public final class PatchView extends FrameLayout {
 
   public PatchView(Context context) {
     super(context);
+    init();
   }
 
   public PatchView(Context context, AttributeSet attrs) {
     super(context, attrs);
+    init();
   }
 
   public PatchView(Context context, AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
+    init();
+  }
+
+  private void init() {
+    setColumnCount(2);
+    setRowCount(32);
   }
 
   public void setPatchbay(IPatchbayService patchbay) {
@@ -182,16 +190,11 @@ public final class PatchView extends FrameLayout {
 
   private void addModuleView(final String module, int inputChannels, int outputChannels,
       final Notification notification) {
-    if (overlay == null) {
-      overlay = (PatchOverlay) findViewById(R.id.patchOverlay);
-      overlay.setPatchView(this);
-    }
-    GridLayout moduleLayout = (GridLayout) findViewById(R.id.moduleGrid);
     View moduleView = inflate(getContext(), R.layout.module, null);
     // Warning: Atrocious hack to place view in the desired place, Part I.
-    moduleLayout.addView(new Space(getContext()));
-    moduleLayout.addView(new Space(getContext()));
-    moduleLayout.addView(moduleView);
+    addView(new Space(getContext()));
+    addView(new Space(getContext()));
+    addView(moduleView);
     moduleViews.put(module, moduleView);
 
     LinearLayout buttonLayout = (LinearLayout) moduleView.findViewById(R.id.inputPorts);
@@ -324,15 +327,14 @@ public final class PatchView extends FrameLayout {
   }
 
   private void deleteModuleView(String module) {
-    GridLayout moduleLayout = (GridLayout) findViewById(R.id.moduleGrid);
     View moduleView = moduleViews.remove(module);
     if (moduleView != null) {
       int index;
-      for (index = 0; !moduleView.equals(moduleLayout.getChildAt(index)); ++index);
-      moduleLayout.removeView(moduleView);
+      for (index = 0; !moduleView.equals(getChildAt(index)); ++index);
+      removeView(moduleView);
       // Warning: Atrocious hack to place view in the desired place, Part II.
-      while (index > 0 && moduleLayout.getChildAt(--index) instanceof Space) {
-        moduleLayout.removeViewAt(index);
+      while (index > 0 && getChildAt(--index) instanceof Space) {
+        removeViewAt(index);
       }
     }
     invalidateAll();

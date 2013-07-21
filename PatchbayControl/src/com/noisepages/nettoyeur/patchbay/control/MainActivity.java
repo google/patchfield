@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.FrameLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -160,7 +161,9 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     displayLine = (TextView) findViewById(R.id.displayLine);
     playButton = (Switch) findViewById(R.id.playButton);
     playButton.setOnCheckedChangeListener(this);
-    patchView = (PatchView) findViewById(R.id.patchView);
+    FrameLayout frame = (FrameLayout) findViewById(R.id.moduleFrame);
+    patchView = new PatchView(this);
+    frame.addView(patchView);
     bindService(new Intent("IPatchbayService"), connection, Context.BIND_AUTO_CREATE);
   }
 
