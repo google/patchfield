@@ -24,24 +24,23 @@
                 android:id="@+id/moduleFrame"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent" />
-
         </HorizontalScrollView>
     </ScrollView>
 
     <Switch
         android:id="@+id/playButton"
-        android:layout_marginTop="12dip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="12dip" />
 
     <TextView
         android:id="@+id/displayLine"
-        android:layout_marginLeft="12pt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/playButton"
+        android:layout_marginLeft="12pt"
         android:layout_toRightOf="@+id/playButton"
         android:text="@string/hello_world"
         android:textSize="20sp" />

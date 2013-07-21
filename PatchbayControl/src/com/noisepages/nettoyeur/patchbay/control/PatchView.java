@@ -16,7 +16,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Path;
 import android.os.RemoteException;
-import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -49,22 +48,6 @@ public final class PatchView extends GridLayout {
 
   public PatchView(Context context) {
     super(context);
-  }
-
-  public PatchView(Context context, AttributeSet attrs) {
-    super(context, attrs);
-  }
-
-  public PatchView(Context context, AttributeSet attrs, int defStyle) {
-    super(context, attrs, defStyle);
-  }
-
-  public void init(Context context, FrameLayout frame) {
-    setColumnCount(2);
-    setRowCount(32);
-    frame.addView(this);
-    overlay = new Overlay(context);
-    frame.addView(overlay);
   }
 
   public void setPatchbay(IPatchbayService patchbay) {
@@ -177,24 +160,27 @@ public final class PatchView extends GridLayout {
 
   // --------------------------------------------------------------------------------
   // Crude, hacky GUI code below.
-  // TODO: Implement this properly!!!
+  // --------------------------------------------------------------------------------
 
   private class Overlay extends View {
+
+    private final Paint paint = new Paint();
+    private final Path path = new Path();
+    private final int a[] = new int[4];
+    private final int b[] = new int[4];
+    
     public Overlay(Context context) {
       super(context);
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-      int a[] = new int[4];
-      int b[] = new int[4];
-      Paint paint = new Paint();
       paint.setAntiAlias(true);
       paint.setColor(Color.RED);
       paint.setStrokeWidth(12);
       paint.setStyle(Paint.Style.STROKE);
       paint.setStrokeCap(Cap.ROUND);
-      Path path = new Path();
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+      path.reset();
       for (Pair<String, Integer> p : connections.keySet()) {
         getCoordinates(outputPorts.get(p.first).get(p.second), a);
         int x0 = (a[0] + a[2]) / 2;
@@ -217,13 +203,21 @@ public final class PatchView extends GridLayout {
   private Overlay overlay = null;
   private ToggleButton selectedButton = null;
   private String selectedModule = null;
-  private int selectedInput = -1;;
-  private int selectedOutput = -1;;
+  private int selectedInput = -1;
+  private int selectedOutput = -1;
+
+  public void init(Context context, FrameLayout frame) {
+    setColumnCount(2);
+    setRowCount(32);
+    frame.addView(this);
+    overlay = new Overlay(context);
+    frame.addView(overlay);
+  }
 
   private void addModuleView(final String module, int inputChannels, int outputChannels,
       final Notification notification) {
     View moduleView = inflate(getContext(), R.layout.module, null);
-    // Warning: Atrocious hack to place view in the desired place, Part I.
+    // Warning: Atrocious hack to place views in the desired place, Part I.
     addView(new Space(getContext()));
     addView(new Space(getContext()));
     addView(moduleView);
@@ -364,7 +358,7 @@ public final class PatchView extends GridLayout {
       int index;
       for (index = 0; !moduleView.equals(getChildAt(index)); ++index);
       removeView(moduleView);
-      // Warning: Atrocious hack to place view in the desired place, Part II.
+      // Warning: Atrocious hack to place views in the desired place, Part II.
       while (index > 0 && getChildAt(--index) instanceof Space) {
         removeViewAt(index);
       }
