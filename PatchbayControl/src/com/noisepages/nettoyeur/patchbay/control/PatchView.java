@@ -63,8 +63,7 @@ public final class PatchView extends GridLayout {
     setColumnCount(2);
     setRowCount(32);
     frame.addView(this);
-    overlay = new PatchOverlay(context);
-    overlay.setPatchView(this);
+    overlay = new Overlay(context);
     frame.addView(overlay);
   }
 
@@ -180,10 +179,42 @@ public final class PatchView extends GridLayout {
   // Crude, hacky GUI code below.
   // TODO: Implement this properly!!!
 
+  private class Overlay extends View {
+    public Overlay(Context context) {
+      super(context);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+      int a[] = new int[4];
+      int b[] = new int[4];
+      Paint paint = new Paint();
+      paint.setAntiAlias(true);
+      paint.setColor(Color.RED);
+      paint.setStrokeWidth(12);
+      paint.setStyle(Paint.Style.STROKE);
+      paint.setStrokeCap(Cap.ROUND);
+      Path path = new Path();
+      for (Pair<String, Integer> p : connections.keySet()) {
+        getCoordinates(outputPorts.get(p.first).get(p.second), a);
+        int x0 = (a[0] + a[2]) / 2;
+        int y0 = (a[1] + a[3]) / 2;
+        for (Pair<String, Integer> q : connections.get(p)) {
+          getCoordinates(inputPorts.get(q.first).get(q.second), b);
+          int x1 = (b[0] + b[2]) / 2;
+          int y1 = (b[1] + b[3]) / 2;
+          path.moveTo(x0, y0);
+          path.cubicTo(x0, (y0 + y1) / 2, x1, (y0 + y1) / 2, x1, y1);
+        }
+      }
+      canvas.drawPath(path, paint);
+    }
+  }
+
   private final Map<String, View> moduleViews = new HashMap<String, View>();
   private final Map<String, List<View>> inputPorts = new HashMap<String, List<View>>();
   private final Map<String, List<View>> outputPorts = new HashMap<String, List<View>>();
-  private PatchOverlay overlay = null;
+  private Overlay overlay = null;
   private ToggleButton selectedButton = null;
   private String selectedModule = null;
   private int selectedInput = -1;;
@@ -341,31 +372,6 @@ public final class PatchView extends GridLayout {
     invalidateAll();
   }
 
-  void drawOverlay(Canvas canvas) {
-    int a[] = new int[4];
-    int b[] = new int[4];
-    Paint paint = new Paint();
-    paint.setAntiAlias(true);
-    paint.setColor(Color.RED);
-    paint.setStrokeWidth(12);
-    paint.setStyle(Paint.Style.STROKE);
-    paint.setStrokeCap(Cap.ROUND);
-    Path path = new Path();
-    for (Pair<String, Integer> p : connections.keySet()) {
-      getCoordinates(outputPorts.get(p.first).get(p.second), a);
-      int x0 = (a[0] + a[2]) / 2;
-      int y0 = (a[1] + a[3]) / 2;
-      for (Pair<String, Integer> q : connections.get(p)) {
-        getCoordinates(inputPorts.get(q.first).get(q.second), b);
-        int x1 = (b[0] + b[2]) / 2;
-        int y1 = (b[1] + b[3]) / 2;
-        path.moveTo(x0, y0);
-        path.cubicTo(x0, (y0 + y1) / 2, x1, (y0 + y1) / 2, x1, y1);
-      }
-    }
-    canvas.drawPath(path, paint);
-  }
-
   private void getCoordinates(View v, int coords[]) {
     int p[] = new int[2];
     v.getLocationOnScreen(p);
@@ -387,8 +393,6 @@ public final class PatchView extends GridLayout {
 
   private void invalidateAll() {
     invalidate();
-    if (overlay != null) {
-      overlay.invalidate();
-    }
+    overlay.invalidate();
   }
 }
