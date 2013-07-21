@@ -61,7 +61,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
       runOnUiThread(new Runnable() {
         @Override
         public void run() {
-          addModule(module, inputs, outputs, notification);
+          patchView.addModule(module, inputs, outputs, notification);
         }
       });
     }
@@ -145,8 +145,8 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
             + patchbay.getBufferSize() + ", protocol version: " + patchbay.getProtocolVersion());
         List<String> modules = patchbay.getModules();
         for (String module : modules) {
-          addModule(module, patchbay.getInputChannels(module), patchbay.getOutputChannels(module),
-              patchbay.getNotification(module));
+          patchView.addModule(module, patchbay.getInputChannels(module),
+              patchbay.getOutputChannels(module), patchbay.getNotification(module));
         }
       } catch (RemoteException e) {
         e.printStackTrace();
@@ -203,10 +203,5 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     } catch (RemoteException e) {
       e.printStackTrace();
     }
-  }
-
-  private void addModule(final String module, final int inputs, final int outputs,
-      final Notification notification) {
-    patchView.addModule(module, inputs, outputs, notification);
   }
 }
