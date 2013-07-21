@@ -268,21 +268,6 @@ public final class PatchView extends GridLayout {
 
     FrameLayout frame = (FrameLayout) moduleView.findViewById(R.id.moduleFrame);
     View view = notification.contentView.apply(getContext(), frame);
-    view.setOnLongClickListener(new OnLongClickListener() {
-      @Override
-      public boolean onLongClick(View v) {
-        try {
-          if (patchbay.isActive(module)) {
-            patchbay.deactivateModule(module);
-          } else {
-            patchbay.activateModule(module);
-          }
-        } catch (RemoteException e) {
-          e.printStackTrace();
-        }
-        return true;
-      }
-    });
     view.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
@@ -296,6 +281,21 @@ public final class PatchView extends GridLayout {
         } else {
           toast("Unable to launch app: App did not provide launch info.");
         }
+      }
+    });
+    view.setOnLongClickListener(new OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View v) {
+        try {
+          if (patchbay.isActive(module)) {
+            patchbay.deactivateModule(module);
+          } else {
+            patchbay.activateModule(module);
+          }
+        } catch (RemoteException e) {
+          e.printStackTrace();
+        }
+        return true;
       }
     });
     frame.addView(view);
