@@ -197,10 +197,10 @@ public final class PatchView extends GridLayout {
     }
   }
 
+  private Overlay overlay = null;
   private final Map<String, View> moduleViews = new HashMap<String, View>();
   private final Map<String, List<View>> inputPorts = new HashMap<String, List<View>>();
   private final Map<String, List<View>> outputPorts = new HashMap<String, List<View>>();
-  private Overlay overlay = null;
   private ToggleButton selectedButton = null;
   private String selectedModule = null;
   private int selectedInput = -1;
