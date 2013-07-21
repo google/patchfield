@@ -168,7 +168,7 @@ public final class PatchView extends GridLayout {
     private final Path path = new Path();
     private final int a[] = new int[4];
     private final int b[] = new int[4];
-    
+
     public Overlay(Context context) {
       super(context);
       paint.setAntiAlias(true);
@@ -201,10 +201,60 @@ public final class PatchView extends GridLayout {
   private final Map<String, View> moduleViews = new HashMap<String, View>();
   private final Map<String, List<View>> inputPorts = new HashMap<String, List<View>>();
   private final Map<String, List<View>> outputPorts = new HashMap<String, List<View>>();
-  private ToggleButton selectedButton = null;
-  private String selectedModule = null;
-  private int selectedInput = -1;
-  private int selectedOutput = -1;
+
+  private CompoundButton inputButton = null;
+  private CompoundButton outputButton = null;
+  private String inputModule = null;
+  private String outputModule = null;
+  private int inputPort = -1;
+  private int outputPort = -1;
+
+  private void handlePortEvent(CompoundButton button, String module, int port, boolean isOutput,
+      boolean isChecked) {
+    if (!isChecked) {
+      clearInputPortState();
+      clearOutputPortState();
+      return;
+    }
+    if (isOutput) {
+      clearOutputPortState();
+      outputButton = button;
+      outputModule = module;
+      outputPort = port;
+    } else {
+      clearInputPortState();
+      inputButton = button;
+      inputModule = module;
+      inputPort = port;
+    }
+    if (inputButton != null && outputButton != null) {
+      try {
+        if (patchbay.isConnected(outputModule, outputPort, inputModule, inputPort)) {
+          patchbay.disconnectPorts(outputModule, outputPort, inputModule, inputPort);
+        } else {
+          patchbay.connectPorts(outputModule, outputPort, inputModule, inputPort);
+        }
+      } catch (RemoteException e) {
+        e.printStackTrace();
+      }
+      clearInputPortState();
+      clearOutputPortState();
+    }
+  }
+
+  private void clearInputPortState() {
+    if (inputButton != null) {
+      inputButton.setChecked(false);
+      inputButton = null;
+    }
+  }
+
+  private void clearOutputPortState() {
+    if (outputButton != null) {
+      outputButton.setChecked(false);
+      outputButton = null;
+    }
+  }
 
   public void init(Context context, FrameLayout frame) {
     setColumnCount(2);
@@ -236,32 +286,7 @@ public final class PatchView extends GridLayout {
       final int j = i;
       button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-          if (isChecked) {
-            if (selectedButton == null) {
-              selectedButton = button;
-              selectedModule = module;
-              selectedInput = j;
-              return;
-            } else if (selectedOutput >= 0) {
-              try {
-                if (patchbay.isConnected(selectedModule, selectedOutput, module, j)) {
-                  patchbay.disconnectPorts(selectedModule, selectedOutput, module, j);
-                } else {
-                  patchbay.connectPorts(selectedModule, selectedOutput, module, j);
-                }
-              } catch (RemoteException e) {
-                e.printStackTrace();
-              }
-            }
-          }
-          button.setChecked(false);
-          if (selectedButton != null) {
-            selectedButton.setChecked(false);
-            selectedButton = null;
-            selectedModule = null;
-            selectedInput = -1;
-            selectedOutput = -1;
-          }
+          handlePortEvent(buttonView, module, j, false, isChecked);
         }
       });
     }
@@ -313,32 +338,7 @@ public final class PatchView extends GridLayout {
       final int j = i;
       button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-          if (isChecked) {
-            if (selectedButton == null) {
-              selectedButton = button;
-              selectedModule = module;
-              selectedOutput = j;
-              return;
-            } else if (selectedInput >= 0) {
-              try {
-                if (patchbay.isConnected(module, j, selectedModule, selectedInput)) {
-                  patchbay.disconnectPorts(module, j, selectedModule, selectedInput);
-                } else {
-                  patchbay.connectPorts(module, j, selectedModule, selectedInput);
-                }
-              } catch (RemoteException e) {
-                e.printStackTrace();
-              }
-            }
-          }
-          button.setChecked(false);
-          if (selectedButton != null) {
-            selectedButton.setChecked(false);
-            selectedButton = null;
-            selectedModule = null;
-            selectedInput = -1;
-            selectedOutput = -1;
-          }
+          handlePortEvent(buttonView, module, j, true, isChecked);
         }
       });
     }
