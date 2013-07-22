@@ -375,10 +375,10 @@ public final class PatchView extends GridLayout {
 
   private void getCoordinates(View v, int coords[]) {
     int p[] = new int[2];
-    v.getLocationOnScreen(p);
+    v.getLocationInWindow(p);
     coords[0] = p[0];
     coords[1] = p[1];
-    getLocationOnScreen(p);
+    getLocationInWindow(p);
     coords[0] -= p[0];
     coords[1] -= p[1];
     coords[2] = coords[0] + v.getWidth();
