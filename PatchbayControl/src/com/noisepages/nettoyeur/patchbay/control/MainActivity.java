@@ -97,7 +97,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     }
 
     @Override
-    public void onModulesConnected(final String source, final int sourcePort, final String sink,
+    public void onPortsConnected(final String source, final int sourcePort, final String sink,
         final int sinkPort) throws RemoteException {
       runOnUiThread(new Runnable() {
         @Override
@@ -108,7 +108,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     }
 
     @Override
-    public void onModulesDisconnected(final String source, final int sourcePort, final String sink,
+    public void onPortsDisconnected(final String source, final int sourcePort, final String sink,
         final int sinkPort) throws RemoteException {
       runOnUiThread(new Runnable() {
         @Override

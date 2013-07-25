@@ -231,7 +231,7 @@ public class Patchbay implements IPatchbayService {
       int i = clients.beginBroadcast();
       while (--i >= 0) {
         try {
-          clients.getBroadcastItem(i).onModulesConnected(source, sourcePort, sink, sinkPort);
+          clients.getBroadcastItem(i).onPortsConnected(source, sourcePort, sink, sinkPort);
         } catch (RemoteException e) {
           // Do nothing; RemoteCallbackList will take care of the cleanup.
         }
@@ -267,7 +267,7 @@ public class Patchbay implements IPatchbayService {
       int i = clients.beginBroadcast();
       while (--i >= 0) {
         try {
-          clients.getBroadcastItem(i).onModulesDisconnected(source, sourcePort, sink, sinkPort);
+          clients.getBroadcastItem(i).onPortsDisconnected(source, sourcePort, sink, sinkPort);
         } catch (RemoteException e) {
           // Do nothing; RemoteCallbackList will take care of the cleanup.
         }

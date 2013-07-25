@@ -14,8 +14,8 @@ oneway interface IPatchbayClient {
   void onModuleActivated(String name);
   void onModuleDeactivated(String name);
     
-  void onModulesConnected(String source, int sourcePort, String sink, int sinkPort);
-  void onModulesDisconnected(String source, int sourcePort, String sink, int sinkPort);
+  void onPortsConnected(String source, int sourcePort, String sink, int sinkPort);
+  void onPortsDisconnected(String source, int sourcePort, String sink, int sinkPort);
     
   void onStart();
   void onStop();
