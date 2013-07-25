@@ -206,7 +206,7 @@ static void add_nsecs(struct timespec *t, int dt) {
 }
 
 static const float float_to_short = SHRT_MAX;
-static const float short_to_float = 1 / (float) SHRT_MAX;
+static const float short_to_float = 1 / (1 + (float) SHRT_MAX);
 
 static void process(void *context, int sample_rate, int buffer_frames,
      int input_channels, const short *input_buffer,
@@ -259,8 +259,9 @@ static void process(void *context, int sample_rate, int buffer_frames,
     float *b = ami_get_audio_buffer(pb->shm_ptr, output->input_buffer);
     for (i = 0; i < output_channels; ++i) {
       for (j = 0; j < buffer_frames; ++j) {
-        output_buffer[i + j * output_channels] =
-          (short) (float_to_short * b[j]);
+        float v = b[j];
+        output_buffer[i + j * output_channels] = (short) (float_to_short *
+            (v < -1.0f ? -1.0f : (v > 1.0f ? 1.0f : v)));
       }
       b += buffer_frames;
     }
