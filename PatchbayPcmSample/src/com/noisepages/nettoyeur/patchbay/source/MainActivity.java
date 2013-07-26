@@ -14,6 +14,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,7 +24,6 @@ import com.noisepages.nettoyeur.patchbay.IPatchbayService;
 
 public class MainActivity extends Activity {
 
-  @SuppressWarnings("unused")
   private static final String TAG = "PatchbayPcmSample";
 
   private IPatchbayService patchbay = null;
@@ -40,7 +40,14 @@ public class MainActivity extends Activity {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
       patchbay = IPatchbayService.Stub.asInterface(service);
-      InputStream is = getResources().openRawResource(R.raw.rst);
+      int srate = 44100;
+      try {
+        srate = patchbay.getSampleRate();
+      } catch (RemoteException e) {
+        e.printStackTrace();
+      }
+      Log.i(TAG, "Loading resource for sample rate " + srate + ".");
+      InputStream is = getResources().openRawResource(srate == 44100 ? R.raw.rst44100 : R.raw.rst48000);
       ByteBuffer buffer;
       try {
         buffer = ByteBuffer.allocateDirect(is.available());
