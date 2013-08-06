@@ -35,7 +35,7 @@ import com.noisepages.nettoyeur.patchbay.AudioModule;
 public class PdModule extends AudioModule {
 
   static {
-    PdBase.blockSize(); // Make sure to load PdBase first.
+    PdBase.blockSize();  // Make sure to load PdBase first.
     System.loadLibrary("pdmodule");
   }
 
