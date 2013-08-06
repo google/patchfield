@@ -37,7 +37,6 @@ public abstract class AudioModule {
 
   private String name = null;
   private int token = -1;
-  private int index = -1;
   private long handle = 0;
 
   private final Notification notification;
@@ -65,6 +64,9 @@ public abstract class AudioModule {
    * Specifically, it sets up the shared memory between the local module and the Patchbay service,
    * creates a new module in the service, and connects it to the local module.
    * 
+   * A module can only be configured once. If it times out, it cannot be reinstated and should be
+   * released.
+   * 
    * @param patchbay stub for communicating with the Patchbay service
    * @param name of the new audio module in Patchbay
    * @return 0 on success, a negative error on failure; use {@link PatchbayException} to interpret
@@ -76,7 +78,7 @@ public abstract class AudioModule {
     if (version != getProtocolVersion()) {
       return PatchbayException.PROTOCOL_VERSION_MISMATCH;
     }
-    if (this.name != null) {
+    if (this.handle != 0) {
       throw new IllegalStateException("Module is already configured.");
     }
     FdReceiverThread t = new FdReceiverThread();
@@ -96,12 +98,12 @@ public abstract class AudioModule {
     if (token < 0) {
       return token;
     }
-    index = patchbay.createModule(name, getInputChannels(), getOutputChannels(), notification);
+    int index = patchbay.createModule(name, getInputChannels(), getOutputChannels(), notification);
     if (index < 0) {
       SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
       return index;
     }
-    handle = configure(version, token, index);
+    handle = createRunner(version, token, index);
     if (handle == 0) {
       patchbay.deleteModule(name);
       SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
@@ -125,14 +127,14 @@ public abstract class AudioModule {
    * @throws RemoteException
    */
   public void release(IPatchbayService patchbay) throws RemoteException {
-    if (name != null) {
+    if (handle != 0) {
       patchbay.deleteModule(name);
       release(handle);
       release();
       SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
       name = null;
+      handle = 0;
       token = -1;
-      index = -1;
     } else {
       Log.w(TAG, "Not configured; nothing to release.");
     }
@@ -143,14 +145,6 @@ public abstract class AudioModule {
    */
   public String getName() {
     return name;
-  }
-
-  protected int getToken() {
-    return token;
-  }
-
-  protected int getIndex() {
-    return index;
   }
 
   protected Notification getNotification() {
@@ -171,7 +165,7 @@ public abstract class AudioModule {
 
   public static native int getProtocolVersion();
 
-  private native long configure(int version, int token, int index);
+  private native long createRunner(int version, int token, int index);
 
   private native void release(long handle);
 

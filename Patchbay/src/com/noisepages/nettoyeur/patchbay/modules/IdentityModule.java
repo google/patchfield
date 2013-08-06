@@ -50,7 +50,7 @@ public class IdentityModule extends AudioModule {
 
   @Override
   protected void release() {
-    // Nothing to do.
+    // Nothing to release.
   }
 
   private native boolean configure(long handle);

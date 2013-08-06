@@ -17,10 +17,10 @@ JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_AudioModule_getPro
 
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_AudioModule
- * Method:    configure
+ * Method:    createRunner
  * Signature: (III)J
  */
-JNIEXPORT jlong JNICALL Java_com_noisepages_nettoyeur_patchbay_AudioModule_configure
+JNIEXPORT jlong JNICALL Java_com_noisepages_nettoyeur_patchbay_AudioModule_createRunner
   (JNIEnv *, jobject, jint, jint, jint);
 
 /*
