@@ -29,8 +29,6 @@ public class IdentityModule extends AudioModule {
     System.loadLibrary("identity");
   }
 
-  private long ptr = 0;
-
   public IdentityModule(Notification notification) {
     super(notification);
   }
@@ -46,37 +44,14 @@ public class IdentityModule extends AudioModule {
   }
 
   @Override
-  protected boolean configure(String name, int version, int token, int index, int sampleRate,
-      int bufferSize) {
-    if (ptr != 0) {
-      throw new IllegalStateException("Module has already been configured.");
-    }
-    ptr = createModule(version, token, index);
-    return ptr != 0;
+  protected boolean configure(String name, long handle, int sampleRate, int bufferSize) {
+    return configure(handle);
   }
 
   @Override
   protected void release() {
-    if (ptr != 0) {
-      release(ptr);
-      ptr = 0;
-    }
+    // Nothing to do.
   }
 
-  @Override
-  public boolean hasTimedOut() {
-    if (ptr == 0) {
-      throw new IllegalStateException("Module is not configured.");
-    }
-    return hasTimedOut(ptr);
-  }
-
-  @Override
-  public native int getProtocolVersion();
-
-  private native long createModule(int version, int token, int index);
-
-  private native void release(long ptr);
-
-  private native boolean hasTimedOut(long ptr);
+  private native boolean configure(long handle);
 }

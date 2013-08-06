@@ -9,14 +9,6 @@ extern "C" {
 #endif
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_modules_LowpassModule
- * Method:    getProtocolVersion
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_getProtocolVersion
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_noisepages_nettoyeur_patchbay_modules_LowpassModule
  * Method:    getMaxChannels
  * Signature: ()I
  */
@@ -34,10 +26,10 @@ JNIEXPORT void JNICALL Java_com_noisepages_nettoyeur_patchbay_modules_LowpassMod
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_modules_LowpassModule
  * Method:    createModule
- * Signature: (IIII)J
+ * Signature: (JI)J
  */
 JNIEXPORT jlong JNICALL Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_createModule
-  (JNIEnv *, jobject, jint, jint, jint, jint);
+  (JNIEnv *, jobject, jlong, jint);
 
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_modules_LowpassModule
@@ -45,14 +37,6 @@ JNIEXPORT jlong JNICALL Java_com_noisepages_nettoyeur_patchbay_modules_LowpassMo
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_release
-  (JNIEnv *, jobject, jlong);
-
-/*
- * Class:     com_noisepages_nettoyeur_patchbay_modules_LowpassModule
- * Method:    hasTimedOut
- * Signature: (J)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_hasTimedOut
   (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus

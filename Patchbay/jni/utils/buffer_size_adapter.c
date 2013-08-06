@@ -27,7 +27,6 @@ typedef struct {
 } bsa_ring_buffer;
 
 struct _buffer_size_adapter {
-  audio_module_runner *amr;
   int host_buffer_frames;
   int user_buffer_frames;
   void *user_context;
@@ -140,8 +139,7 @@ static void release_buffer(bsa_ring_buffer *rb) {
 }
 
 buffer_size_adapter *bsa_create(
-    int version, int token, int index,
-    int host_buffer_frames, int user_buffer_frames,
+    void *handle, int host_buffer_frames, int user_buffer_frames,
     int input_channels, int output_channels,
     audio_module_process_t user_process, void *user_context) {
   buffer_size_adapter *adapter = malloc(sizeof(buffer_size_adapter));
@@ -186,26 +184,12 @@ buffer_size_adapter *bsa_create(
       adapter->output_buffer = NULL;
     }
   }
-  if (adapter) {
-    adapter->amr = am_create(version, token, index, bsa_process, adapter);
-    if (!adapter->amr) {
-      release_buffer(adapter->input_buffer);
-      release_buffer(adapter->output_buffer);
-      free(adapter);
-      adapter = NULL;
-    }
-  }
+  am_configure(handle, bsa_process, adapter);
   return adapter;
 }
 
 void bsa_release(buffer_size_adapter *adapter) {
-  am_release(adapter->amr);
   release_buffer(adapter->input_buffer);
   release_buffer(adapter->output_buffer);
   free(adapter);
 }
-
-audio_module_runner *bsa_get_runner(buffer_size_adapter *adapter) {
-  return adapter->amr;
-}
-

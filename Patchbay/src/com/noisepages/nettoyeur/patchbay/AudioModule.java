@@ -26,39 +26,19 @@ import com.noisepages.nettoyeur.patchbay.internal.SharedMemoryUtils;
  * and releasing audio modules; these implementations will involve native code using the native
  * audio_module library in Patchbay/jni.
  * </p>
- * 
- * <p>
- * The intended usage is to call the configure method once to set up the audio module, and to call
- * release when it is done. If the module times out (due to a misbehaving audio processing
- * callback), the recommended response is to just release the module (and to create a new instance
- * if you still need its functionality).
- * </p>
- * 
- * <p>
- * If, however, you want to reinstate an audio module that has timed out, you need to perform the
- * following steps (in native code):
- * </p>
- * <ol>
- * <li>Call au_release(...) to release the data structure that connects your local audio module to
- * its representation in the remote service.</li>
- * 
- * <li>If the processing context of your audio module is mutable, make sure it is intact. (The
- * timeout interrupts the processing callback with a real-time signal and then exits the rendering
- * loop with a nonlocal goto, i.e., chances are that a timeout will leave any mutable context in an
- * invalid state.)</li>
- * 
- * <li>Call au_create(...) again, with the same token and index as before. This will reestablish the
- * connection between your local audio module and the remote service. The methods getToken and
- * getIndex exist for this purpose.</li>
- * </ol>
  */
 public abstract class AudioModule {
+
+  static {
+    System.loadLibrary("audiomodulejava");
+  }
 
   private static final String TAG = "AudioModule";
 
   private String name = null;
   private int token = -1;
   private int index = -1;
+  private long handle = 0;
 
   private final Notification notification;
 
@@ -71,8 +51,8 @@ public abstract class AudioModule {
   }
 
   /**
-   * @param notification to be passed to the Patchbay service, so that the service can
-   *        associate an audio module with an app. May be null.
+   * @param notification to be passed to the Patchbay service, so that the service can associate an
+   *        audio module with an app. May be null.
    */
   protected AudioModule(Notification notification) {
     this.notification = notification;
@@ -121,7 +101,14 @@ public abstract class AudioModule {
       SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
       return index;
     }
-    if (!configure(name, version, token, index, patchbay.getSampleRate(), patchbay.getBufferSize())) {
+    handle = configure(version, token, index);
+    if (handle == 0) {
+      patchbay.deleteModule(name);
+      SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
+      return PatchbayException.FAILURE;
+    }
+    if (!configure(name, handle, patchbay.getSampleRate(), patchbay.getBufferSize())) {
+      release(handle);
       patchbay.deleteModule(name);
       SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
       return PatchbayException.FAILURE;
@@ -140,6 +127,7 @@ public abstract class AudioModule {
   public void release(IPatchbayService patchbay) throws RemoteException {
     if (name != null) {
       patchbay.deleteModule(name);
+      release(handle);
       release();
       SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
       name = null;
@@ -169,16 +157,23 @@ public abstract class AudioModule {
     return notification;
   }
 
-  public abstract boolean hasTimedOut();
-
-  public abstract int getProtocolVersion();
+  public final boolean hasTimedOut() {
+    return handle != 0 && hasTimedOut(handle);
+  }
 
   public abstract int getInputChannels();
 
   public abstract int getOutputChannels();
 
-  protected abstract boolean configure(String name, int version, int token, int index,
-      int sampleRate, int bufferSize);
+  protected abstract boolean configure(String name, long handle, int sampleRate, int bufferSize);
 
   protected abstract void release();
+
+  public static native int getProtocolVersion();
+
+  private native long configure(int version, int token, int index);
+
+  private native void release(long handle);
+
+  private native boolean hasTimedOut(long handle);
 }

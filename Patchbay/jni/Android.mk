@@ -5,12 +5,8 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := audiomodule
-LOCAL_EXPORT_CFLAGS := -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
-LOCAL_EXPORT_LDLIBS := -lOpenSLES -llog
-LOCAL_SRC_FILES := audio_module.c internal/audio_module_internal.c \
-	internal/simple_barrier.c internal/shared_memory_internal.c \
-	opensl_stream/opensl_stream.c
+LOCAL_STATIC_LIBRARIES := audiomoduleinternal
+LOCAL_SRC_FILES := audio_module.c
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
@@ -53,13 +49,28 @@ include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 
+LOCAL_MODULE := audiomoduleinternal
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
+LOCAL_EXPORT_CFLAGS := -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast
+LOCAL_EXPORT_LDLIBS := -lOpenSLES -llog
+LOCAL_SRC_FILES := internal/audio_module_internal.c \
+	internal/simple_barrier.c internal/shared_memory_internal.c \
+	opensl_stream/opensl_stream.c
+include $(BUILD_STATIC_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := audiomodulejava
+LOCAL_STATIC_LIBRARIES := audiomoduleinternal
+LOCAL_SRC_FILES := internal/audio_module_java.c
+include $(BUILD_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+
 LOCAL_MODULE := patchbay
 LOCAL_CFLAGS := -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast
-LOCAL_C_INCLUDES := $(LOCAL_PATH)
-LOCAL_LDLIBS := -lOpenSLES -llog
-LOCAL_SRC_FILES := internal/patchbay.c internal/shared_memory_internal.c \
-	internal/audio_module_internal.c internal/simple_barrier.c \
-	opensl_stream/opensl_stream.c
+LOCAL_STATIC_LIBRARIES := audiomoduleinternal
+LOCAL_SRC_FILES := internal/patchbay.c
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)

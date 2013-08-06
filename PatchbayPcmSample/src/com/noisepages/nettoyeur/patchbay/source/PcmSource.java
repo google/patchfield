@@ -47,9 +47,8 @@ public class PcmSource extends AudioModule {
   }
 
   @Override
-  protected boolean configure(String name, int version, int token, int index, int sampleRate,
-      int bufferSize) {
-    ptr = createSource(version, token, index, buffer);
+  protected boolean configure(String name, long handle, int sampleRate, int bufferSize) {
+    ptr = createSource(handle, buffer);
     return ptr != 0;
   }
 
@@ -61,20 +60,7 @@ public class PcmSource extends AudioModule {
     }
   }
 
-  @Override
-  public boolean hasTimedOut() {
-    if (ptr == 0) {
-      throw new IllegalStateException("Module is not configured.");
-    }
-    return hasTimedOut(ptr);
-  }
-
-  @Override
-  public native int getProtocolVersion();
-
-  private native long createSource(int version, int token, int index, ByteBuffer buffer);
-
-  private native boolean hasTimedOut(long ptr);
+  private native long createSource(long handle, ByteBuffer buffer);
 
   private native void release(long ptr);
 }

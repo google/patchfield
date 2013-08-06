@@ -46,7 +46,7 @@ public abstract class JavaModule extends AudioModule {
   private final Runnable processor = new Runnable() {
     @Override
     public void run() {
-      while (!hasTimedOut(ptr)) {
+      while (!hasTimedOut()) {
         fillInputBuffer(ptr, inputBuffer);
         if (Thread.interrupted()) {
           break;
@@ -81,14 +81,6 @@ public abstract class JavaModule extends AudioModule {
       float[] inputBuffer, int outputChannels, float[] outputBuffer);
 
   @Override
-  public boolean hasTimedOut() {
-    if (ptr == 0) {
-      throw new IllegalStateException("Module is not configured.");
-    }
-    return hasTimedOut(ptr);
-  }
-
-  @Override
   public int getInputChannels() {
     return inputChannels;
   }
@@ -99,11 +91,9 @@ public abstract class JavaModule extends AudioModule {
   }
 
   @Override
-  protected boolean configure(String name, int version, int token, int index, int sampleRate,
-      int hostBufferSize) {
+  protected boolean configure(String name, long handle, int sampleRate, int hostBufferSize) {
     this.sampleRate = sampleRate;
-    ptr =
-        configure(version, token, index, hostBufferSize, bufferSize, inputChannels, outputChannels);
+    ptr = configure(handle, hostBufferSize, bufferSize, inputChannels, outputChannels);
     if (ptr != 0) {
       renderThread = new Thread(processor);
       renderThread.start();
@@ -131,13 +121,8 @@ public abstract class JavaModule extends AudioModule {
     }
   }
 
-  @Override
-  public native int getProtocolVersion();
-
-  private native boolean hasTimedOut(long ptr);
-
-  private native long configure(int version, int token, int index, int hostBufferSize,
-      int bufferSize, int inputChannels, int outputChannels);
+  private native long configure(long handle, int hostBufferSize, int bufferSize, int inputChannels,
+      int outputChannels);
 
   private native void release(long ptr);
 

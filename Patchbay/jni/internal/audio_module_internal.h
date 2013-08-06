@@ -26,9 +26,12 @@
 
 #include "simple_barrier.h"
 
+#include <pthread.h>
 #include <stddef.h>
 #include <time.h>
 #include <unistd.h>
+
+#define PATCHBAY_PROTOCOL_VERSION 6
 
 #define MAX_MODULES 32 
 #define MAX_CONNECTIONS 16 
@@ -68,10 +71,25 @@ typedef struct {
   ptrdiff_t ready;
 } audio_module;
 
+typedef struct {
+  int shm_fd;
+  void *shm_ptr;
+  int index;
+  pthread_t thread;
+  simple_barrier_t launched;
+  int launch_counter;
+  int done;
+  int timed_out;
+  audio_module_process_t process;
+  void *context;
+} audio_module_runner;
+
 audio_module *ami_get_audio_module(void *p, int index);
 float *ami_get_audio_buffer(void *p, ptrdiff_t offset);
 simple_barrier_t *ami_get_barrier(void *p, ptrdiff_t offset);
 void ami_collect_input(void *p, int index);
-size_t ami_get_protected_size();
+audio_module_runner *ami_create(int version, int token, int index);
+void ami_release(audio_module_runner *p);
+int ami_has_timed_out(audio_module_runner *p);
 
 #endif

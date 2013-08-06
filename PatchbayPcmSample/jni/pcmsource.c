@@ -22,7 +22,6 @@
 #include <stdlib.h>
 
 typedef struct {
-  audio_module_runner *handle;
   float *buffer;
   int index;
   int size;
@@ -54,17 +53,14 @@ static void process_func(void *context, int sample_rate, int buffer_frames,
 
 JNIEXPORT jlong JNICALL
 Java_com_noisepages_nettoyeur_patchbay_source_PcmSource_createSource
-(JNIEnv *env, jobject obj, jint version, jint token, jint index, jobject buffer) {
+(JNIEnv *env, jobject obj, jlong p, jobject buffer) {
   pcm_source *data = malloc(sizeof(pcm_source));
-  data->handle = am_create(version, token, index, process_func, data);
-  if (data->handle) {
+  if (data) {
+    am_configure((void *) p, process_func, data);
     data->buffer = (*env)->GetDirectBufferAddress(env, buffer);
     data->size =
       (*env)->GetDirectBufferCapacity(env, buffer) / sizeof(float);
     data->index = 0;
-  } else {
-    free(data);
-    data = NULL;
   }
   return (jlong) data;
 }
@@ -73,19 +69,5 @@ JNIEXPORT void JNICALL
 Java_com_noisepages_nettoyeur_patchbay_source_PcmSource_release
 (JNIEnv *env, jobject obj, jlong p) {
   pcm_source *data = (pcm_source *) p;
-  am_release(data->handle);
   free(data);
-}
-
-JNIEXPORT jboolean JNICALL
-Java_com_noisepages_nettoyeur_patchbay_source_PcmSource_hasTimedOut
-(JNIEnv *env, jobject obj, jlong p) {
-  pcm_source *data = (pcm_source *) p;
-  return am_has_timed_out(data->handle);
-}
-
-JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchbay_source_PcmSource_getProtocolVersion
-(JNIEnv *env, jobject obj) {
-  return PATCHBAY_PROTOCOL_VERSION;
 }

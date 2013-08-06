@@ -27,24 +27,10 @@ static void process_jm(void *context, int sample_rate, int buffer_frames,
   sb_wait_and_clear(&jm->ready, NULL);
 }
 
-JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_getProtocolVersion
-(JNIEnv *env, jobject obj) {
-  return PATCHBAY_PROTOCOL_VERSION;
-}
-
-JNIEXPORT jboolean JNICALL
-Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_hasTimedOut
-(JNIEnv *env, jobject obj, jlong p) {
-  jmodule *jm = (jmodule *) p;
-  return am_has_timed_out(bsa_get_runner(jm->bsa));
-}
-
 JNIEXPORT jlong JNICALL
 Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_configure
-(JNIEnv *env, jobject obj, jint version, jint token, jint index, jint
- host_buffer_size, jint user_buffer_size, jint input_channels, jint
- output_channels) {
+(JNIEnv *env, jobject obj, jlong p, jint host_buffer_size,
+ jint user_buffer_size, jint input_channels, jint output_channels) {
   jmodule *jm = malloc(sizeof(jmodule));
   if (jm) {
     sb_clobber(&jm->wake);
@@ -52,8 +38,8 @@ Java_com_noisepages_nettoyeur_patchbay_modules_JavaModule_configure
     jm->input_buffer = NULL;
     jm->output_buffer = NULL;
     jm->done = 0;
-    jm->bsa = bsa_create(version, token, index, host_buffer_size,
-        user_buffer_size, input_channels, output_channels, process_jm, jm);
+    jm->bsa = bsa_create((void *) p, host_buffer_size, user_buffer_size,
+        input_channels, output_channels, process_jm, jm);
     if (!jm->bsa) {
       free(jm);
       jm = NULL;

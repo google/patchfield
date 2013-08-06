@@ -9,14 +9,6 @@ extern "C" {
 #endif
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_pd_PdModule
- * Method:    getProtocolVersion
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_pd_PdModule_getProtocolVersion
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_noisepages_nettoyeur_patchbay_pd_PdModule
  * Method:    pdInitAudio
  * Signature: (III)V
  */
@@ -25,19 +17,11 @@ JNIEXPORT void JNICALL Java_com_noisepages_nettoyeur_patchbay_pd_PdModule_pdInit
 
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_pd_PdModule
- * Method:    hasTimedOut
- * Signature: (J)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_noisepages_nettoyeur_patchbay_pd_PdModule_hasTimedOut
-  (JNIEnv *, jobject, jlong);
-
-/*
- * Class:     com_noisepages_nettoyeur_patchbay_pd_PdModule
  * Method:    configureModule
- * Signature: (IIIIIII)J
+ * Signature: (JIIII)J
  */
 JNIEXPORT jlong JNICALL Java_com_noisepages_nettoyeur_patchbay_pd_PdModule_configureModule
-  (JNIEnv *, jobject, jint, jint, jint, jint, jint, jint, jint);
+  (JNIEnv *, jobject, jlong, jint, jint, jint, jint);
 
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_pd_PdModule

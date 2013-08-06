@@ -1,4 +1,6 @@
 all:
+	javah -classpath bin/classes -o jni/internal/audio_module_java.h \
+		com.noisepages.nettoyeur.patchbay.AudioModule
 	javah -classpath bin/classes -o jni/internal/patchbay.h \
 		com.noisepages.nettoyeur.patchbay.Patchbay
 	javah -classpath bin/classes -o jni/internal/shared_memory_utils.h \

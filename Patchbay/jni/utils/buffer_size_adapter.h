@@ -32,8 +32,7 @@ typedef struct _buffer_size_adapter buffer_size_adapter;
  * Similar to am_create (see audio_module.h).
  */
 buffer_size_adapter *bsa_create(
-    int version, int token, int index,
-    int host_buffer_frames, int user_buffer_frames,
+    void *handle, int host_buffer_frames, int user_buffer_frames,
     int input_channels, int output_channels,
     audio_module_process_t user_process, void *user_context);
 
@@ -41,10 +40,5 @@ buffer_size_adapter *bsa_create(
  * Similar to am_release (see audio_module.h).
  */
 void bsa_release(buffer_size_adapter *adapter);
-
-/*
- * Returns the audio module runner instance that's backing the given adapter.
- */
-audio_module_runner *bsa_get_runner(buffer_size_adapter *adapter);
 
 #endif

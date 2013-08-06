@@ -10,7 +10,6 @@
 #define MAX_CHANNELS 8
 
 typedef struct {
-  audio_module_runner *handle;
   int a;
   float y[MAX_CHANNELS];
 } lowpass_data;
@@ -48,20 +47,15 @@ Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_setParameter
 
 JNIEXPORT jlong JNICALL
 Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_createModule
-(JNIEnv *env, jobject obj, jint version, jint token, jint index, jint channels) {
+(JNIEnv *env, jobject obj, jlong p, jint channels) {
   lowpass_data *data = malloc(sizeof(lowpass_data));
   if (data) {
-    data->handle = am_create(version, token, index, process_func, data);
-    if (data->handle != NULL) {
-      data->a = RANGE;
-      int i;
-      for (i = 0; i < MAX_CHANNELS; ++i) {
-        data->y[i] = 0;
-      }
-    } else {
-      free(data);
-      data = NULL;
+    data->a = RANGE;
+    int i;
+    for (i = 0; i < MAX_CHANNELS; ++i) {
+      data->y[i] = 0;
     }
+    am_configure((void *) p, process_func, data);
   }
   return (jlong) data;
 }
@@ -70,19 +64,5 @@ JNIEXPORT void JNICALL
 Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_release
 (JNIEnv *env, jobject obj, jlong p) {
   lowpass_data *data = (lowpass_data *) p;
-  am_release(data->handle);
   free(data);
-}
-
-JNIEXPORT jboolean JNICALL
-Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_hasTimedOut
-(JNIEnv *env, jobject obj, jlong p) {
-  lowpass_data *data = (lowpass_data *) p;
-  return am_has_timed_out(data->handle);
-}
-
-JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_getProtocolVersion
-(JNIEnv *env, jobject obj) {
-  return PATCHBAY_PROTOCOL_VERSION;
 }

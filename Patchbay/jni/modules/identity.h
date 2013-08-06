@@ -9,34 +9,10 @@ extern "C" {
 #endif
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_modules_IdentityModule
- * Method:    getProtocolVersion
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_modules_IdentityModule_getProtocolVersion
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_noisepages_nettoyeur_patchbay_modules_IdentityModule
- * Method:    createModule
- * Signature: (III)J
- */
-JNIEXPORT jlong JNICALL Java_com_noisepages_nettoyeur_patchbay_modules_IdentityModule_createModule
-  (JNIEnv *, jobject, jint, jint, jint);
-
-/*
- * Class:     com_noisepages_nettoyeur_patchbay_modules_IdentityModule
- * Method:    release
- * Signature: (J)V
- */
-JNIEXPORT void JNICALL Java_com_noisepages_nettoyeur_patchbay_modules_IdentityModule_release
-  (JNIEnv *, jobject, jlong);
-
-/*
- * Class:     com_noisepages_nettoyeur_patchbay_modules_IdentityModule
- * Method:    hasTimedOut
+ * Method:    configure
  * Signature: (J)Z
  */
-JNIEXPORT jboolean JNICALL Java_com_noisepages_nettoyeur_patchbay_modules_IdentityModule_hasTimedOut
+JNIEXPORT jboolean JNICALL Java_com_noisepages_nettoyeur_patchbay_modules_IdentityModule_configure
   (JNIEnv *, jobject, jlong);
 
 #ifdef __cplusplus

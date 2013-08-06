@@ -70,14 +70,6 @@ public class PdModule extends AudioModule {
   }
 
   @Override
-  public boolean hasTimedOut() {
-    if (ptr == 0) {
-      throw new IllegalStateException("Module is not configured.");
-    }
-    return hasTimedOut(ptr);
-  }
-
-  @Override
   public int getInputChannels() {
     return inputChannels;
   }
@@ -88,14 +80,11 @@ public class PdModule extends AudioModule {
   }
 
   @Override
-  protected boolean configure(String name, int version, int token, int index, int sampleRate,
-      int bufferSize) {
+  protected boolean configure(String name, long handle, int sampleRate, int bufferSize) {
     if (ptr != 0) {
       throw new IllegalStateException("Module has already been configured.");
     }
-    ptr =
-        configureModule(version, token, index, bufferSize, PdBase.blockSize(), inputChannels,
-            outputChannels);
+    ptr = configureModule(handle, bufferSize, PdBase.blockSize(), inputChannels, outputChannels);
     return ptr != 0;
   }
 
@@ -106,15 +95,10 @@ public class PdModule extends AudioModule {
     }
   }
 
-  @Override
-  public native int getProtocolVersion();
-
   private native void pdInitAudio(int inputChannels, int outputChannels, int sampleRate);
 
-  private native boolean hasTimedOut(long ptr);
-
-  private native long configureModule(int version, int token, int index, int bufferSize,
-      int blockSize, int inputChannels, int outputChannels);
+  private native long configureModule(long handle, int bufferSize, int blockSize,
+      int inputChannels, int outputChannels);
 
   private native void release(long ptr);
 }

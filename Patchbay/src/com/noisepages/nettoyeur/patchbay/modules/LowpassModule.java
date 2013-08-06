@@ -42,12 +42,11 @@ public class LowpassModule extends AudioModule {
   }
 
   @Override
-  protected boolean configure(String name, int version, int token, int index, int sampleRate,
-      int bufferSize) {
+  protected boolean configure(String name, long handle, int sampleRate, int bufferSize) {
     if (ptr != 0) {
       throw new IllegalStateException("Module has already been configured.");
     }
-    ptr = createModule(version, token, index, channels);
+    ptr = createModule(handle, channels);
     return ptr != 0;
   }
 
@@ -85,24 +84,11 @@ public class LowpassModule extends AudioModule {
     setParameter(ptr, alpha);
   }
 
-  @Override
-  public boolean hasTimedOut() {
-    if (ptr == 0) {
-      throw new IllegalStateException("Module is not configured.");
-    }
-    return hasTimedOut(ptr);
-  }
-
-  @Override
-  public native int getProtocolVersion();
-
   public static native int getMaxChannels();
 
   private native void setParameter(long ptr, double alpha);
 
-  private native long createModule(int version, int token, int index, int channels);
+  private native long createModule(long handle, int channels);
 
   private native void release(long ptr);
-
-  private native boolean hasTimedOut(long ptr);
 }

@@ -9,27 +9,11 @@ extern "C" {
 #endif
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_source_PcmSource
- * Method:    getProtocolVersion
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchbay_source_PcmSource_getProtocolVersion
-  (JNIEnv *, jobject);
-
-/*
- * Class:     com_noisepages_nettoyeur_patchbay_source_PcmSource
  * Method:    createSource
- * Signature: (IIILjava/nio/ByteBuffer;)J
+ * Signature: (JLjava/nio/ByteBuffer;)J
  */
 JNIEXPORT jlong JNICALL Java_com_noisepages_nettoyeur_patchbay_source_PcmSource_createSource
-  (JNIEnv *, jobject, jint, jint, jint, jobject);
-
-/*
- * Class:     com_noisepages_nettoyeur_patchbay_source_PcmSource
- * Method:    hasTimedOut
- * Signature: (J)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_noisepages_nettoyeur_patchbay_source_PcmSource_hasTimedOut
-  (JNIEnv *, jobject, jlong);
+  (JNIEnv *, jobject, jlong, jobject);
 
 /*
  * Class:     com_noisepages_nettoyeur_patchbay_source_PcmSource
