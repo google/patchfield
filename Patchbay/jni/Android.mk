@@ -19,23 +19,7 @@ LOCAL_STATIC_LIBRARIES := audiomodule
 include $(BUILD_STATIC_LIBRARY)
 
 
-# Audio module implementations.
-
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := identity
-LOCAL_LDLIBS := -llog
-LOCAL_SRC_FILES := modules/identity.c
-LOCAL_STATIC_LIBRARIES := audiomodule
-include $(BUILD_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := lowpass
-LOCAL_LDLIBS := -llog
-LOCAL_SRC_FILES := modules/lowpass.c
-LOCAL_STATIC_LIBRARIES := audiomodule
-include $(BUILD_SHARED_LIBRARY)
+# Java Audio module.
 
 include $(CLEAR_VARS)
 

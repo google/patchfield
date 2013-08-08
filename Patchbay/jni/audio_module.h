@@ -19,8 +19,7 @@
  * AudioModule.java. Audio modules must implement a process callback of type
  * audio_module_process_t and hook up the am_configure function in this library
  * to the corresponding configure method in the Java class. See
- * LowpassModule.java and samples/lowpass.{h,c} for an example of this
- * interaction.
+ * LowpassModule.java and lowpass.{h,c} for an example of this interaction.
  */
 
 #ifndef __AUDIO_MODULE_H__

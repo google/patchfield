@@ -34,7 +34,6 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.noisepages.nettoyeur.patchbay.IPatchbayService;
-import com.noisepages.nettoyeur.patchbay.modules.LowpassModule;
 
 public class MainActivity extends Activity implements OnSeekBarChangeListener {
 

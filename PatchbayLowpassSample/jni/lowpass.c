@@ -49,20 +49,20 @@ static void process_func(void *context, int sample_rate, int buffer_frames,
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_getMaxChannels
+Java_com_noisepages_nettoyeur_patchbay_lowpass_LowpassModule_getMaxChannels
 (JNIEnv *env, jclass cls) {
   return MAX_CHANNELS;
 }
 
 JNIEXPORT void JNICALL
-Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_setParameter
+Java_com_noisepages_nettoyeur_patchbay_lowpass_LowpassModule_setParameter
 (JNIEnv *env, jobject obj, jlong p, jdouble alpha) {
   lowpass_data *data = (lowpass_data *) p;
   __sync_bool_compare_and_swap(&data->a, data->a, (int) (RANGE * alpha));
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_createModule
+Java_com_noisepages_nettoyeur_patchbay_lowpass_LowpassModule_createModule
 (JNIEnv *env, jobject obj, jlong p, jint channels) {
   lowpass_data *data = malloc(sizeof(lowpass_data));
   if (data) {
@@ -77,7 +77,7 @@ Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_createModule
 }
 
 JNIEXPORT void JNICALL
-Java_com_noisepages_nettoyeur_patchbay_modules_LowpassModule_release
+Java_com_noisepages_nettoyeur_patchbay_lowpass_LowpassModule_release
 (JNIEnv *env, jobject obj, jlong p) {
   lowpass_data *data = (lowpass_data *) p;
   free(data);
