@@ -30,20 +30,20 @@ Now you can import all projects in the patchbay directory into your development
 environment of choice.
 
 
+Major components
+----------------
+
+
 Project layout
 --------------
 
-* ``Patchbay`` Library project, the core of Patchbay
-* ``PatchbayService``
-* ``PatchbayControl``
-* ``PatchbayJavaSample``
-* ``PatchbayLowpassSample``
-* ``PatchbayPcmSample``
-* ``PatchbayPd``
-* ``PatchbayPdSample``
-
-Major components
-----------------
+* ``Patchbay`` Library project, the core of Patchbay; contains the Patchbay service class and all APIs.
+* ``PatchbayControl`` Control app and remote service launch config; you will need to install this app if you want to run Patchbay as a remote service.
+* ``PatchbayJavaSample`` Sample app illustrating the use of the JavaModule class.
+* ``PatchbayLowpassSample`` Sample app illustrating how to implement an audio module for Patchbay, complete with build files and lock-free concurrency.
+* ``PatchbayPcmSample`` Sample app playing a wav file through Patchbay. Very crude but useful for tests and demos.
+* ``PatchbayPd`` Library project providing an audio module implementation that uses Pure Data (Pd) for synthesis.
+* ``PatchbayPdSample`` Sample app using PatchbayPd.
 
 
 Client API

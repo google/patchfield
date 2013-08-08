@@ -19,13 +19,15 @@ import android.app.Notification;
 import com.noisepages.nettoyeur.patchbay.AudioModule;
 
 /**
- * An audio module subclass whose audio processing callback is to be implemented in Java (as opposed
- * to native code).
+ * An audio module subclass whose audio processing callback is to be implemented
+ * in Java (as opposed to native code).
  * 
- * Note: The Java processing callback cannot be invoked on a real-time thread, and so instances of
- * this class run a higher risk of missing their deadlines and causing dropouts than audio modules
- * that do their processing natively. Still, this class may be useful for applications whose
- * processing requirements are not too demanding.
+ * THIS IS NOT THE RECOMMENDED WAY TO USE PATCHBAY. The Java processing callback
+ * cannot be invoked on a real-time thread and Java code is prone to garbage
+ * collection breaks. This means that instances of this class run a higher risk
+ * of missing their deadlines and causing dropouts than audio modules that do
+ * their processing natively. Use this class for quick-and-dirty prototypes,
+ * but not for any serious applications that require glitch-free performance.
  */
 public abstract class JavaModule extends AudioModule {
 
