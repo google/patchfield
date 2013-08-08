@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.noisepages.nettoyeur.patchbay.modules;
+package com.noisepages.nettoyeur.patchbay.lowpass;
 
 import android.app.Notification;
 
