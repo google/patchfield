@@ -103,11 +103,12 @@ implementation as well as a simple app that shows how to use an audio module.
 It also illustrates how to set up the build system and how to interact with the
 audio processing thread in a thread-safe yet lock-free manner.
 
-Latency and performance
------------------------
+Latency
+-------
 
 Patchbay incurs no latency on top of the systemic latency of the Android audio
-stack.
+stack; the audio processing callbacks of all active modules are invoked in one
+buffer queue callback of OpenSL ES.
 
 Device compatibility
 --------------------
