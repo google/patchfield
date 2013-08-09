@@ -64,6 +64,8 @@ for querying and manipulating the state of the signal processing graph, and a
 hybrid C/Java module API for implementing new audio modules such as
 synthesizers and effects.
 
+Patchbay introduces a new permission, USE_PATCHBAY. Apps will only be allowed to
+bind to ``PatchbayService`` as a remote service if they have this permission.
 
 Client API
 ----------
@@ -97,6 +99,10 @@ a small C API, defined in ``audio_module.h``, that only has two elements: A
 function prototype that the signal processing callback must conform to, and a
 function that registers the signal processing callback with the Patchbay
 service.
+
+Apps that use audio modules also need to bind to a ``PatchbayService`` instance
+because some of the audio module setup requires the ``IPatchbayService``
+interface.
 
 The ``PatchbayLowpassSample`` project contains a typical audio module
 implementation as well as a simple app that shows how to use an audio module.
