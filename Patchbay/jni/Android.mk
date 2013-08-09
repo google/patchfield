@@ -7,7 +7,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := audiomodule
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
 LOCAL_EXPORT_CFLAGS := -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast
-LOCAL_SRC_FILES := audio_module.c
+LOCAL_SRC_FILES := internal/audio_module.c
 include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
