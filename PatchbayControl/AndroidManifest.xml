@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
     <permission android:protectionLevel="normal" android:name="com.noisepages.nettoyeur.patchbay.service.USE_PATCHBAY"></permission>
     <uses-permission android:name="com.noisepages.nettoyeur.patchbay.service.USE_PATCHBAY"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>

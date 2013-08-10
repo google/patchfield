@@ -109,6 +109,20 @@ implementation as well as a simple app that shows how to use an audio module.
 It also illustrates how to set up the build system and how to interact with the
 audio processing thread in a thread-safe yet lock-free manner.
 
+
+Audio format, sample rate, and buffer size
+------------------------------------------
+
+Patchbay uses 32-bit float samples; buffers are non-interleaved.  The Patchbay
+service operates at the native sample rate and buffer size of the device. This
+means that audio modules must operate at the native sample rate and buffer size
+as well. Native sample rates of 44100Hz and 48000Hz are common, and so audio
+modules must support both. Moreover, audio modules must be prepared to work
+with arbitrary buffer sizes. In particular, they cannot assume that the buffer
+size is a power of two. Multiples of three, such as 144, 192, and 384, have
+been seen in the wild.
+
+
 Latency
 -------
 

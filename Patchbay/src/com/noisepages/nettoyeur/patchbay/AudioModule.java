@@ -25,10 +25,16 @@ import com.noisepages.nettoyeur.patchbay.internal.SharedMemoryUtils;
  * and releasing audio modules; these implementations will involve native code using the native
  * audio_module library in Patchbay/jni.
  * 
- * Audio modules must operate at the sample rate reported by the Patchbay service, which in turn is
- * determined by the native sample rate of the device. Ideally, audio modules will also operate at
- * the native buffer size. If an app is unable to run at the native buffer size, however, the buffer
- * size adapter utility in Patchbay/jni/utils/buffer_size_adapter.{h,c} can be used.
+ * The Patchbay service operates at the native sample rate and buffer size of the device. This means
+ * that audio modules must operate at the native sample rate and buffer size as well. Native sample
+ * rates of 44100Hz and 48000Hz are common, and so audio modules must support both. Moreover, audio
+ * modules must be prepared to work with arbitrary buffer sizes. In particular, they cannot assume
+ * that the buffer size is a power of two. Multiples of three, such as 144, 192, and 384, have been
+ * seen in the wild.
+ * 
+ * If an app is unable to run at the native buffer size, however, the buffer size adapter utility in
+ * Patchbay/jni/utils/buffer_size_adapter.{h,c} can be used. For an example of the buffer size
+ * adapter in action, see the PatchbayPd project.
  */
 public abstract class AudioModule {
 
