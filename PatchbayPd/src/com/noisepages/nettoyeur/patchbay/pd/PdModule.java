@@ -28,9 +28,8 @@ import com.noisepages.nettoyeur.patchbay.AudioModule;
  * configuration is fixed for the lifetime of the process.
  * 
  * PdModule takes care of the initialization of libpd. In particular, make sure to create your
- * PdModule instance before calling any methods on PdBase. Do _not_ call PdBase.openAudio(...) of
- * PdBase.computeAudio(...). After the creation of your PdModule instance, you can use PdBase as
- * usual.
+ * PdModule instance before calling any methods on PdBase. Do _not_ call PdBase.openAudio(...) or
+ * PdBase.computeAudio(...). After creating your PdModule instance, you can use PdBase as usual.
  */
 public class PdModule extends AudioModule {
 
