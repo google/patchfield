@@ -21,11 +21,14 @@ import android.util.Log;
 import com.noisepages.nettoyeur.patchbay.internal.SharedMemoryUtils;
 
 /**
- * <p>
  * Abstract base class for Patchbay audio modules. Subclasses must implement methods for creating
  * and releasing audio modules; these implementations will involve native code using the native
  * audio_module library in Patchbay/jni.
- * </p>
+ * 
+ * Audio modules must operate at the sample rate reported by the Patchbay service, which in turn is
+ * determined by the native sample rate of the device. Ideally, audio modules will also operate at
+ * the native buffer size. If an app is unable to run at the native buffer size, however, the buffer
+ * size adapter utility in Patchbay/jni/utils/buffer_size_adapter.{h,c} can be used.
  */
 public abstract class AudioModule {
 

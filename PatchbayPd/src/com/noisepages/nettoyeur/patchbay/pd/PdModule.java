@@ -24,8 +24,8 @@ import com.noisepages.nettoyeur.patchbay.AudioModule;
  * An audio module implementation that uses Pure Data (via libpd) internally.
  * 
  * Since Pd is currently limited to one instance per process, PdModule is a singleton of sorts. When
- * it is first created, the sample rate and channel counts are configurable; once it has been
- * created, the configuration is fixed for the lifetime of the process.
+ * it is first created, the channel counts are configurable; once it has been created, the
+ * configuration is fixed for the lifetime of the process.
  * 
  * PdModule takes care of the initialization of libpd. In particular, make sure to create your
  * PdModule instance before calling any methods on PdBase. Do _not_ call PdBase.openAudio(...) of
@@ -35,7 +35,7 @@ import com.noisepages.nettoyeur.patchbay.AudioModule;
 public class PdModule extends AudioModule {
 
   static {
-    PdBase.blockSize();  // Make sure to load PdBase first.
+    PdBase.blockSize(); // Make sure to load PdBase first.
     System.loadLibrary("pdmodule");
   }
 
@@ -56,6 +56,10 @@ public class PdModule extends AudioModule {
     PdBase.computeAudio(true);
   }
 
+  /**
+   * Static factory method for creating PdModule instances. Note that the sample rate must be the
+   * sample rate reported by the Patchbay service.
+   */
   public static PdModule getInstance(int sampleRate, int inputChannels, int outputChannels,
       Notification notification) {
     if (instance == null) {
