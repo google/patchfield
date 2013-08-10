@@ -32,7 +32,7 @@ import com.noisepages.nettoyeur.patchbay.internal.SharedMemoryUtils;
  * that the buffer size is a power of two. Multiples of three, such as 144, 192, and 384, have been
  * seen in the wild.
  * 
- * If an app is unable to run at the native buffer size, however, the buffer size adapter utility in
+ * If an app is unable to run at the native buffer size, the buffer size adapter utility in
  * Patchbay/jni/utils/buffer_size_adapter.{h,c} can be used. For an example of the buffer size
  * adapter in action, see the PatchbayPd project.
  */

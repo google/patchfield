@@ -118,10 +118,13 @@ service operates at the native sample rate and buffer size of the device. This
 means that audio modules must operate at the native sample rate and buffer size
 as well. Native sample rates of 44100Hz and 48000Hz are common, and so audio
 modules must support both. Moreover, audio modules must be prepared to work
-with arbitrary buffer sizes. In particular, they cannot assume that the buffer
-size is a power of two. Multiples of three, such as 144, 192, and 384, have
-been seen in the wild.
+with arbitrary buffer sizes.
 
+In particular, apps cannot assume that the buffer size is a power of two.
+Multiples of three, such as 144, 192, and 384, have been seen in the wild. The
+Patchbay repository includes a utility library that performs buffer size
+adaptation for audio modules that use synthesis techniques or audio libraries
+that cannot operate at the native buffer size.
 
 Latency
 -------
