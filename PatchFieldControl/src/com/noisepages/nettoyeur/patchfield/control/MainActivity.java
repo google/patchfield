@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.noisepages.nettoyeur.patchbay.control;
+package com.noisepages.nettoyeur.patchfield.control;
 
 import java.util.List;
 
@@ -34,20 +34,20 @@ import android.widget.FrameLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.noisepages.nettoyeur.patchbay.IPatchbayClient;
-import com.noisepages.nettoyeur.patchbay.IPatchbayService;
+import com.noisepages.nettoyeur.patchfield.IPatchFieldClient;
+import com.noisepages.nettoyeur.patchfield.IPatchFieldService;
 
 public class MainActivity extends Activity implements OnCheckedChangeListener {
 
   private static final String TAG = "PatchControl";
 
-  private IPatchbayService patchbay = null;
+  private IPatchFieldService patchfield = null;
 
   private TextView displayLine;
   private Switch playButton;
   private PatchView patchView;
 
-  private IPatchbayClient.Stub receiver = new IPatchbayClient.Stub() {
+  private IPatchFieldClient.Stub receiver = new IPatchFieldClient.Stub() {
 
     @Override
     public void onStart() throws RemoteException {
@@ -136,31 +136,31 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
   private ServiceConnection connection = new ServiceConnection() {
     @Override
     public void onServiceDisconnected(ComponentName name) {
-      patchbay = null;
+      patchfield = null;
     }
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
       Log.i(TAG, "Service connected.");
-      patchbay = IPatchbayService.Stub.asInterface(service);
-      patchView.setPatchbay(patchbay);
+      patchfield = IPatchFieldService.Stub.asInterface(service);
+      patchView.setPatchField(patchfield);
       PendingIntent pi =
           PendingIntent.getActivity(MainActivity.this, 0, new Intent(MainActivity.this,
               MainActivity.class), 0);
       Notification notification =
           new Notification.Builder(MainActivity.this)
-              .setSmallIcon(android.R.drawable.ic_media_play).setContentTitle("PatchbayControl")
+              .setSmallIcon(android.R.drawable.ic_media_play).setContentTitle("PatchFieldControl")
               .setContentIntent(pi).build();
       try {
-        patchbay.startForeground(1, notification);
-        patchbay.registerClient(receiver);
-        playButton.setChecked(patchbay.isRunning());
-        displayLine.setText("Sample rate: " + patchbay.getSampleRate() + ", buffer size: "
-            + patchbay.getBufferSize() + ", protocol version: " + patchbay.getProtocolVersion());
-        List<String> modules = patchbay.getModules();
+        patchfield.startForeground(1, notification);
+        patchfield.registerClient(receiver);
+        playButton.setChecked(patchfield.isRunning());
+        displayLine.setText("Sample rate: " + patchfield.getSampleRate() + ", buffer size: "
+            + patchfield.getBufferSize() + ", protocol version: " + patchfield.getProtocolVersion());
+        List<String> modules = patchfield.getModules();
         for (String module : modules) {
-          patchView.addModule(module, patchbay.getInputChannels(module),
-              patchbay.getOutputChannels(module), patchbay.getNotification(module));
+          patchView.addModule(module, patchfield.getInputChannels(module),
+              patchfield.getOutputChannels(module), patchfield.getNotification(module));
         }
       } catch (RemoteException e) {
         e.printStackTrace();
@@ -178,22 +178,22 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     FrameLayout frame = (FrameLayout) findViewById(R.id.moduleFrame);
     patchView = new PatchView(this);
     patchView.init(this, frame);
-    bindService(new Intent("IPatchbayService"), connection, Context.BIND_AUTO_CREATE);
+    bindService(new Intent("IPatchFieldService"), connection, Context.BIND_AUTO_CREATE);
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    if (patchbay != null) {
+    if (patchfield != null) {
       try {
-        patchbay.stopForeground(false);
-        patchbay.unregisterClient(receiver);
+        patchfield.stopForeground(false);
+        patchfield.unregisterClient(receiver);
       } catch (RemoteException e) {
         e.printStackTrace();
       }
     }
     unbindService(connection);
-    patchbay = null;
+    patchfield = null;
   }
 
   @Override
@@ -205,12 +205,12 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
   @Override
   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-    if (patchbay != null) {
+    if (patchfield != null) {
       try {
         if (isChecked) {
-          patchbay.start();
+          patchfield.start();
         } else {
-          patchbay.stop();
+          patchfield.stop();
         }
       } catch (RemoteException e) {
         e.printStackTrace();

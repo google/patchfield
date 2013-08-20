@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.noisepages.nettoyeur.patchbay.control;
+package com.noisepages.nettoyeur.patchfield.control;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,11 +41,11 @@ import android.widget.Space;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.noisepages.nettoyeur.patchbay.IPatchbayService;
+import com.noisepages.nettoyeur.patchfield.IPatchFieldService;
 
 public final class PatchView extends GridLayout {
 
-  private IPatchbayService patchbay;
+  private IPatchFieldService patchfield;
   private final List<String> modules = new ArrayList<String>();
   private final Map<Pair<String, Integer>, List<Pair<String, Integer>>> connections =
       new HashMap<Pair<String, Integer>, List<Pair<String, Integer>>>();
@@ -54,8 +54,8 @@ public final class PatchView extends GridLayout {
     super(context);
   }
 
-  public void setPatchbay(IPatchbayService patchbay) {
-    this.patchbay = patchbay;
+  public void setPatchField(IPatchFieldService patchfield) {
+    this.patchfield = patchfield;
   }
 
   public void addModule(String module, int inputChannels, int outputChannels,
@@ -63,7 +63,7 @@ public final class PatchView extends GridLayout {
     for (String u : modules) {
       int sinks = 0;
       try {
-        sinks = patchbay.getInputChannels(u);
+        sinks = patchfield.getInputChannels(u);
       } catch (RemoteException e) {
         e.printStackTrace();
         continue;
@@ -71,7 +71,7 @@ public final class PatchView extends GridLayout {
       for (int i = 0; i < outputChannels; ++i) {
         for (int j = 0; j < sinks; ++j) {
           try {
-            if (patchbay.isConnected(module, i, u, j)) {
+            if (patchfield.isConnected(module, i, u, j)) {
               addConnection(module, i, u, j);
             }
           } catch (RemoteException e) {
@@ -81,7 +81,7 @@ public final class PatchView extends GridLayout {
       }
       int sources = 0;
       try {
-        sources = patchbay.getOutputChannels(u);
+        sources = patchfield.getOutputChannels(u);
       } catch (RemoteException e) {
         e.printStackTrace();
         continue;
@@ -89,7 +89,7 @@ public final class PatchView extends GridLayout {
       for (int i = 0; i < inputChannels; ++i) {
         for (int j = 0; j < sources; ++j) {
           try {
-            if (patchbay.isConnected(u, j, module, i)) {
+            if (patchfield.isConnected(u, j, module, i)) {
               addConnection(u, j, module, i);
             }
           } catch (RemoteException e) {
@@ -259,10 +259,10 @@ public final class PatchView extends GridLayout {
     }
     if (inputButton != null && outputButton != null) {
       try {
-        if (patchbay.isConnected(outputModule, outputPort, inputModule, inputPort)) {
-          patchbay.disconnectPorts(outputModule, outputPort, inputModule, inputPort);
+        if (patchfield.isConnected(outputModule, outputPort, inputModule, inputPort)) {
+          patchfield.disconnectPorts(outputModule, outputPort, inputModule, inputPort);
         } else {
-          patchbay.connectPorts(outputModule, outputPort, inputModule, inputPort);
+          patchfield.connectPorts(outputModule, outputPort, inputModule, inputPort);
         }
       } catch (RemoteException e) {
         e.printStackTrace();
@@ -327,10 +327,10 @@ public final class PatchView extends GridLayout {
       @Override
       public boolean onLongClick(View v) {
         try {
-          if (patchbay.isActive(module)) {
-            patchbay.deactivateModule(module);
+          if (patchfield.isActive(module)) {
+            patchfield.deactivateModule(module);
           } else {
-            patchbay.activateModule(module);
+            patchfield.activateModule(module);
           }
         } catch (RemoteException e) {
           e.printStackTrace();
@@ -345,7 +345,7 @@ public final class PatchView extends GridLayout {
 
     boolean isActive = false;
     try {
-      isActive = patchbay.isActive(module);
+      isActive = patchfield.isActive(module);
     } catch (RemoteException e) {
       e.printStackTrace();
     }
