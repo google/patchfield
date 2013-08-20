@@ -20,7 +20,7 @@ Make sure that ``ndk-build`` is on your search path, then clone the project and
 build the native components like this:
 
 ```
-git clone --recursive ...
+git clone --recursive https://github.com/google/patchfield.git
 cd patchfield
 make
 ```
