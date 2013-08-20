@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.noisepages.nettoyeur.patchbay.source;
+package com.noisepages.nettoyeur.patchfield.source;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,13 +34,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.noisepages.nettoyeur.patchbay.IPatchbayService;
+import com.noisepages.nettoyeur.patchfield.IPatchFieldService;
 
 public class MainActivity extends Activity {
 
-  private static final String TAG = "PatchbayPcmSample";
+  private static final String TAG = "PatchFieldPcmSample";
 
-  private IPatchbayService patchbay = null;
+  private IPatchFieldService patchfield = null;
   private PcmSource source = null;
   private final String moduleName = "source";
 
@@ -48,15 +48,15 @@ public class MainActivity extends Activity {
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-      patchbay = null;
+      patchfield = null;
     }
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-      patchbay = IPatchbayService.Stub.asInterface(service);
+      patchfield = IPatchFieldService.Stub.asInterface(service);
       int srate = 44100;
       try {
-        srate = patchbay.getSampleRate();
+        srate = patchfield.getSampleRate();
       } catch (RemoteException e) {
         e.printStackTrace();
       }
@@ -78,8 +78,8 @@ public class MainActivity extends Activity {
               .setContentTitle("Relaxation Spa Treatment").setContentIntent(pi).build();
       source = new PcmSource(2, buffer, notification);
       try {
-        source.configure(patchbay, moduleName);
-        patchbay.activateModule(moduleName);
+        source.configure(patchfield, moduleName);
+        patchfield.activateModule(moduleName);
       } catch (RemoteException e) {
         e.printStackTrace();
       }
@@ -94,25 +94,25 @@ public class MainActivity extends Activity {
     button.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        if (patchbay != null) {
+        if (patchfield != null) {
           try {
-            patchbay.connectPorts(moduleName, 0, "system_out", 0);
-            patchbay.connectPorts(moduleName, 1, "system_out", 1);
+            patchfield.connectPorts(moduleName, 0, "system_out", 0);
+            patchfield.connectPorts(moduleName, 1, "system_out", 1);
           } catch (RemoteException e) {
             e.printStackTrace();
           }
         }
       }
     });
-    bindService(new Intent("IPatchbayService"), connection, Context.BIND_AUTO_CREATE);
+    bindService(new Intent("IPatchFieldService"), connection, Context.BIND_AUTO_CREATE);
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    if (patchbay != null) {
+    if (patchfield != null) {
       try {
-        source.release(patchbay);
+        source.release(patchfield);
       } catch (RemoteException e) {
         e.printStackTrace();
       }

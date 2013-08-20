@@ -52,7 +52,7 @@ static void process_func(void *context, int sample_rate, int buffer_frames,
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_noisepages_nettoyeur_patchbay_source_PcmSource_createSource
+Java_com_noisepages_nettoyeur_patchfield_source_PcmSource_createSource
 (JNIEnv *env, jobject obj, jlong p, jobject buffer) {
   pcm_source *data = malloc(sizeof(pcm_source));
   if (data) {
@@ -66,7 +66,7 @@ Java_com_noisepages_nettoyeur_patchbay_source_PcmSource_createSource
 }
 
 JNIEXPORT void JNICALL
-Java_com_noisepages_nettoyeur_patchbay_source_PcmSource_release
+Java_com_noisepages_nettoyeur_patchfield_source_PcmSource_release
 (JNIEnv *env, jobject obj, jlong p) {
   pcm_source *data = (pcm_source *) p;
   free(data);

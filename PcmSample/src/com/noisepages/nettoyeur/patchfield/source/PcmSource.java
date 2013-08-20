@@ -12,13 +12,13 @@
  * the License.
  */
 
-package com.noisepages.nettoyeur.patchbay.source;
+package com.noisepages.nettoyeur.patchfield.source;
 
 import java.nio.ByteBuffer;
 
 import android.app.Notification;
 
-import com.noisepages.nettoyeur.patchbay.AudioModule;
+import com.noisepages.nettoyeur.patchfield.AudioModule;
 
 public class PcmSource extends AudioModule {
 

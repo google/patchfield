@@ -4,4 +4,4 @@ all:
 	$(MAKE) -C PatchField
 	$(MAKE) -C PatchFieldPd
 	$(MAKE) -C LowpassSample
-	$(MAKE) -C PatchbayPcmSample
+	$(MAKE) -C PcmSample

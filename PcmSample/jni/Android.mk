@@ -1,5 +1,5 @@
-# Note that NDK_MODULE_PATH must contain the patchbay parent directory. The
-# makefile in PatchbayPcmSample implicitly takes care of this.
+# Note that NDK_MODULE_PATH must contain the patchfield parent directory. The
+# makefile in PcmSample implicitly takes care of this.
 
 LOCAL_PATH := $(call my-dir)
 
@@ -10,4 +10,4 @@ LOCAL_LDLIBS := -llog
 LOCAL_SRC_FILES := pcmsource.c
 LOCAL_STATIC_LIBRARIES := audiomodule
 include $(BUILD_SHARED_LIBRARY)
-$(call import-module,Patchbay/jni)
+$(call import-module,PatchField/jni)
