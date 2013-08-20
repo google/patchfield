@@ -12,13 +12,13 @@
  * the License.
  */
 
-package com.noisepages.nettoyeur.patchbay.pd;
+package com.noisepages.nettoyeur.patchfield.pd;
 
 import org.puredata.core.PdBase;
 
 import android.app.Notification;
 
-import com.noisepages.nettoyeur.patchbay.AudioModule;
+import com.noisepages.nettoyeur.patchfield.AudioModule;
 
 /**
  * An audio module implementation that uses Pure Data (via libpd) internally.
@@ -57,7 +57,7 @@ public class PdModule extends AudioModule {
 
   /**
    * Static factory method for creating PdModule instances. Note that the sample rate must be the
-   * sample rate reported by the Patchbay service.
+   * sample rate reported by the PatchField service.
    */
   public static PdModule getInstance(int sampleRate, int inputChannels, int outputChannels,
       Notification notification) {

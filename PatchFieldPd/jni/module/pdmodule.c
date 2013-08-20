@@ -29,14 +29,14 @@ static void process_pd(void *context, int sample_rate, int buffer_frames,
 }
 
 JNIEXPORT void JNICALL
-Java_com_noisepages_nettoyeur_patchbay_pd_PdModule_pdInitAudio
+Java_com_noisepages_nettoyeur_patchfield_pd_PdModule_pdInitAudio
 (JNIEnv *env, jobject obj, jint input_channels, jint output_channels,
  jint sample_rate) {
   libpd_sync_init_audio(input_channels, output_channels, sample_rate);
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_noisepages_nettoyeur_patchbay_pd_PdModule_configureModule
+Java_com_noisepages_nettoyeur_patchfield_pd_PdModule_configureModule
 (JNIEnv *env, jobject obj, jlong handle,
  jint host_buffer_size, jint user_buffer_size,
  jint input_channels, jint output_channels) {
@@ -47,7 +47,7 @@ Java_com_noisepages_nettoyeur_patchbay_pd_PdModule_configureModule
 }
 
 JNIEXPORT void JNICALL
-Java_com_noisepages_nettoyeur_patchbay_pd_PdModule_release
+Java_com_noisepages_nettoyeur_patchfield_pd_PdModule_release
 (JNIEnv *env, jobject obj, jlong p) {
   bsa_release((buffer_size_adapter *) p);
 }
