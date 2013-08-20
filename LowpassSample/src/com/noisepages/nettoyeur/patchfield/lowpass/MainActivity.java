@@ -37,7 +37,7 @@ import com.noisepages.nettoyeur.patchfield.IPatchFieldService;
 
 public class MainActivity extends Activity implements OnSeekBarChangeListener {
 
-  private static final String TAG = "PatchFieldLowpassSample";
+  private static final String TAG = "LowpassSample";
 
   private IPatchFieldService patchfield = null;
 
