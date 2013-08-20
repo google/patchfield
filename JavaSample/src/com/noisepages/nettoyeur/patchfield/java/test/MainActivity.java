@@ -12,7 +12,7 @@
  * the License.
  */
 
-package com.noisepages.nettoyeur.patchbay.java.test;
+package com.noisepages.nettoyeur.patchfield.java.test;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -25,14 +25,14 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
 
-import com.noisepages.nettoyeur.patchbay.IPatchbayService;
-import com.noisepages.nettoyeur.patchbay.modules.JavaModule;
+import com.noisepages.nettoyeur.patchfield.IPatchFieldService;
+import com.noisepages.nettoyeur.patchfield.modules.JavaModule;
 
 public class MainActivity extends Activity {
 
-  private static final String TAG = "PatchbayJavaSample";
+  private static final String TAG = "JavaSample";
 
-  private IPatchbayService patchbay = null;
+  private IPatchFieldService patchfield = null;
 
   private JavaModule module = null;
 
@@ -41,13 +41,13 @@ public class MainActivity extends Activity {
   private ServiceConnection connection = new ServiceConnection() {
     @Override
     public void onServiceDisconnected(ComponentName name) {
-      patchbay = null;
+      patchfield = null;
     }
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
       Log.i(TAG, "Service connected.");
-      patchbay = IPatchbayService.Stub.asInterface(service);
+      patchfield = IPatchFieldService.Stub.asInterface(service);
       try {
         Log.i(TAG, "Creating runner.");
         module = new JavaModule(64, 2, 2, null) {
@@ -59,8 +59,8 @@ public class MainActivity extends Activity {
             System.arraycopy(inputBuffer, bufferSize, outputBuffer, 0, bufferSize);
           }
         };
-        module.configure(patchbay, moduleLabel);
-        patchbay.activateModule(moduleLabel);
+        module.configure(patchfield, moduleLabel);
+        patchfield.activateModule(moduleLabel);
       } catch (RemoteException e) {
         e.printStackTrace();
       }
@@ -71,15 +71,15 @@ public class MainActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    bindService(new Intent("IPatchbayService"), connection, Context.BIND_AUTO_CREATE);
+    bindService(new Intent("IPatchFieldService"), connection, Context.BIND_AUTO_CREATE);
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    if (patchbay != null) {
+    if (patchfield != null) {
       try {
-        module.release(patchbay);
+        module.release(patchfield);
       } catch (RemoteException e) {
         e.printStackTrace();
       }
