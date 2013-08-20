@@ -1,7 +1,7 @@
 .PHONY: all
 
 all:
-	$(MAKE) -C Patchbay
-	$(MAKE) -C PatchbayLowpassSample
+	$(MAKE) -C PatchField
+	$(MAKE) -C LowpassSample
 	$(MAKE) -C PatchbayPd
 	$(MAKE) -C PatchbayPcmSample
