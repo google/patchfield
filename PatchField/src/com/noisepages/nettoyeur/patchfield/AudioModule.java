@@ -23,7 +23,8 @@ import com.noisepages.nettoyeur.patchfield.internal.SharedMemoryUtils;
 /**
  * Abstract base class for PatchField audio modules. Subclasses must implement methods for creating
  * and releasing audio modules; these implementations will involve native code using the native
- * audio_module library in PatchField/jni.
+ * audio_module library in PatchField/jni. See the LowpassSample project for a representative audio
+ * module implementation.
  * 
  * The PatchField service operates at the native sample rate and buffer size of the device. This means
  * that audio modules must operate at the native sample rate and buffer size as well. Native sample
