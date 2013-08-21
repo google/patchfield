@@ -34,14 +34,14 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
 
-import com.noisepages.nettoyeur.patchfield.IPatchFieldService;
+import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
 import com.noisepages.nettoyeur.patchfield.pd.PdModule;
 
 public class MainActivity extends Activity {
 
-  private static final String TAG = "PatchFieldPdSample";
+  private static final String TAG = "PatchfieldPdSample";
 
-  private IPatchFieldService patchfield = null;
+  private IPatchfieldService patchfield = null;
 
   private PdModule module = null;
   private final String label = "pdtest";
@@ -55,7 +55,7 @@ public class MainActivity extends Activity {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
       Log.i(TAG, "Service connected.");
-      patchfield = IPatchFieldService.Stub.asInterface(service);
+      patchfield = IPatchfieldService.Stub.asInterface(service);
       int inputChannels = 2;
       int outputChannels = 2;
       Notification notification = new Notification.Builder(MainActivity.this)
@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    bindService(new Intent("IPatchFieldService"), connection, Context.BIND_AUTO_CREATE);
+    bindService(new Intent("IPatchfieldService"), connection, Context.BIND_AUTO_CREATE);
   }
 
   @Override

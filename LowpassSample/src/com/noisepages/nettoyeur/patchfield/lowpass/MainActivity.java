@@ -33,13 +33,13 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.noisepages.nettoyeur.patchfield.IPatchFieldService;
+import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
 
 public class MainActivity extends Activity implements OnSeekBarChangeListener {
 
   private static final String TAG = "LowpassSample";
 
-  private IPatchFieldService patchfield = null;
+  private IPatchfieldService patchfield = null;
 
   private LowpassModule module = null;
 
@@ -58,7 +58,7 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
       Log.i(TAG, "Service connected.");
-      patchfield = IPatchFieldService.Stub.asInterface(service);
+      patchfield = IPatchfieldService.Stub.asInterface(service);
       PendingIntent pi =
           PendingIntent.getActivity(MainActivity.this, 0, new Intent(MainActivity.this,
               MainActivity.class), 0);
@@ -100,7 +100,7 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
         }
       }
     });
-    bindService(new Intent("IPatchFieldService"), connection, Context.BIND_AUTO_CREATE);
+    bindService(new Intent("IPatchfieldService"), connection, Context.BIND_AUTO_CREATE);
   }
 
   @Override

@@ -86,7 +86,7 @@ static int add_module(patchfield *pb,
   }
   if ((pb->next_buffer + (input_channels + output_channels) *
         pb->buffer_frames) * sizeof(float) > smi_get_size()) {
-    return -9;  // PatchFieldException.OUT_OF_BUFFER_SPACE
+    return -9;  // PatchfieldException.OUT_OF_BUFFER_SPACE
   }
   int i;
   for (i = 0; i < MAX_MODULES; ++i) {
@@ -115,7 +115,7 @@ static int add_module(patchfield *pb,
       return i;
     }
   }
-  return -5;  // PatchFieldException.TOO_MANY_MODULES
+  return -5;  // PatchfieldException.TOO_MANY_MODULES
 }
 
 static int delete_module(patchfield *pb, int index) {
@@ -183,7 +183,7 @@ static int connect_modules(patchfield *pb, int source_index, int source_port,
       return 0;
     }
   }
-  return -7;  // PatchFieldException.TOO_MANY_CONNECTIONS
+  return -7;  // PatchfieldException.TOO_MANY_CONNECTIONS
 }
 
 static int disconnect_modules(patchfield *pb, int source_index, int source_port,
@@ -338,7 +338,7 @@ static patchfield *create_instance(int sample_rate, int buffer_frames,
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_createInstance
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_createInstance
 (JNIEnv *env, jobject obj, jint sample_rate, jint buffer_frames,
  int input_channels, int output_channels) {
   return (jlong) create_instance(sample_rate, buffer_frames,
@@ -346,53 +346,53 @@ Java_com_noisepages_nettoyeur_patchfield_PatchField_createInstance
 }
 
 JNIEXPORT void JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_releaseInstance
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_releaseInstance
 (JNIEnv *env, jobject obj, jlong p) {
   patchfield *pb = (patchfield *) p;
   release(pb);
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_sendSharedMemoryFileDescriptor
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_sendSharedMemoryFileDescriptor
 (JNIEnv *env, jobject obj, jlong p) {
   patchfield *pb = (patchfield *) p;
   if (smi_send(pb->shm_fd) < 0) {
     LOGW("Failed to send file descriptor.");
-    return -1;  // PatchFieldException.FAILURE
+    return -1;  // PatchfieldException.FAILURE
   }
   return 0;
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_start
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_start
 (JNIEnv *env, jobject obj, jlong p) {
   patchfield *pb = (patchfield *) p;
   return opensl_start(pb->os);
 }
 
 JNIEXPORT void JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_stop
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_stop
 (JNIEnv *env, jobject obj, jlong p) {
   patchfield *pb = (patchfield *) p;
   opensl_pause(pb->os);
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_isRunning
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_isRunning
 (JNIEnv *env, jobject obj, jlong p) {
   patchfield *pb = (patchfield *) p;
   return is_running(pb);
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_createModule
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_createModule
 (JNIEnv *env, jobject obj, jlong p, jint input_channels, jint output_channels) {
   patchfield *pb = (patchfield *) p;
   return add_module(pb, input_channels, output_channels);
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_connectPorts
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_connectPorts
 (JNIEnv *env, jobject obj, jlong p,
  jint source_index, jint source_port, jint sink_index, jint sink_port) {
   patchfield *pb = (patchfield *) p;
@@ -400,7 +400,7 @@ Java_com_noisepages_nettoyeur_patchfield_PatchField_connectPorts
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_disconnectPorts
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_disconnectPorts
 (JNIEnv *env, jobject obj, jlong p,
  jint source_index, jint source_port, jint sink_index, jint sink_port) {
   patchfield *pb = (patchfield *) p;
@@ -408,35 +408,35 @@ Java_com_noisepages_nettoyeur_patchfield_PatchField_disconnectPorts
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_deleteModule
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_deleteModule
 (JNIEnv *env, jobject obj, jlong p, jint index) {
   patchfield *pb = (patchfield *) p;
   return delete_module(pb, index);
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_activateModule
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_activateModule
 (JNIEnv *env, jobject obj, jlong p, jint index) {
   patchfield *pb = (patchfield *) p;
   return activate_module(pb, index);
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_deactivateModule
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_deactivateModule
 (JNIEnv *env, jobject obj, jlong p, jint index) {
   patchfield *pb = (patchfield *) p;
   return deactivate_module(pb, index);
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_isActive
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_isActive
 (JNIEnv *env, jobject obj, jlong p, jint index) {
   patchfield *pb = (patchfield *) p;
   return is_active(pb, index);
 }
 
 JNIEXPORT jboolean JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_isConnected
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_isConnected
 (JNIEnv *env, jobject obj, jlong p, jint sourceIndex, jint sourcePort,
  jint sinkIndex, jint sinkPort) {
   patchfield *pb = (patchfield *) p;
@@ -444,21 +444,21 @@ Java_com_noisepages_nettoyeur_patchfield_PatchField_isConnected
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_getInputChannels
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_getInputChannels
 (JNIEnv *env, jobject obj, jlong p, jint index) {
   patchfield *pb = (patchfield *) p;
   return get_input_channels(pb, index);
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_getOutputChannels
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_getOutputChannels
 (JNIEnv *env, jobject obj, jlong p, jint index) {
   patchfield *pb = (patchfield *) p;
   return get_output_channels(pb, index);
 }
 
 JNIEXPORT jint JNICALL
-Java_com_noisepages_nettoyeur_patchfield_PatchField_getProtocolVersion
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_getProtocolVersion
 (JNIEnv *env, jobject obj, jlong p) {
   return PATCHFIELD_PROTOCOL_VERSION;
 }

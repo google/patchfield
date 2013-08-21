@@ -34,20 +34,20 @@ import android.widget.FrameLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.noisepages.nettoyeur.patchfield.IPatchFieldClient;
-import com.noisepages.nettoyeur.patchfield.IPatchFieldService;
+import com.noisepages.nettoyeur.patchfield.IPatchfieldClient;
+import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
 
 public class MainActivity extends Activity implements OnCheckedChangeListener {
 
   private static final String TAG = "PatchControl";
 
-  private IPatchFieldService patchfield = null;
+  private IPatchfieldService patchfield = null;
 
   private TextView displayLine;
   private Switch playButton;
   private PatchView patchView;
 
-  private IPatchFieldClient.Stub receiver = new IPatchFieldClient.Stub() {
+  private IPatchfieldClient.Stub receiver = new IPatchfieldClient.Stub() {
 
     @Override
     public void onStart() throws RemoteException {
@@ -142,14 +142,14 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
       Log.i(TAG, "Service connected.");
-      patchfield = IPatchFieldService.Stub.asInterface(service);
-      patchView.setPatchField(patchfield);
+      patchfield = IPatchfieldService.Stub.asInterface(service);
+      patchView.setPatchfield(patchfield);
       PendingIntent pi =
           PendingIntent.getActivity(MainActivity.this, 0, new Intent(MainActivity.this,
               MainActivity.class), 0);
       Notification notification =
           new Notification.Builder(MainActivity.this)
-              .setSmallIcon(android.R.drawable.ic_media_play).setContentTitle("PatchFieldControl")
+              .setSmallIcon(android.R.drawable.ic_media_play).setContentTitle("PatchfieldControl")
               .setContentIntent(pi).build();
       try {
         patchfield.startForeground(1, notification);
@@ -178,7 +178,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     FrameLayout frame = (FrameLayout) findViewById(R.id.moduleFrame);
     patchView = new PatchView(this);
     patchView.init(this, frame);
-    bindService(new Intent("IPatchFieldService"), connection, Context.BIND_AUTO_CREATE);
+    bindService(new Intent("IPatchfieldService"), connection, Context.BIND_AUTO_CREATE);
   }
 
   @Override

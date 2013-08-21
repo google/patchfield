@@ -16,7 +16,7 @@
 
 /*
  * An adapter that allows audio modules to operate at buffer sizes that differ
- * from the buffer size of the PatchField service.
+ * from the buffer size of the Patchfield service.
  */
 #ifndef __BUFFER_SIZE_ADAPTER_H__
 #define __BUFFER_SIZE_ADAPTER_H__

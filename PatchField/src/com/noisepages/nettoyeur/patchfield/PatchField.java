@@ -32,12 +32,12 @@ import android.util.Log;
 import com.noisepages.nettoyeur.patchfield.internal.OpenSlParams;
 
 /**
- * The Java part of the PatchField service implementation. This is mostly boilerplate; the action is
- * in the native code, PatchField/jni/patchfield.c.
+ * The Java part of the Patchfield service implementation. This is mostly boilerplate; the action is
+ * in the native code, Patchfield/jni/patchfield.c.
  */
-public class PatchField implements IPatchFieldService {
+public class Patchfield implements IPatchfieldService {
 
-  private static final String TAG = "PatchField";
+  private static final String TAG = "Patchfield";
 
   static {
     System.loadLibrary("patchfield");
@@ -47,10 +47,10 @@ public class PatchField implements IPatchFieldService {
   private long streamPtr;
   private final Map<String, Integer> modules = new LinkedHashMap<String, Integer>();
   private final Map<String, Notification> notifications = new LinkedHashMap<String, Notification>();
-  private final RemoteCallbackList<IPatchFieldClient> clients =
-      new RemoteCallbackList<IPatchFieldClient>();
+  private final RemoteCallbackList<IPatchfieldClient> clients =
+      new RemoteCallbackList<IPatchfieldClient>();
 
-  public PatchField(Context context, int inputChannels, int outputChannels) throws IOException {
+  public Patchfield(Context context, int inputChannels, int outputChannels) throws IOException {
     params = OpenSlParams.createInstance(context);
     streamPtr =
         createInstance(params.getSampleRate(), params.getBufferSize(), inputChannels,
@@ -82,12 +82,12 @@ public class PatchField implements IPatchFieldService {
   }
 
   @Override
-  public synchronized void registerClient(IPatchFieldClient client) throws RemoteException {
+  public synchronized void registerClient(IPatchfieldClient client) throws RemoteException {
     clients.register(client);
   }
 
   @Override
-  public synchronized void unregisterClient(IPatchFieldClient client) throws RemoteException {
+  public synchronized void unregisterClient(IPatchfieldClient client) throws RemoteException {
     clients.unregister(client);
   }
 
@@ -106,7 +106,7 @@ public class PatchField implements IPatchFieldService {
     if (streamPtr == 0) {
       throw new IllegalStateException("Stream closed.");
     }
-    return PatchFieldException.successOrFailure(sendSharedMemoryFileDescriptor(streamPtr));
+    return PatchfieldException.successOrFailure(sendSharedMemoryFileDescriptor(streamPtr));
   }
 
   @Override
@@ -126,7 +126,7 @@ public class PatchField implements IPatchFieldService {
       }
       clients.finishBroadcast();
     }
-    return PatchFieldException.successOrFailure(result);
+    return PatchfieldException.successOrFailure(result);
   }
 
   @Override
@@ -161,10 +161,10 @@ public class PatchField implements IPatchFieldService {
       throw new IllegalStateException("Stream closed.");
     }
     if (inputChannels < 0 || outputChannels < 0 || (inputChannels == 0 && outputChannels == 0)) {
-      return PatchFieldException.INVALID_PARAMETERS;
+      return PatchfieldException.INVALID_PARAMETERS;
     }
     if (modules.containsKey(module)) {
-      return PatchFieldException.MODULE_NAME_TAKEN;
+      return PatchfieldException.MODULE_NAME_TAKEN;
     }
     int index = createModule(streamPtr, inputChannels, outputChannels);
     if (index >= 0) {
@@ -190,7 +190,7 @@ public class PatchField implements IPatchFieldService {
       throw new IllegalStateException("Stream closed.");
     }
     if (!modules.containsKey(module)) {
-      return PatchFieldException.NO_SUCH_MODULE;
+      return PatchfieldException.NO_SUCH_MODULE;
     }
     int result = deleteModule(streamPtr, modules.get(module));
     if (result == 0) {
@@ -222,22 +222,22 @@ public class PatchField implements IPatchFieldService {
       throw new IllegalStateException("Stream closed.");
     }
     if (!modules.containsKey(source)) {
-      return PatchFieldException.NO_SUCH_MODULE;
+      return PatchfieldException.NO_SUCH_MODULE;
     }
     if (!modules.containsKey(sink)) {
-      return PatchFieldException.NO_SUCH_MODULE;
+      return PatchfieldException.NO_SUCH_MODULE;
     }
     if (sourcePort < 0 || sourcePort >= getOutputChannels(source)) {
-      return PatchFieldException.PORT_OUT_OF_RANGE;
+      return PatchfieldException.PORT_OUT_OF_RANGE;
     }
     if (sinkPort < 0 || sinkPort >= getInputChannels(sink)) {
-      return PatchFieldException.PORT_OUT_OF_RANGE;
+      return PatchfieldException.PORT_OUT_OF_RANGE;
     }
     if (isConnected(source, sourcePort, sink, sinkPort)) {
-      return PatchFieldException.SUCCESS;
+      return PatchfieldException.SUCCESS;
     }
     if (isDependent(source, sink)) {
-      return PatchFieldException.CYCLIC_DEPENDENCY;
+      return PatchfieldException.CYCLIC_DEPENDENCY;
     }
     int result =
         connectPorts(streamPtr, modules.get(source), sourcePort, modules.get(sink), sinkPort);
@@ -261,16 +261,16 @@ public class PatchField implements IPatchFieldService {
       throw new IllegalStateException("Stream closed.");
     }
     if (!modules.containsKey(source)) {
-      return PatchFieldException.NO_SUCH_MODULE;
+      return PatchfieldException.NO_SUCH_MODULE;
     }
     if (!modules.containsKey(sink)) {
-      return PatchFieldException.NO_SUCH_MODULE;
+      return PatchfieldException.NO_SUCH_MODULE;
     }
     if (sourcePort < 0 || sourcePort >= getOutputChannels(source)) {
-      return PatchFieldException.PORT_OUT_OF_RANGE;
+      return PatchfieldException.PORT_OUT_OF_RANGE;
     }
     if (sinkPort < 0 || sinkPort >= getInputChannels(sink)) {
-      return PatchFieldException.PORT_OUT_OF_RANGE;
+      return PatchfieldException.PORT_OUT_OF_RANGE;
     }
     if (!isConnected(source, sourcePort, sink, sinkPort)) {
       return 0;
@@ -317,7 +317,7 @@ public class PatchField implements IPatchFieldService {
       throw new IllegalStateException("Stream closed.");
     }
     if (!modules.containsKey(module)) {
-      return PatchFieldException.NO_SUCH_MODULE;
+      return PatchfieldException.NO_SUCH_MODULE;
     }
     return getInputChannels(streamPtr, modules.get(module));
   }
@@ -328,7 +328,7 @@ public class PatchField implements IPatchFieldService {
       throw new IllegalStateException("Stream closed.");
     }
     if (!modules.containsKey(module)) {
-      return PatchFieldException.NO_SUCH_MODULE;
+      return PatchfieldException.NO_SUCH_MODULE;
     }
     return getOutputChannels(streamPtr, modules.get(module));
   }
@@ -352,7 +352,7 @@ public class PatchField implements IPatchFieldService {
       throw new IllegalStateException("Stream closed.");
     }
     if (!modules.containsKey(module)) {
-      return PatchFieldException.NO_SUCH_MODULE;
+      return PatchfieldException.NO_SUCH_MODULE;
     }
     if (isActive(module)) {
       return 0;
@@ -369,7 +369,7 @@ public class PatchField implements IPatchFieldService {
       }
       clients.finishBroadcast();
     }
-    return PatchFieldException.successOrFailure(result);
+    return PatchfieldException.successOrFailure(result);
   }
 
   @Override
@@ -378,7 +378,7 @@ public class PatchField implements IPatchFieldService {
       throw new IllegalStateException("Stream closed.");
     }
     if (!modules.containsKey(module)) {
-      return PatchFieldException.NO_SUCH_MODULE;
+      return PatchfieldException.NO_SUCH_MODULE;
     }
     if (!isActive(module)) {
       return 0;
@@ -395,7 +395,7 @@ public class PatchField implements IPatchFieldService {
       }
       clients.finishBroadcast();
     }
-    return PatchFieldException.successOrFailure(result);
+    return PatchfieldException.successOrFailure(result);
   }
 
   @Override

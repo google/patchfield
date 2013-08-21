@@ -23,18 +23,18 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
 
-import com.noisepages.nettoyeur.patchfield.IPatchFieldClient;
-import com.noisepages.nettoyeur.patchfield.IPatchFieldService;
-import com.noisepages.nettoyeur.patchfield.PatchField;
+import com.noisepages.nettoyeur.patchfield.IPatchfieldClient;
+import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
+import com.noisepages.nettoyeur.patchfield.Patchfield;
 
 /**
- * Boilerplate for turning {@link PatchField} into an Android service.
+ * Boilerplate for turning {@link Patchfield} into an Android service.
  */
-public class PatchFieldService extends Service {
+public class PatchfieldService extends Service {
 
-  private PatchField patchfield = null;
+  private Patchfield patchfield = null;
 
-  private final IPatchFieldService.Stub binder = new IPatchFieldService.Stub() {
+  private final IPatchfieldService.Stub binder = new IPatchfieldService.Stub() {
 
     @Override
     public int sendSharedMemoryFileDescriptor() {
@@ -42,12 +42,12 @@ public class PatchFieldService extends Service {
     }
 
     @Override
-    public void unregisterClient(IPatchFieldClient client) throws RemoteException {
+    public void unregisterClient(IPatchfieldClient client) throws RemoteException {
       patchfield.unregisterClient(client);
     }
 
     @Override
-    public void registerClient(IPatchFieldClient client) throws RemoteException {
+    public void registerClient(IPatchfieldClient client) throws RemoteException {
       patchfield.registerClient(client);
     }
 
@@ -152,12 +152,12 @@ public class PatchFieldService extends Service {
 
     @Override
     public void startForeground(int id, Notification notification) throws RemoteException {
-      PatchFieldService.this.startForeground(id, notification);
+      PatchfieldService.this.startForeground(id, notification);
     }
 
     @Override
     public void stopForeground(boolean removeNotification) throws RemoteException {
-      PatchFieldService.this.stopForeground(removeNotification);
+      PatchfieldService.this.stopForeground(removeNotification);
     }
   };
 
@@ -165,7 +165,7 @@ public class PatchFieldService extends Service {
   public void onCreate() {
     super.onCreate();
     try {
-      patchfield = new PatchField(this, 2, 2);
+      patchfield = new Patchfield(this, 2, 2);
     } catch (IOException e) {
       patchfield = null;
     }

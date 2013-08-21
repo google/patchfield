@@ -21,12 +21,12 @@ import android.util.Log;
 import com.noisepages.nettoyeur.patchfield.internal.SharedMemoryUtils;
 
 /**
- * Abstract base class for PatchField audio modules. Subclasses must implement methods for creating
+ * Abstract base class for Patchfield audio modules. Subclasses must implement methods for creating
  * and releasing audio modules; these implementations will involve native code using the native
- * audio_module library in PatchField/jni. See the LowpassSample project for a representative audio
+ * audio_module library in Patchfield/jni. See the LowpassSample project for a representative audio
  * module implementation.
  * 
- * The PatchField service operates at the native sample rate and buffer size of the device. This means
+ * The Patchfield service operates at the native sample rate and buffer size of the device. This means
  * that audio modules must operate at the native sample rate and buffer size as well. Native sample
  * rates of 44100Hz and 48000Hz are common, and so audio modules must support both. Moreover, audio
  * modules must be prepared to work with arbitrary buffer sizes. In particular, they cannot assume
@@ -34,8 +34,8 @@ import com.noisepages.nettoyeur.patchfield.internal.SharedMemoryUtils;
  * seen in the wild.
  * 
  * If an app is unable to run at the native buffer size, the buffer size adapter utility in
- * PatchField/jni/utils/buffer_size_adapter.{h,c} can be used. For an example of the buffer size
- * adapter in action, see the PatchFieldPd project.
+ * Patchfield/jni/utils/buffer_size_adapter.{h,c} can be used. For an example of the buffer size
+ * adapter in action, see the PatchfieldPd project.
  */
 public abstract class AudioModule {
 
@@ -60,7 +60,7 @@ public abstract class AudioModule {
   }
 
   /**
-   * @param notification to be passed to the PatchField service, so that the service can associate an
+   * @param notification to be passed to the Patchfield service, so that the service can associate an
    *        audio module with an app. May be null.
    */
   protected AudioModule(Notification notification) {
@@ -69,24 +69,24 @@ public abstract class AudioModule {
 
   /**
    * This method takes care of the elaborate choreography that it takes to set up an audio module
-   * and to connect it to its representation in the PatchField service.
+   * and to connect it to its representation in the Patchfield service.
    * 
-   * Specifically, it sets up the shared memory between the local module and the PatchField service,
+   * Specifically, it sets up the shared memory between the local module and the Patchfield service,
    * creates a new module in the service, and connects it to the local module.
    * 
    * A module can only be configured once. If it times out, it cannot be reinstated and should be
    * released.
    * 
-   * @param patchfield stub for communicating with the PatchField service
-   * @param name of the new audio module in PatchField
-   * @return 0 on success, a negative error on failure; use {@link PatchFieldException} to interpret
+   * @param patchfield stub for communicating with the Patchfield service
+   * @param name of the new audio module in Patchfield
+   * @return 0 on success, a negative error on failure; use {@link PatchfieldException} to interpret
    *         the return value.
    * @throws RemoteException
    */
-  public int configure(IPatchFieldService patchfield, String name) throws RemoteException {
+  public int configure(IPatchfieldService patchfield, String name) throws RemoteException {
     int version = patchfield.getProtocolVersion();
     if (version != getProtocolVersion()) {
-      return PatchFieldException.PROTOCOL_VERSION_MISMATCH;
+      return PatchfieldException.PROTOCOL_VERSION_MISMATCH;
     }
     if (this.handle != 0) {
       throw new IllegalStateException("Module is already configured.");
@@ -117,26 +117,26 @@ public abstract class AudioModule {
     if (handle == 0) {
       patchfield.deleteModule(name);
       SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
-      return PatchFieldException.FAILURE;
+      return PatchfieldException.FAILURE;
     }
     if (!configure(name, handle, patchfield.getSampleRate(), patchfield.getBufferSize())) {
       release(handle);
       patchfield.deleteModule(name);
       SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
-      return PatchFieldException.FAILURE;
+      return PatchfieldException.FAILURE;
     }
     this.name = name;
-    return PatchFieldException.SUCCESS;
+    return PatchfieldException.SUCCESS;
   }
 
   /**
    * Releases all resources associated with this module and deletes its representation in the
-   * PatchField service.
+   * Patchfield service.
    * 
-   * @param patchfield stub for communicating with the PatchField service
+   * @param patchfield stub for communicating with the Patchfield service
    * @throws RemoteException
    */
-  public void release(IPatchFieldService patchfield) throws RemoteException {
+  public void release(IPatchfieldService patchfield) throws RemoteException {
     if (handle != 0) {
       patchfield.deleteModule(name);
       release(handle);

@@ -34,13 +34,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.noisepages.nettoyeur.patchfield.IPatchFieldService;
+import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
 
 public class MainActivity extends Activity {
 
-  private static final String TAG = "PatchFieldPcmSample";
+  private static final String TAG = "PatchfieldPcmSample";
 
-  private IPatchFieldService patchfield = null;
+  private IPatchfieldService patchfield = null;
   private PcmSource source = null;
   private final String moduleName = "source";
 
@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-      patchfield = IPatchFieldService.Stub.asInterface(service);
+      patchfield = IPatchfieldService.Stub.asInterface(service);
       int srate = 44100;
       try {
         srate = patchfield.getSampleRate();
@@ -104,7 +104,7 @@ public class MainActivity extends Activity {
         }
       }
     });
-    bindService(new Intent("IPatchFieldService"), connection, Context.BIND_AUTO_CREATE);
+    bindService(new Intent("IPatchfieldService"), connection, Context.BIND_AUTO_CREATE);
   }
 
   @Override

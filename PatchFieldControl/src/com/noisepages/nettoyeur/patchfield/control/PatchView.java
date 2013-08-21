@@ -41,11 +41,11 @@ import android.widget.Space;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.noisepages.nettoyeur.patchfield.IPatchFieldService;
+import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
 
 public final class PatchView extends GridLayout {
 
-  private IPatchFieldService patchfield;
+  private IPatchfieldService patchfield;
   private final List<String> modules = new ArrayList<String>();
   private final Map<Pair<String, Integer>, List<Pair<String, Integer>>> connections =
       new HashMap<Pair<String, Integer>, List<Pair<String, Integer>>>();
@@ -54,7 +54,7 @@ public final class PatchView extends GridLayout {
     super(context);
   }
 
-  public void setPatchField(IPatchFieldService patchfield) {
+  public void setPatchfield(IPatchfieldService patchfield) {
     this.patchfield = patchfield;
   }
 

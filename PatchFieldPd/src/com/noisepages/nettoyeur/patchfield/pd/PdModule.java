@@ -57,7 +57,7 @@ public class PdModule extends AudioModule {
 
   /**
    * Static factory method for creating PdModule instances. Note that the sample rate must be the
-   * sample rate reported by the PatchField service.
+   * sample rate reported by the Patchfield service.
    */
   public static PdModule getInstance(int sampleRate, int inputChannels, int outputChannels,
       Notification notification) {

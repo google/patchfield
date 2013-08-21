@@ -14,28 +14,28 @@
 
 package com.noisepages.nettoyeur.patchfield;
 
-import com.noisepages.nettoyeur.patchfield.IPatchFieldClient;
+import com.noisepages.nettoyeur.patchfield.IPatchfieldClient;
 
 import android.app.Notification;
 
 import java.util.List;
 
 /**
- * PatchField service interface, implemented by {@link PatchField}.
+ * Patchfield service interface, implemented by {@link Patchfield}.
  */
-interface IPatchFieldService {
+interface IPatchfieldService {
   
   /**
-   * Registers a PatchField client. Note that a client is not an audio module.
+   * Registers a Patchfield client. Note that a client is not an audio module.
    * Rather, clients are Java objects that will be notified when the state
    * of the patchfield changes.
    */
-  void registerClient(IPatchFieldClient client);
+  void registerClient(IPatchfieldClient client);
       
   /**
-   * Unregisters a PatchField client.
+   * Unregisters a Patchfield client.
    */
-  void unregisterClient(IPatchFieldClient client);
+  void unregisterClient(IPatchfieldClient client);
   
   /**
    * Starts audio rendering.
@@ -78,7 +78,7 @@ interface IPatchFieldService {
   int disconnectPorts(String source, int sourcePort, String sink, int sinkPort);
       
   /**
-   * @return True if the PatchField is currently rendering audio.
+   * @return True if the Patchfield is currently rendering audio.
    */
   boolean isRunning();
       
@@ -123,21 +123,21 @@ interface IPatchFieldService {
   boolean isDependent(String sink, String source);
   
   /**
-   * @return The sample rate in Hz at which the PatchField operates. This value is determined
+   * @return The sample rate in Hz at which the Patchfield operates. This value is determined
    * by the hardware and cannot be changed. Audio modules should be able to operate at 44.1kHz
    * as well as 48kHz.
    */
   int getSampleRate();
       
   /**
-   * @return The buffer size in frames at which the PatchField operates. This value is determined
+   * @return The buffer size in frames at which the Patchfield operates. This value is determined
    * by the hardware and cannot be changed. Audio modules should make no assumptions about the
    * buffer size. In particular, it will not be a power of two on many devices.
    */
   int getBufferSize();
       
   /**
-   * Creates a new audio module in the PatchField service; for internal use mostly, to be called by
+   * Creates a new audio module in the Patchfield service; for internal use mostly, to be called by
    * the configure method of {@link AudioModule}.
    *
    * @return The index of the new module on success, or a negative error code on failure.
@@ -145,7 +145,7 @@ interface IPatchFieldService {
   int createModule(String module, int inputChannels, int outputChannels, in Notification notification);
       
   /**
-   * Deletes an audio module from the PatchField service; for internal use mostly, to be called by
+   * Deletes an audio module from the Patchfield service; for internal use mostly, to be called by
    * the release method of {@link AudioModule}.
    *
    * @return 0 on success, or a negative error code on failure.

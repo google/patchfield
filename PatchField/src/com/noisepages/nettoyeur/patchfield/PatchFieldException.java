@@ -15,12 +15,12 @@
 package com.noisepages.nettoyeur.patchfield;
 
 /**
- * Checked exception for Java-style handling of error codes from PatchField. The {@link PatchField}
+ * Checked exception for Java-style handling of error codes from Patchfield. The {@link Patchfield}
  * class itself doesn't throw exceptions but returns C-style error codes because exceptions can't be
  * thrown via AIDL. If, however, you prefer to use exceptions in Java, you can convert error codes
- * by wrapping calls to PatchField in the throwOnError method below.
+ * by wrapping calls to Patchfield in the throwOnError method below.
  */
-public class PatchFieldException extends Exception {
+public class PatchfieldException extends Exception {
 
   // WARNING: Do not change these constants without updating references in patchfield.c.
   public static final int SUCCESS = 0;
@@ -38,7 +38,7 @@ public class PatchFieldException extends Exception {
   private static final long serialVersionUID = 1L;
   private final int code;
 
-  public PatchFieldException(int code) {
+  public PatchfieldException(int code) {
     this.code = code;
   }
 
@@ -50,9 +50,9 @@ public class PatchFieldException extends Exception {
     return (n >= 0) ? SUCCESS : FAILURE;
   }
 
-  public static int throwOnError(int code) throws PatchFieldException {
+  public static int throwOnError(int code) throws PatchfieldException {
     if (code < 0) {
-      throw new PatchFieldException(code);
+      throw new PatchfieldException(code);
     }
     return code;
   }

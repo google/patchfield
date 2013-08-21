@@ -15,7 +15,7 @@
 package com.noisepages.nettoyeur.patchfield.internal;
 
 /**
- * Utilities for receiving file descriptors from the PatchField service.
+ * Utilities for receiving file descriptors from the Patchfield service.
  */
 public class SharedMemoryUtils {
 

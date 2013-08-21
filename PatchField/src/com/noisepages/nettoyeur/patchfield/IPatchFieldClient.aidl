@@ -17,10 +17,10 @@ package com.noisepages.nettoyeur.patchfield;
 import android.app.Notification;
 
 /**
- * PatchField client interface for handling notifications when the state of the
+ * Patchfield client interface for handling notifications when the state of the
  * patchfield changes.
  */
-oneway interface IPatchFieldClient {
+oneway interface IPatchfieldClient {
 
   void onModuleCreated(String name, int inputChannels, int outputChannels, in Notification notification);
   void onModuleDeleted(String name);
