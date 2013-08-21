@@ -21,7 +21,10 @@ build the native components like this:
 
 ```
 git clone --recursive https://github.com/google/patchfield.git
-cd patchfield
+cd patchfield/PatchfieldPd/jni/libpd
+git submodule init
+git submodule update
+cd ../../..
 make
 ```
 
