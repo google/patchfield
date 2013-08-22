@@ -35,8 +35,8 @@ public class LowpassModule extends AudioModule {
 
   public LowpassModule(int channels, Notification notification) {
     super(notification);
-    if (channels < 1 || channels > getMaxChannels()) {
-      throw new IllegalArgumentException("Channel count out of range.");
+    if (channels < 1) {
+      throw new IllegalArgumentException("Channel count must be at least one.");
     }
     this.channels = channels;
   }
@@ -84,11 +84,9 @@ public class LowpassModule extends AudioModule {
     setParameter(ptr, alpha);
   }
 
-  public static native int getMaxChannels();
-
-  private native void setParameter(long ptr, double alpha);
-
   private native long createModule(long handle, int channels);
 
   private native void release(long ptr);
+
+  private native void setParameter(long ptr, double alpha);
 }

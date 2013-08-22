@@ -21,21 +21,24 @@ import android.util.Log;
 import com.noisepages.nettoyeur.patchfield.internal.SharedMemoryUtils;
 
 /**
- * Abstract base class for Patchfield audio modules. Subclasses must implement methods for creating
- * and releasing audio modules; these implementations will involve native code using the native
- * audio_module library in Patchfield/jni. See the LowpassSample project for a representative audio
- * module implementation.
+ * Abstract base class for Patchfield audio modules. Subclasses must implement
+ * methods for creating and releasing audio modules; these implementations will
+ * involve native code using the native audio_module library in Patchfield/jni.
+ * See the LowpassSample project for a representative audio module
+ * implementation.
  * 
- * The Patchfield service operates at the native sample rate and buffer size of the device. This means
- * that audio modules must operate at the native sample rate and buffer size as well. Native sample
- * rates of 44100Hz and 48000Hz are common, and so audio modules must support both. Moreover, audio
- * modules must be prepared to work with arbitrary buffer sizes. In particular, they cannot assume
- * that the buffer size is a power of two. Multiples of three, such as 144, 192, and 384, have been
- * seen in the wild.
+ * The Patchfield service operates at the native sample rate and buffer size of
+ * the device. This means that audio modules must operate at the native sample
+ * rate and buffer size as well. Native sample rates of 44100Hz and 48000Hz are
+ * common, and so audio modules must support both. Moreover, audio modules must
+ * be prepared to work with arbitrary buffer sizes. In particular, they cannot
+ * assume that the buffer size is a power of two. Multiples of three, such as
+ * 144, 192, and 384, have been seen in the wild.
  * 
- * If an app is unable to run at the native buffer size, the buffer size adapter utility in
- * Patchfield/jni/utils/buffer_size_adapter.{h,c} can be used. For an example of the buffer size
- * adapter in action, see the PatchfieldPd project.
+ * If an app is unable to run at the native buffer size, the buffer size adapter
+ * utility in Patchfield/jni/utils/buffer_size_adapter.{h,c} can be used. For an
+ * example of the buffer size adapter in action, see the PatchfieldPd library
+ * project.
  */
 public abstract class AudioModule {
 
@@ -60,30 +63,38 @@ public abstract class AudioModule {
   }
 
   /**
-   * @param notification to be passed to the Patchfield service, so that the service can associate an
-   *        audio module with an app. May be null.
+   * Constructor.
+   * 
+   * @param notification
+   *            Notification to be passed to the Patchfield service, so that the service
+   *            can associate an audio module with an app. May be null.
    */
   protected AudioModule(Notification notification) {
     this.notification = notification;
   }
 
   /**
-   * This method takes care of the elaborate choreography that it takes to set up an audio module
-   * and to connect it to its representation in the Patchfield service.
+   * This method takes care of the elaborate choreography that it takes to set
+   * up an audio module and to connect it to its representation in the
+   * Patchfield service.
    * 
-   * Specifically, it sets up the shared memory between the local module and the Patchfield service,
-   * creates a new module in the service, and connects it to the local module.
+   * Specifically, it sets up the shared memory between the local module and
+   * the Patchfield service, creates a new module in the service, and connects
+   * it to the local module.
    * 
-   * A module can only be configured once. If it times out, it cannot be reinstated and should be
-   * released.
+   * A module can only be configured once. If it times out, it cannot be
+   * reinstated and should be released.
    * 
-   * @param patchfield stub for communicating with the Patchfield service
-   * @param name of the new audio module in Patchfield
-   * @return 0 on success, a negative error on failure; use {@link PatchfieldException} to interpret
-   *         the return value.
+   * @param patchfield
+   *            Stub for communicating with the Patchfield service.
+   * @param name
+   *            Name of the new audio module in Patchfield.
+   * @return 0 on success, a negative error on failure; use
+   *         {@link PatchfieldException} to interpret the return value.
    * @throws RemoteException
    */
-  public int configure(IPatchfieldService patchfield, String name) throws RemoteException {
+  public int configure(IPatchfieldService patchfield, String name)
+      throws RemoteException {
     int version = patchfield.getProtocolVersion();
     if (version != getProtocolVersion()) {
       return PatchfieldException.PROTOCOL_VERSION_MISMATCH;
@@ -108,7 +119,8 @@ public abstract class AudioModule {
     if (token < 0) {
       return token;
     }
-    int index = patchfield.createModule(name, getInputChannels(), getOutputChannels(), notification);
+    int index = patchfield.createModule(name, getInputChannels(),
+        getOutputChannels(), notification);
     if (index < 0) {
       SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
       return index;
@@ -119,7 +131,8 @@ public abstract class AudioModule {
       SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
       return PatchfieldException.FAILURE;
     }
-    if (!configure(name, handle, patchfield.getSampleRate(), patchfield.getBufferSize())) {
+    if (!configure(name, handle, patchfield.getSampleRate(),
+        patchfield.getBufferSize())) {
       release(handle);
       patchfield.deleteModule(name);
       SharedMemoryUtils.closeSharedMemoryFileDescriptor(token);
@@ -130,10 +143,11 @@ public abstract class AudioModule {
   }
 
   /**
-   * Releases all resources associated with this module and deletes its representation in the
-   * Patchfield service.
+   * Releases all resources associated with this module and deletes its
+   * representation in the Patchfield service.
    * 
-   * @param patchfield stub for communicating with the Patchfield service
+   * @param patchfield
+   *            Stub for communicating with the Patchfield service.
    * @throws RemoteException
    */
   public void release(IPatchfieldService patchfield) throws RemoteException {
@@ -157,22 +171,57 @@ public abstract class AudioModule {
     return name;
   }
 
+  /**
+   * @return The notification associated with this module.
+   */
   protected Notification getNotification() {
     return notification;
   }
 
+  /**
+   * @return True if the module has timed out. A module that has timed out
+   *         cannot be reinstated and must be released.
+   */
   public final boolean hasTimedOut() {
     return handle != 0 && hasTimedOut(handle);
   }
 
+  /**
+   * @return The number of input channels of this module.
+   */
   public abstract int getInputChannels();
 
+  /**
+   * @return The number of output channels of this module.
+   */
   public abstract int getOutputChannels();
 
-  protected abstract boolean configure(String name, long handle, int sampleRate, int bufferSize);
+  /**
+   * This method is called by the public configure method. It is responsible
+   * to setting up the native components of an audio module implementation,
+   * such as the audio processing function and any data structures that make
+   * up the processing context.
+   * 
+   * @param name
+   * @param handle
+   *            Opaque handle to the internal data structure representing an
+   *            audio module.
+   * @param sampleRate
+   * @param bufferSize
+   * @return True on success
+   */
+  protected abstract boolean configure(String name, long handle,
+      int sampleRate, int bufferSize);
 
+  /**
+   * Releases any resources held by the audio module, such as memory allocated
+   * for the processing context.
+   */
   protected abstract void release();
 
+  /**
+   * @return The Patchfield protocol version; mostly for internal use.
+   */
   public static native int getProtocolVersion();
 
   private native long createRunner(int version, int token, int index);

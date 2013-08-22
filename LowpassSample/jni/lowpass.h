@@ -9,22 +9,6 @@ extern "C" {
 #endif
 /*
  * Class:     com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule
- * Method:    getMaxChannels
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule_getMaxChannels
-  (JNIEnv *, jclass);
-
-/*
- * Class:     com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule
- * Method:    setParameter
- * Signature: (JD)V
- */
-JNIEXPORT void JNICALL Java_com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule_setParameter
-  (JNIEnv *, jobject, jlong, jdouble);
-
-/*
- * Class:     com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule
  * Method:    createModule
  * Signature: (JI)J
  */
@@ -38,6 +22,14 @@ JNIEXPORT jlong JNICALL Java_com_noisepages_nettoyeur_patchfield_lowpass_Lowpass
  */
 JNIEXPORT void JNICALL Java_com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule_release
   (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule
+ * Method:    setParameter
+ * Signature: (JD)V
+ */
+JNIEXPORT void JNICALL Java_com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule_setParameter
+  (JNIEnv *, jobject, jlong, jdouble);
 
 #ifdef __cplusplus
 }
