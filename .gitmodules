@@ -1,6 +1,0 @@
-[submodule "Patchfield/jni/opensl_stream"]
-	path = Patchfield/jni/opensl_stream
-	url = https://github.com/nettoyeurny/opensl_stream.git
-[submodule "PatchfieldPd/jni/libpd"]
-	path = PatchfieldPd/jni/libpd
-	url = https://github.com/libpd/libpd.git
