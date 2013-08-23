@@ -21,15 +21,13 @@ build the native components like this:
 
 ```
 git clone --recursive https://github.com/google/patchfield.git
-cd patchfield/PatchfieldPd/jni/libpd
-git submodule init
-git submodule update
-cd ../../..
+cd patchfield
 make
 ```
 
-Now you can import all projects in the patchfield directory into your
-development environment of choice.
+(Don't worry if ``javah`` reports errors on this initial build.) Now you can
+import all projects in the patchfield directory into your development
+environment of choice.
 
 
 Project layout
