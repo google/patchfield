@@ -277,7 +277,7 @@ static void process(void *context, int sample_rate, int buffer_frames,
       for (j = 0; j < buffer_frames; ++j) {
         float v = b[j];
         output_buffer[i + j * output_channels] = (short) (float_to_short *
-            (v < -1.0f ? -1.0f : (v > 1.0f ? 1.0f : v)));
+            (isnan(v) ? 0 : (v < -1.0f ? -1.0f : (v > 1.0f ? 1.0f : v))));
       }
       b += buffer_frames;
     }
