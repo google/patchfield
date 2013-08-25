@@ -135,6 +135,16 @@ interface IPatchfieldService {
    * buffer size. In particular, it will not be a power of two on many devices.
    */
   int getBufferSize();
+  
+  /**
+   * Delegates to the corresponding Service method.
+   */
+  void startForeground(int id, in Notification notification);
+  
+  /**
+   * Delegates to the corresponding Service method.
+   */
+  void stopForeground(boolean removeNotification);
       
   /**
    * Creates a new audio module in the Patchfield service; for internal use mostly, to be called by
@@ -163,14 +173,4 @@ interface IPatchfieldService {
    * @return 0 on success, or a negative error code on failure.
    */
   int sendSharedMemoryFileDescriptor();
-  
-  /**
-   * Delegates to the corresponding Service method.
-   */
-  void startForeground(int id, in Notification notification);
-  
-  /**
-   * Delegates to the corresponding Service method.
-   */
-  void stopForeground(boolean removeNotification);
 }

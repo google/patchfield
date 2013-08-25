@@ -18,7 +18,8 @@ import android.app.Notification;
 
 /**
  * Patchfield client interface for handling notifications when the state of the
- * patchfield changes.
+ * patchfield changes. All methods are straightforward counterparts of methods
+ * IPatchfieldService.aidl.
  */
 oneway interface IPatchfieldClient {
 

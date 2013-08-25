@@ -37,7 +37,7 @@ import android.widget.TextView;
 import com.noisepages.nettoyeur.patchfield.IPatchfieldClient;
 import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
 
-public class MainActivity extends Activity implements OnCheckedChangeListener {
+public class ControlActivity extends Activity implements OnCheckedChangeListener {
 
   private static final String TAG = "PatchControl";
 
@@ -145,10 +145,10 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
       patchfield = IPatchfieldService.Stub.asInterface(service);
       patchView.setPatchfield(patchfield);
       PendingIntent pi =
-          PendingIntent.getActivity(MainActivity.this, 0, new Intent(MainActivity.this,
-              MainActivity.class), 0);
+          PendingIntent.getActivity(ControlActivity.this, 0, new Intent(ControlActivity.this,
+              ControlActivity.class), 0);
       Notification notification =
-          new Notification.Builder(MainActivity.this)
+          new Notification.Builder(ControlActivity.this)
               .setSmallIcon(android.R.drawable.ic_media_play).setContentTitle("PatchfieldControl")
               .setContentIntent(pi).build();
       try {
