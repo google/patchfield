@@ -66,7 +66,7 @@ public class LowpassActivity extends Activity implements OnSeekBarChangeListener
           new Notification.Builder(LowpassActivity.this).setSmallIcon(R.drawable.emo_im_happy)
               .setContentTitle("LowpassModule").setContentIntent(pi).build();
       try {
-        Log.i(TAG, "Creating runner.");
+        Log.i(TAG, "Creating module.");
         module = new LowpassModule(2, notification);
         module.configure(patchfield, moduleLabel);
         patchfield.activateModule(moduleLabel);
