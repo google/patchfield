@@ -35,7 +35,7 @@ import android.widget.TextView;
 
 import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
 
-public class MainActivity extends Activity implements OnSeekBarChangeListener {
+public class LowpassActivity extends Activity implements OnSeekBarChangeListener {
 
   private static final String TAG = "LowpassSample";
 
@@ -60,10 +60,10 @@ public class MainActivity extends Activity implements OnSeekBarChangeListener {
       Log.i(TAG, "Service connected.");
       patchfield = IPatchfieldService.Stub.asInterface(service);
       PendingIntent pi =
-          PendingIntent.getActivity(MainActivity.this, 0, new Intent(MainActivity.this,
-              MainActivity.class), 0);
+          PendingIntent.getActivity(LowpassActivity.this, 0, new Intent(LowpassActivity.this,
+              LowpassActivity.class), 0);
       Notification notification =
-          new Notification.Builder(MainActivity.this).setSmallIcon(R.drawable.emo_im_happy)
+          new Notification.Builder(LowpassActivity.this).setSmallIcon(R.drawable.emo_im_happy)
               .setContentTitle("LowpassModule").setContentIntent(pi).build();
       try {
         Log.i(TAG, "Creating runner.");
