@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.noisepages.nettoyeur.patchfield.source.MainActivity"
+            android:name="com.noisepages.nettoyeur.patchfield.source.PcmActivity"
             android:label="@string/app_name" android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -36,7 +36,7 @@ import android.widget.Button;
 
 import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
 
-public class MainActivity extends Activity {
+public class PcmActivity extends Activity {
 
   private static final String TAG = "PatchfieldPcmSample";
 
@@ -71,10 +71,10 @@ public class MainActivity extends Activity {
         return;
       }
       PendingIntent pi =
-          PendingIntent.getActivity(MainActivity.this, 0, new Intent(MainActivity.this,
-              MainActivity.class), 0);
+          PendingIntent.getActivity(PcmActivity.this, 0, new Intent(PcmActivity.this,
+              PcmActivity.class), 0);
       Notification notification =
-          new Notification.Builder(MainActivity.this).setSmallIcon(R.drawable.perm_group_voicemail)
+          new Notification.Builder(PcmActivity.this).setSmallIcon(R.drawable.perm_group_voicemail)
               .setContentTitle("Relaxation Spa Treatment").setContentIntent(pi).build();
       source = new PcmSource(2, buffer, notification);
       try {
