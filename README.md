@@ -112,8 +112,8 @@ It also illustrates how to set up the build system and how to interact with the
 audio processing thread in a thread-safe yet lock-free manner.
 
 
-Audio format, sample rate, and buffer size
-------------------------------------------
+Odds and ends
+-------------
 
 Patchfield uses 32-bit float samples; buffers are non-interleaved.  The
 Patchfield service operates at the native sample rate and buffer size of the
@@ -127,6 +127,10 @@ Multiples of three, such as 144, 192, and 384, have been seen in the wild. The
 Patchfield repository includes a utility library that performs buffer size
 adaptation for audio modules that use synthesis techniques or audio libraries
 that cannot operate at the native buffer size.
+
+Apps that use Patchfield should launch with launch mode ``singleTask``. This
+deviates from the usual recommendations for Android development, but it is
+necessary for the navigation model of Patchfield.
 
 Latency
 -------
