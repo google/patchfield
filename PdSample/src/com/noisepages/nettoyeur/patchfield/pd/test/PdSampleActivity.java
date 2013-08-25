@@ -37,7 +37,7 @@ import android.view.Menu;
 import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
 import com.noisepages.nettoyeur.patchfield.pd.PdModule;
 
-public class MainActivity extends Activity {
+public class PdSampleActivity extends Activity {
 
   private static final String TAG = "PatchfieldPdSample";
 
@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
       patchfield = IPatchfieldService.Stub.asInterface(service);
       int inputChannels = 2;
       int outputChannels = 2;
-      Notification notification = new Notification.Builder(MainActivity.this)
+      Notification notification = new Notification.Builder(PdSampleActivity.this)
           .setSmallIcon(R.drawable.pd_icon)
           .setContentTitle("PdModule")
           .build();
