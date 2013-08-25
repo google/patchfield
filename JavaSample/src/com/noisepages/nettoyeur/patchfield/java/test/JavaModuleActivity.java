@@ -28,7 +28,7 @@ import android.view.Menu;
 import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
 import com.noisepages.nettoyeur.patchfield.modules.JavaModule;
 
-public class MainActivity extends Activity {
+public class JavaModuleActivity extends Activity {
 
   private static final String TAG = "JavaSample";
 
