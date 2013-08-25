@@ -48,7 +48,7 @@ static void process_func(void *context, int sample_rate, int buffer_frames,
 }
 
 JNIEXPORT jlong JNICALL
-Java_com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule_createModule
+Java_com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule_configureNativeComponents
 (JNIEnv *env, jobject obj, jlong handle, jint channels) {
   lowpass_data *data = malloc(sizeof(lowpass_data));
   if (data) {

@@ -9,10 +9,10 @@ extern "C" {
 #endif
 /*
  * Class:     com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule
- * Method:    createModule
+ * Method:    configureNativeComponents
  * Signature: (JI)J
  */
-JNIEXPORT jlong JNICALL Java_com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule_createModule
+JNIEXPORT jlong JNICALL Java_com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule_configureNativeComponents
   (JNIEnv *, jobject, jlong, jint);
 
 /*

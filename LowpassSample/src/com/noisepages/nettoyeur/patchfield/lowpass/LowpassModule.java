@@ -46,7 +46,7 @@ public class LowpassModule extends AudioModule {
     if (ptr != 0) {
       throw new IllegalStateException("Module has already been configured.");
     }
-    ptr = createModule(handle, channels);
+    ptr = configureNativeComponents(handle, channels);
     return ptr != 0;
   }
 
@@ -84,7 +84,7 @@ public class LowpassModule extends AudioModule {
     setParameter(ptr, alpha);
   }
 
-  private native long createModule(long handle, int channels);
+  private native long configureNativeComponents(long handle, int channels);
 
   private native void release(long ptr);
 
