@@ -13,6 +13,14 @@ illustrate how to implement audio modules and how to manipulate the signal
 processing graph. The implementation resides entirely in userland and works on
 many stock consumer devices, such as Nexus 7 and 10.
 
+Forum
+-----
+
+If you have any questions or comments, don't hesitate to get in touch at
+[https://groups.google.com/forum/#!forum/patchfield](https://groups.google.com/forum/#!forum/patchfield). Also, if you implement a great project on top of
+Patchbay, please tell us about it!
+
+
 Cloning and building Patchfield
 -------------------------------
 
@@ -150,7 +158,7 @@ Further testing and evaluation is needed.
 
 
 Patchfield and Google
--------------------
+---------------------
 
 Patchfield started as a 20% project and Google owns the copyright.  Still, this
 project is not an official Google product.
