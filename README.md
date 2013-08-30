@@ -58,7 +58,7 @@ Patchfield.
 * ``PdSample`` Sample app using ``PatchfieldPd``.
 
 Further sample projects are available at
-[https://github.com/nettoyeurny/patchfield_apps].
+https://github.com/nettoyeurny/patchfield_apps.
 
 Major components
 ----------------
