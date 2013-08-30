@@ -17,8 +17,8 @@ Forum
 -----
 
 If you have any questions or comments, don't hesitate to get in touch at
-[https://groups.google.com/forum/#!forum/patchfield](https://groups.google.com/forum/#!forum/patchfield). Also, if you implement a great project on top of
-Patchbay, please tell us about it!
+https://groups.google.com/forum/#!forum/patchfield. Also, if you implement a
+great project on top of Patchbay, please tell us about it!
 
 
 Cloning and building Patchfield
