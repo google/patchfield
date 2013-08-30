@@ -19,17 +19,6 @@ LOCAL_STATIC_LIBRARIES := audiomodule
 include $(BUILD_STATIC_LIBRARY)
 
 
-# Java Audio module.
-
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := javamodule
-LOCAL_LDLIBS := -llog
-LOCAL_SRC_FILES := modules/javamodule.c internal/simple_barrier.c
-LOCAL_STATIC_LIBRARIES := audiomodule buffersizeadapter
-include $(BUILD_SHARED_LIBRARY)
-
-
 # Internal libraries.
 
 include $(CLEAR_VARS)

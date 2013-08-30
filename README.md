@@ -45,8 +45,8 @@ Project layout
   ``PatchfieldService`` class and all APIs, as well as utilities.
 * ``PatchfieldControl`` Sample control app and remote service configuration; you
   will need to install this app if you want to run Patchfield as a remote
-service.
-* ``JavaSample`` Sample app illustrating the use of the ``JavaModule`` class.
+service. (Note, however, that the Patchfield service does not depend on this
+control app; they are merely being packaged together for convenience.)
 * ``LowpassSample`` Sample app illustrating how to implement an audio module
   for Patchfield, complete with build files and lock-free concurrency.
 * ``PcmSample`` Sample app playing a wav file through Patchfield.  Crude but
@@ -150,12 +150,26 @@ buffer queue callback of OpenSL ES.
 Device compatibility
 --------------------
 
-Patchfield pushes the limits of the current Android audio stack, and it works
-better on some devices than on others. It is also a very young project that has
-not yet been tested on a wide range of devices. It works well on Nexus 7 (both
-new and old) as well as Nexus 10. On Galaxy Nexus, alas, it tends to glitch.
-Further testing and evaluation is needed.
+Patchfield requires SDK version 14 or later. It pushes the limits of the
+current Android audio stack, and it works better on some devices than on
+others. It is also a very young project that has not yet been tested on a wide
+range of devices. Further testing and evaluation is needed.
 
+Patchfield has been successfully tested on Nexus 10, Nexus 7 (both the original
+version and the new one), Nexus S, and HTC-1.
+
+Patchfield does not seem to work well on Nexus 4 (audio just stops after a few
+seconds) and Galaxy Nexus (audio glitches when switching between activities).
+The glitches on Galaxy Nexus seem to be unrelated to Patchfield; problems of
+this kind have also been reported with other audio software.
+
+To Do
+-----
+
+* Create a better control app. The user interface of the current version of the
+  ``PatchfieldControl`` app is rather crude and requires much scrolling on
+small screens.
+* Test and evaluate Patchfield across a range of devices.
 
 Patchfield and Google
 ---------------------

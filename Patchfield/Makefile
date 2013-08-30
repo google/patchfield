@@ -5,6 +5,4 @@ all:
 		com.noisepages.nettoyeur.patchfield.Patchfield
 	-javah -classpath bin/classes -o jni/internal/shared_memory_utils.h \
 		com.noisepages.nettoyeur.patchfield.internal.SharedMemoryUtils
-	-javah -classpath bin/classes -o jni/modules/javamodule.h \
-		com.noisepages.nettoyeur.patchfield.modules.JavaModule
 	ndk-build
