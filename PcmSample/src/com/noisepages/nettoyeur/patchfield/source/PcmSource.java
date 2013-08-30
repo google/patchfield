@@ -20,6 +20,9 @@ import android.app.Notification;
 
 import com.noisepages.nettoyeur.patchfield.AudioModule;
 
+/**
+ * Audio module for playing sound files in PCM format.
+ */
 public class PcmSource extends AudioModule {
 
   static {
@@ -30,6 +33,16 @@ public class PcmSource extends AudioModule {
   private final int channels;
   private final ByteBuffer buffer;
 
+  /**
+   * Creates a new PCM source.
+   * 
+   * @param channels
+   *            Number of output channels.
+   * @param buffer
+   *            Direct byte buffer holding PCM data as interleaved 32-bit
+   *            floats.
+   * @param notification
+   */
   public PcmSource(int channels, ByteBuffer buffer, Notification notification) {
     super(notification);
     this.channels = channels;
@@ -47,7 +60,8 @@ public class PcmSource extends AudioModule {
   }
 
   @Override
-  protected boolean configure(String name, long handle, int sampleRate, int bufferSize) {
+  protected boolean configure(String name, long handle, int sampleRate,
+      int bufferSize) {
     ptr = createSource(handle, buffer);
     return ptr != 0;
   }
