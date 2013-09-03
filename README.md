@@ -24,8 +24,9 @@ great project on top of Patchbay, please tell us about it!
 Cloning and building Patchfield
 -------------------------------
 
-Make sure that ``ndk-build`` is on your search path, then clone the project and
-build the native components like this:
+Make sure that you have Android NDK version r8e or later, and that
+``ndk-build`` is on your search path, then clone the project and build the
+native components like this:
 
 ```
 git clone --recursive https://github.com/google/patchfield.git
