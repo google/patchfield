@@ -36,7 +36,9 @@ make
 
 (Don't worry if ``javah`` reports errors on this initial build.) Now you can
 import all projects in the patchfield directory into your development
-environment of choice.
+environment of choice. If you build any native binaries after importing the
+projects into Eclipse, make sure to refresh your Eclipse workspace or else
+Eclipse may not see the latest version.
 
 
 Project layout
