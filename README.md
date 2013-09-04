@@ -82,6 +82,26 @@ Patchfield introduces a new permission, USE_PATCHFIELD. Apps will only be
 allowed to bind to ``PatchfieldService`` as a remote service if they have this
 permission.
 
+A note on deployment
+--------------------
+
+For the time being, the Patchfield service will not be available from Google
+Play yet. The reason is that the API and protocol may change a few more times
+before they are finalized, and so a published service would come with the risk
+of drifting out of sync with client apps.
+
+If you want to publish Patchfield-based apps on Google Play, you currently have
+two options. If your app is self-contained, you can just package a copy of the
+Patchfield service with your app. Or, if you want to support multiple apps that
+exchange audio via Patchfield, you can publish your own copy of the Patchfield
+service on Google Play and document the version of Patchbay that client apps
+will have to use.
+
+Right now the recommended way of using Patchfield is as a local service
+packaged with your app. When the API and protocol have stabilized, the service
+will be published on Google Play, and then inter-app audio routing via the
+common remote service will be preferable.
+
 Client API
 ----------
 
