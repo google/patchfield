@@ -17,9 +17,25 @@ Forum
 -----
 
 If you have any questions or comments, don't hesitate to get in touch at
-https://groups.google.com/forum/#!forum/patchfield. Also, if you implement a
-great project on top of Patchbay, please tell us about it!
+https://groups.google.com/d/forum/patchfield, if you implement a great project
+on top of Patchbay, please tell us about it!
 
+Device compatibility
+--------------------
+
+Patchfield requires SDK version 14 or later. It pushes the limits of the
+current Android audio stack, and it works better on some devices than on
+others. It is also a very young project that has not yet been tested on a wide
+range of devices. Further testing and evaluation is needed.
+
+Patchfield has been successfully tested on Nexus 10, Nexus 7 (both the original
+version and the new one), Nexus S, and HTC-1.
+
+Patchfield does not seem to work well on Nexus 4 (audio just stops after a few
+seconds), Galaxy Nexus (audio glitches when switching between activities), and
+Galaxy S4 (frequent glitches). The glitches on Galaxy Nexus seem to be
+unrelated to Patchfield; problems of this kind have also been reported with
+other audio software.
 
 Cloning and building Patchfield
 -------------------------------
@@ -39,7 +55,6 @@ import all projects in the patchfield directory into your development
 environment of choice. If you build any native binaries after importing the
 projects into Eclipse, make sure to refresh your Eclipse workspace or else
 Eclipse may not see the latest version.
-
 
 Project layout
 --------------
@@ -144,7 +159,6 @@ implementation as well as a simple app that shows how to use an audio module.
 It also illustrates how to set up the build system and how to interact with the
 audio processing thread in a thread-safe yet lock-free manner.
 
-
 Odds and ends
 -------------
 
@@ -171,22 +185,6 @@ Latency
 Patchfield incurs no latency on top of the systemic latency of the Android audio
 stack; the audio processing callbacks of all active modules are invoked in one
 buffer queue callback of OpenSL ES.
-
-Device compatibility
---------------------
-
-Patchfield requires SDK version 14 or later. It pushes the limits of the
-current Android audio stack, and it works better on some devices than on
-others. It is also a very young project that has not yet been tested on a wide
-range of devices. Further testing and evaluation is needed.
-
-Patchfield has been successfully tested on Nexus 10, Nexus 7 (both the original
-version and the new one), Nexus S, and HTC-1.
-
-Patchfield does not seem to work well on Nexus 4 (audio just stops after a few
-seconds) and Galaxy Nexus (audio glitches when switching between activities).
-The glitches on Galaxy Nexus seem to be unrelated to Patchfield; problems of
-this kind have also been reported with other audio software.
 
 To Do
 -----
