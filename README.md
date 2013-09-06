@@ -75,8 +75,7 @@ heavy-duty signal processing library, and this project fully integrates it into
 Patchfield.
 * ``PdSample`` Sample app using ``PatchfieldPd``.
 
-Further sample projects are available at
-https://github.com/nettoyeurny/patchfield_apps.
+Further sample projects are available will be posted soon.
 
 Major components
 ----------------
