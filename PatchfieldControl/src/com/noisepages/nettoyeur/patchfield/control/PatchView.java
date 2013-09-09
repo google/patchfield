@@ -172,8 +172,8 @@ public final class PatchView extends GridLayout {
    * 
    * - Improve the visual appearance of play button and status line.
    * 
-   * - Improve the placement of modules. Instead of misusing GridLayout, consider
-   * letting users move modules around, or use a graph layout algorithm to place modules.
+   * - Improve the placement of modules. Instead of misusing GridLayout, consider letting users move
+   * modules around, or use a graph layout algorithm to place modules.
    * 
    * - Improve drawing of patch cords so that they won't obscure modules views.
    * 

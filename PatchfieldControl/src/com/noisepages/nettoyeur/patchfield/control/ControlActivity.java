@@ -155,8 +155,10 @@ public class ControlActivity extends Activity implements OnCheckedChangeListener
         patchfield.startForeground(1, notification);
         patchfield.registerClient(receiver);
         playButton.setChecked(patchfield.isRunning());
-        displayLine.setText("Sample rate: " + patchfield.getSampleRate() + ", buffer size: "
-            + patchfield.getBufferSize() + ", protocol version: " + patchfield.getProtocolVersion());
+        displayLine
+            .setText("Sample rate: " + patchfield.getSampleRate() + ", buffer size: "
+                + patchfield.getBufferSize() + ", protocol version: "
+                + patchfield.getProtocolVersion());
         List<String> modules = patchfield.getModules();
         for (String module : modules) {
           patchView.addModule(module, patchfield.getInputChannels(module),

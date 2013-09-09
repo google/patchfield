@@ -58,14 +58,14 @@ public class PdSampleActivity extends Activity {
       patchfield = IPatchfieldService.Stub.asInterface(service);
       int inputChannels = 2;
       int outputChannels = 2;
-      Notification notification = new Notification.Builder(PdSampleActivity.this)
-          .setSmallIcon(R.drawable.pd_icon)
-          .setContentTitle("PdModule")
-          .build();
+      Notification notification =
+          new Notification.Builder(PdSampleActivity.this).setSmallIcon(R.drawable.pd_icon)
+              .setContentTitle("PdModule").build();
       try {
         // Create PdModule instance before invoking any methods on PdBase.
         module =
-            PdModule.getInstance(patchfield.getSampleRate(), inputChannels, outputChannels, notification);
+            PdModule.getInstance(patchfield.getSampleRate(), inputChannels, outputChannels,
+                notification);
         PdBase.setReceiver(new PdDispatcher() {
           @Override
           public void print(String s) {

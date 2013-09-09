@@ -20,8 +20,8 @@ import com.noisepages.nettoyeur.patchfield.AudioModule;
 
 /**
  * A sample audio module that implements a simple discretization of an RC lowpass filter. The native
- * components are in Patchfield/jni/samples/lowpass.c. They illustrate a number of crucial points. In
- * particular, they show how to use the rendering context of the processing callback, and how to
+ * components are in Patchfield/jni/samples/lowpass.c. They illustrate a number of crucial points.
+ * In particular, they show how to use the rendering context of the processing callback, and how to
  * update parameters in a lock-free yet thread-safe manner.
  */
 public class LowpassModule extends AudioModule {

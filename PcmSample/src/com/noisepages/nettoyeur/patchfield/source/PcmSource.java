@@ -36,11 +36,8 @@ public class PcmSource extends AudioModule {
   /**
    * Creates a new PCM source.
    * 
-   * @param channels
-   *            Number of output channels.
-   * @param buffer
-   *            Direct byte buffer holding PCM data as interleaved 32-bit
-   *            floats.
+   * @param channels Number of output channels.
+   * @param buffer Direct byte buffer holding PCM data as interleaved 32-bit floats.
    * @param notification
    */
   public PcmSource(int channels, ByteBuffer buffer, Notification notification) {
@@ -60,8 +57,7 @@ public class PcmSource extends AudioModule {
   }
 
   @Override
-  protected boolean configure(String name, long handle, int sampleRate,
-      int bufferSize) {
+  protected boolean configure(String name, long handle, int sampleRate, int bufferSize) {
     ptr = createSource(handle, buffer);
     return ptr != 0;
   }

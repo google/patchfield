@@ -59,12 +59,12 @@ public class PcmActivity extends Activity {
         srate = patchfield.getSampleRate();
       } catch (RemoteException e) {
         e.printStackTrace();
-    	}
+      }
       Log.i(TAG, "Loading resource for sample rate " + srate + ".");
       // Note that the included wav resources are _headless_ wav files,
       // i.e., they contain only audio, no metadata.
-      InputStream is = getResources().openRawResource(
-          srate == 44100 ? R.raw.rst44100 : R.raw.rst48000);
+      InputStream is =
+          getResources().openRawResource(srate == 44100 ? R.raw.rst44100 : R.raw.rst48000);
       ByteBuffer buffer;
       try {
         buffer = ByteBuffer.allocateDirect(is.available());
@@ -72,21 +72,20 @@ public class PcmActivity extends Activity {
       } catch (IOException e) {
         e.printStackTrace();
         return;
-    	}
-      PendingIntent pi = PendingIntent.getActivity(PcmActivity.this, 0,
-          new Intent(PcmActivity.this, PcmActivity.class), 0);
-      Notification notification = new Notification.Builder(
-          PcmActivity.this)
-          .setSmallIcon(R.drawable.perm_group_voicemail)
-          .setContentTitle("Relaxation Spa Treatment")
-          .setContentIntent(pi).build();
+      }
+      PendingIntent pi =
+          PendingIntent.getActivity(PcmActivity.this, 0, new Intent(PcmActivity.this,
+              PcmActivity.class), 0);
+      Notification notification =
+          new Notification.Builder(PcmActivity.this).setSmallIcon(R.drawable.perm_group_voicemail)
+              .setContentTitle("Relaxation Spa Treatment").setContentIntent(pi).build();
       source = new PcmSource(2, buffer, notification);
       try {
         source.configure(patchfield, moduleName);
         patchfield.activateModule(moduleName);
       } catch (RemoteException e) {
         e.printStackTrace();
-    	}
+      }
     }
   };
 
@@ -104,12 +103,11 @@ public class PcmActivity extends Activity {
             patchfield.connectPorts(moduleName, 1, "system_out", 1);
           } catch (RemoteException e) {
             e.printStackTrace();
-      		}
-      	}
-    	}
+          }
+        }
+      }
     });
-    bindService(new Intent("IPatchfieldService"), connection,
-        Context.BIND_AUTO_CREATE);
+    bindService(new Intent("IPatchfieldService"), connection, Context.BIND_AUTO_CREATE);
   }
 
   @Override
@@ -120,7 +118,7 @@ public class PcmActivity extends Activity {
         source.release(patchfield);
       } catch (RemoteException e) {
         e.printStackTrace();
-    	}
+      }
     }
     unbindService(connection);
   }

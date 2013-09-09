@@ -46,7 +46,7 @@ public class LowpassActivity extends Activity implements OnSeekBarChangeListener
   private TextView textView;
 
   private final String moduleLabel = "lowpass";
-  
+
   private int sampleRate;
 
   private ServiceConnection connection = new ServiceConnection() {
