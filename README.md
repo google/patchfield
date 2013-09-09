@@ -29,13 +29,13 @@ others. It is also a very young project that has not yet been tested on a wide
 range of devices. Further testing and evaluation is needed.
 
 Patchfield has been successfully tested on Nexus 10, Nexus 7 (both the original
-version and the new one), Nexus S, and HTC-1.
+version and the new one), Nexus S, and HTC-1. On Nexus 4, Patchfield works
+well as long as the Patchfield service runs with foreground privileges.
 
-Patchfield does not seem to work well on Nexus 4 (audio just stops after a few
-seconds), Galaxy Nexus (audio glitches when switching between activities), and
-Galaxy S4 (frequent glitches). The glitches on Galaxy Nexus seem to be
-unrelated to Patchfield; problems of this kind have also been reported with
-other audio software.
+Patchfield does not seem to work well on Galaxy Nexus (audio glitches when
+switching between activities), and Galaxy S4 (frequent glitches). The glitches
+on Galaxy Nexus seem to be unrelated to Patchfield; problems of this kind have
+also been reported with other audio software.
 
 Cloning and building Patchfield
 -------------------------------
