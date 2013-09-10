@@ -185,14 +185,6 @@ Patchfield incurs no latency on top of the systemic latency of the Android audio
 stack; the audio processing callbacks of all active modules are invoked in one
 buffer queue callback of OpenSL ES.
 
-To Do
------
-
-* Create a better control app. The user interface of the current version of the
-  ``PatchfieldControl`` app is rather crude and requires much scrolling on
-small screens.
-* Test and evaluate Patchfield across a range of devices.
-
 Patchfield and Google
 ---------------------
 
