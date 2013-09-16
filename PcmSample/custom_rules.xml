@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<!-- Input directories -->
+	<property name="nativesrc.dir" value="jni" />
+	<property name="nativesrc.absolute.dir" location="${nativesrc.dir}" />
+	<property name="obj.dir" value="obj" />
+	<property name="obj.absolute.dir" location="${obj.dir}" />
+	<property name="libraries.dir" value="obj" />
+	<property name="libraries.absolute.dir" location="${libraries.dir}" />
+
+	<macrodef name="native-build">
+		<attribute name="target" default="" />        
+		<sequential>            
+			<local name="ndk.debug.switch" />            
+			<if condition="${build.is.packaging.debug}">
+				<then>
+					<property name="ndk.debug.switch" value="NDK_DEBUG=1"/>             
+				</then>            
+				<else>
+					<property name="ndk.debug.switch" value="NDK_DEBUG=0"/>
+				</else>
+			</if>
+			<echo>Native build - targets @{target}, debug switch ${ndk.debug.switch}</echo>
+			<if>
+				<condition>
+					<os family="windows" />
+				</condition>
+				<then>
+					<exec dir="." executable="${ndk.dir}/ndk-build.cmd" failonerror="true">
+						<arg line="@{target} ${ndk.debug.switch}" />
+						<env key="NDK_MODULE_PATH" value="${ndk.module.path}"/>
+					</exec>
+				</then>
+				<else>
+					<exec dir="." executable="${ndk.dir}/ndk-build" failonerror="true">
+						<arg line="@{target} ${ndk.debug.switch}" />
+						<env key="NDK_MODULE_PATH" value="${ndk.module.path}"/>
+					</exec>
+				</else>
+			</if>
+		</sequential>  
+	</macrodef>
+	<target name="-post-compile">
+		<echo>Custom pre-package - invoking javah</echo> 
+		<javah class="com.noisepages.nettoyeur.patchfield.source.PcmSource" 
+		       outputfile="${nativesrc.absolute.dir}/pcmsource.h">
+			<classpath>
+				<pathelement path="${out.classes.absolute.dir}" />
+				<pathelement path="${android.jar}" />
+				<pathelement path="${project.target.android.jar}" />
+				<path refid="project.all.jars.path" />
+				<fileset dir="libs">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javah>
+		<native-build target = "all" />
+		
+		<!-- Prevent duplicate gdb files in packaging! -->
+		<delete failonerror="false">
+			<fileset dir="${ndk.module.path}" includes="**/gdb*"/>
+		</delete>
+		
+	</target>
+	<target name="-post-build">
+		<if>
+			<condition>
+				<and>
+					<isset property="release.dir" />
+					<equals arg1="${build.target}" arg2="release" />
+				</and>
+			</condition>
+			<then>
+				<xpath input="AndroidManifest.xml" expression="/manifest/@android:versionName"
+				 output="manifest.version" default="*"/>
+				<property name="release.absolute.dir" location="${release.dir}" />	
+				<property name="out.release.file" location="${release.absolute.dir}/${ant.project.name}-release-${manifest.version}.apk" />
+				<echo>Copy APK to ${out.release.file}</echo>
+				<copy file="${out.final.file}" tofile="${out.release.file}" />
+			</then>
+		</if>
+	</target>
+	<target name="-pre-clean">
+		<echo>Custom pre clean - deleting headers</echo>
+		<delete includeemptydirs="true">
+			<!-- remove javah generated headers -->	
+			<fileset dir="${nativesrc.absolute.dir}" includes="*.h"/>
+		</delete>
+		<echo>Custom pre clean - invoking ndk-build clean</echo>
+		<native-build target="clean"/>
+	</target>
+</project>
