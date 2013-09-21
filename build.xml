@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="debug" basedir=".">
+
+	<target name="debug">
+		<SubProject target="debug"/>
+	</target>
+	
+	<target name="release">
+		<SubProject target="release"/>
+	</target>
+	
+	<target name="clean">
+		<SubProject target="clean"/>
+	</target>
+	
+	<macrodef name="SubProject">
+		<attribute name="target"/>
+		<sequential>
+			<ant dir="Patchfield" target="@{target}"/>
+			<ant dir="PatchfieldControl" target="@{target}"/>
+			<ant dir="LowpassSample" target="@{target}"/>
+			<ant dir="PcmSample" target="@{target}"/>
+
+			<!--
+			<ant dir="PatchfieldPd" target="@{target}"/>
+			<ant dir="PdSample" target="@{target}"/>
+			-->
+		</sequential>
+	</macrodef>
+	
+</project>
