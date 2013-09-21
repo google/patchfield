@@ -5,8 +5,6 @@
 	<property name="nativesrc.absolute.dir" location="${nativesrc.dir}" />
 	<property name="obj.dir" value="obj" />
 	<property name="obj.absolute.dir" location="${obj.dir}" />
-	<property name="libraries.dir" value="obj" />
-	<property name="libraries.absolute.dir" location="${libraries.dir}" />
 
 	<macrodef name="native-build">
 		<attribute name="target" default="" />        
@@ -82,9 +80,10 @@
 	</target>
 	<target name="-pre-clean">
 		<echo>Custom pre clean - deleting headers</echo>
-		<delete includeemptydirs="true">
+		<delete includeemptydirs="true" failonerror="false">
 			<!-- remove javah generated headers -->	
 			<fileset dir="${nativesrc.absolute.dir}" includes="*.h"/>
+			<fileset dir="${obj.absolute.dir}"/>
 		</delete>
 		<echo>Custom pre clean - invoking ndk-build clean</echo>
 		<native-build target="clean"/>

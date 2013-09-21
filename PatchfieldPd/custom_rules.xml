@@ -3,10 +3,6 @@
 	<!-- Input directories -->
 	<property name="nativesrc.dir" value="jni" />
 	<property name="nativesrc.absolute.dir" location="${nativesrc.dir}" />
-	<property name="obj.dir" value="obj" />
-	<property name="obj.absolute.dir" location="${obj.dir}" />
-	<property name="libraries.dir" value="obj" />
-	<property name="libraries.absolute.dir" location="${libraries.dir}" />
 
 	<macrodef name="native-build">
 		<attribute name="target" default="" />        
