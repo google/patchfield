@@ -1,17 +1,23 @@
-# This file must *NOT* be checked into Version Control Systems,
-# as it contains information specific to your local configuration.
+# Representative path settings for building the Patchfield library and sample
+# projects with ant. You need to set sdk.dir, ndk.dir, and ndk.module.path in
+# the file local.properties. The values below will need to be adjusted for your
+# machine, but they should give you a rough idea as to what those paths might
+# look like.
 
-# location of the Android SDK.
-sdk.dir=C:/Program Files (x86)/Android/android-sdk
+# Location of the Android SDK.
 # Mac/Linux
-# sdk.dir=/Users/brinkmann/Development/adt-bundle-mac-x86_64-20130522/sdk
+sdk.dir=/Users/brinkmann/Development/adt-bundle-mac-x86_64-20130522/sdk
+# Windows
+# sdk.dir=C:/Program Files (x86)/Android/android-sdk
 
-# location of the Android NDK.
-ndk.dir=C:/Privat/Programming/android-ndk-r9
+# Location of the Android NDK. Make sure to use r8e or later.
 # Mac/Linux
-# ndk.dir=/Users/brinkmann/Development/android-ndk-r9
+ndk.dir=/Users/brinkmann/Development/android-ndk-r9
+# Windows
+# ndk.dir=C:/Privat/Programming/android-ndk-r9
 
-# Path of where to store native modules.
-ndk.module.path=C:/Privat/Programming/Patchfield/patchfield
+# Path to the Patchfield root folder.
 # Mac/Linux
-# ndk.module.path=/Users/brinkmann/Documents/patchfield
+ndk.module.path=/Users/brinkmann/Documents/patchfield
+# Windows
+# ndk.module.path=C:/Privat/Programming/Patchfield/patchfield
