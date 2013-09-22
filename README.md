@@ -40,7 +40,7 @@ also been reported with other audio software.
 Cloning and building Patchfield
 -------------------------------
 
-Make sure that you have NDK revision 8e or later installed, then Clone
+Make sure that you have NDK revision 8e or later installed, then clone
 Patchfield and its submodules like this:
 
 ```
