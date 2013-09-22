@@ -7,6 +7,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/* Inaccessible static: instance */
 /*
  * Class:     com_noisepages_nettoyeur_patchfield_pd_PdModule
  * Method:    pdInitAudio
