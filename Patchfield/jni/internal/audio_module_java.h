@@ -43,20 +43,3 @@ JNIEXPORT jboolean JNICALL Java_com_noisepages_nettoyeur_patchfield_AudioModule_
 }
 #endif
 #endif
-/* Header for class com_noisepages_nettoyeur_patchfield_AudioModule_FdReceiverThread */
-
-#ifndef _Included_com_noisepages_nettoyeur_patchfield_AudioModule_FdReceiverThread
-#define _Included_com_noisepages_nettoyeur_patchfield_AudioModule_FdReceiverThread
-#ifdef __cplusplus
-extern "C" {
-#endif
-#undef com_noisepages_nettoyeur_patchfield_AudioModule_FdReceiverThread_MIN_PRIORITY
-#define com_noisepages_nettoyeur_patchfield_AudioModule_FdReceiverThread_MIN_PRIORITY 1L
-#undef com_noisepages_nettoyeur_patchfield_AudioModule_FdReceiverThread_NORM_PRIORITY
-#define com_noisepages_nettoyeur_patchfield_AudioModule_FdReceiverThread_NORM_PRIORITY 5L
-#undef com_noisepages_nettoyeur_patchfield_AudioModule_FdReceiverThread_MAX_PRIORITY
-#define com_noisepages_nettoyeur_patchfield_AudioModule_FdReceiverThread_MAX_PRIORITY 10L
-#ifdef __cplusplus
-}
-#endif
-#endif
