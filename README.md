@@ -23,7 +23,7 @@ on top of Patchbay, please tell us about it!
 Device compatibility
 --------------------
 
-Patchfield requires SDK version 14 or later. It pushes the limits of the
+Patchfield requires SDK version 16 or later. It pushes the limits of the
 current Android audio stack, and it works better on some devices than on
 others. It is also a very young project that has not yet been tested on a wide
 range of devices. Further testing and evaluation is needed.
@@ -40,21 +40,22 @@ also been reported with other audio software.
 Cloning and building Patchfield
 -------------------------------
 
-Make sure that you have Android NDK version r8e or later, and that
-``ndk-build`` is on your search path, then clone the project and build the
-native components like this:
+Make sure that you have NDK revision 8e or later installed, then Clone
+Patchfield and its submodules like this:
 
 ```
 git clone --recursive https://github.com/google/patchfield.git
-cd patchfield
-make
 ```
 
-(Don't worry if ``javah`` reports errors on this initial build.) Now you can
-import all projects in the patchfield directory into your development
-environment of choice. If you build any native binaries after importing the
-projects into Eclipse, make sure to refresh your Eclipse workspace or else
-Eclipse may not see the latest version.
+Create a file called ``local.properties`` in the ``patchfield`` directory and
+set the properties ``sdk.dir``, ``ndk.dir``, and ``ndk.module.path``. The file
+``local.properties.example`` contains representative settings for Mac OS and
+Windows.
+
+Now you can build Patchfield with ``ant debug`` or ``ant release``. If you use
+Eclipse and you build any native binaries after importing the projects into
+Eclipse, make sure to refresh your Eclipse workspace or else Eclipse may not
+see the latest version.
 
 Project layout
 --------------
@@ -158,6 +159,13 @@ implementation as well as a simple app that shows how to use an audio module.
 It also illustrates how to set up the build system and how to interact with the
 audio processing thread in a thread-safe yet lock-free manner.
 
+Latency
+-------
+
+Patchfield incurs no latency on top of the systemic latency of the Android audio
+stack; the audio processing callbacks of all active modules are invoked in one
+buffer queue callback of OpenSL ES.
+
 Odds and ends
 -------------
 
@@ -177,13 +185,6 @@ that cannot operate at the native buffer size.
 Apps that use Patchfield should launch with launch mode ``singleTask``. This
 deviates from the usual recommendations for Android development, but it is
 necessary for the navigation model of Patchfield.
-
-Latency
--------
-
-Patchfield incurs no latency on top of the systemic latency of the Android audio
-stack; the audio processing callbacks of all active modules are invoked in one
-buffer queue callback of OpenSL ES.
 
 Patchfield and Google
 ---------------------
