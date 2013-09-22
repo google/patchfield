@@ -22,10 +22,7 @@
       <ant dir="LowpassSample" target="@{target}"/>
       <ant dir="PcmSample" target="@{target}"/>
       <ant dir="PatchfieldPd" target="@{target}"/>
-
-      <!--
       <ant dir="PdSample" target="@{target}"/>
-      -->
     </sequential>
   </macrodef>
 
