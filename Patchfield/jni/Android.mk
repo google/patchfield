@@ -18,6 +18,14 @@ LOCAL_SRC_FILES := utils/buffer_size_adapter.c
 LOCAL_STATIC_LIBRARIES := audiomodule
 include $(BUILD_STATIC_LIBRARY)
 
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := tinyosc
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/tinyosc/src
+LOCAL_SRC_FILES := tinyosc/src/tinyosc.c tinyosc/src/pattern.c
+LOCAL_STATIC_LIBRARIES := audiomodule
+include $(BUILD_STATIC_LIBRARY)
+
 
 # Internal libraries.
 
@@ -27,7 +35,7 @@ LOCAL_MODULE := audiomoduleinternal
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)
 LOCAL_EXPORT_CFLAGS := -Wno-int-to-pointer-cast -Wno-pointer-to-int-cast
 LOCAL_EXPORT_LDLIBS := -lOpenSLES -llog
-LOCAL_SRC_FILES := internal/audio_module_internal.c \
+LOCAL_SRC_FILES := internal/audio_module.c internal/audio_module_internal.c \
 	internal/simple_barrier.c internal/shared_memory_internal.c \
 	opensl_stream/opensl_stream.c
 include $(BUILD_STATIC_LIBRARY)

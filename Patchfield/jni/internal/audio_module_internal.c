@@ -204,24 +204,3 @@ void ami_release(audio_module_runner *amr) {
 int ami_has_timed_out(audio_module_runner *amr) {
   return __sync_or_and_fetch(&amr->timed_out, 0);
 }
-
-void *ami_get_message_buffer(void *shm_ptr, ptrdiff_t offset) {
-  return
-    (void *)(((char *) shm_ptr) + MESSAGE_OFFSET * MEM_PAGE_SIZE + offset);
-}
-
-ptrdiff_t ami_get_read_ptr_offset() {
-  return 0;
-}
-
-ptrdiff_t ami_get_write_ptr_offset() {
-  return sizeof(ptrdiff_t);
-}
-
-ptrdiff_t ami_get_data_offset() {
-  return 2 * sizeof(ptrdiff_t);
-}
-
-ptrdiff_t ami_get_top_offset() {
-  return MESSAGE_PAGES * MEM_PAGE_SIZE;
-}

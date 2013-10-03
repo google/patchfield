@@ -10,6 +10,7 @@
     <permission android:protectionLevel="normal" android:name="com.noisepages.nettoyeur.patchfield.service.USE_PATCHFIELD"></permission>
     <uses-permission android:name="com.noisepages.nettoyeur.patchfield.service.USE_PATCHFIELD"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
 
     <application

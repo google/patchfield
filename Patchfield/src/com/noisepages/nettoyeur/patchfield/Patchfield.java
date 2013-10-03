@@ -406,6 +406,13 @@ public class Patchfield implements IPatchfieldService {
     return getProtocolVersion(streamPtr);
   }
 
+  public int postMessage(int length, byte[] data) {
+    if (streamPtr == 0) {
+      throw new IllegalStateException("Stream closed.");
+    }
+    return postMessage(streamPtr, length, data);
+  }
+
   private native long createInstance(int sampleRate, int bufferSize, int inputChannels,
       int outputChannels);
 

@@ -15,6 +15,9 @@
 package com.noisepages.nettoyeur.patchfield.service;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 import java.util.List;
 
 import android.app.Notification;
@@ -22,6 +25,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.noisepages.nettoyeur.patchfield.IPatchfieldClient;
 import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
@@ -161,11 +165,36 @@ public class PatchfieldService extends Service {
     }
   };
 
+  private Thread receiverThread = new Thread() {
+    @Override
+    public void run() {
+      DatagramSocket socket = null;
+      try {
+        socket = new DatagramSocket(9001);
+      } catch (SocketException e) {
+        e.printStackTrace();
+        return;
+      }
+      byte[] buf = new byte[1024];
+      DatagramPacket packet = new DatagramPacket(buf, buf.length);
+      while (!Thread.interrupted()) {
+        try {
+          socket.receive(packet);
+          patchfield.postMessage(packet.getLength(), packet.getData());
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    };
+  };
+
   @Override
   public void onCreate() {
     super.onCreate();
     try {
       patchfield = new Patchfield(this, 2, 2);
+      receiverThread.setDaemon(true);
+      receiverThread.start();
     } catch (IOException e) {
       patchfield = null;
     }
