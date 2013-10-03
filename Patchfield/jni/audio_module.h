@@ -52,6 +52,13 @@ typedef void (*audio_module_process_t)
  */
 void am_configure(void *handle, audio_module_process_t process, void *context);
 
+typedef struct {
+  int size;
+  char *data;
+} am_message;
+
+int am_next_message(void *handle, am_message *message);
+
 #ifdef __cplusplus
 }
 #endif

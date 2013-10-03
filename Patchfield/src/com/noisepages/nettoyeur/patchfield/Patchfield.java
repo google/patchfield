@@ -444,6 +444,8 @@ public class Patchfield implements IPatchfieldService {
 
   private native int getProtocolVersion(long streamPtr);
 
+  private native int postMessage(long streamPtr, int length, byte[] data);
+
   @Override
   public IBinder asBinder() {
     throw new UnsupportedOperationException("Not implemented for local patchfield.");

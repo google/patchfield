@@ -34,6 +34,7 @@ public class PatchfieldException extends Exception {
   public static final int CYCLIC_DEPENDENCY = -8;
   public static final int OUT_OF_BUFFER_SPACE = -9;
   public static final int PROTOCOL_VERSION_MISMATCH = -10;
+  public static final int INSUFFICIENT_MESSAGE_SPACE = -11;
 
   private static final long serialVersionUID = 1L;
   private final int code;

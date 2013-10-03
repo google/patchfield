@@ -23,3 +23,22 @@ void am_configure(void *handle, audio_module_process_t process, void *context) {
   amr->process = process;
   amr->context = context;
 }
+
+int am_next_message(void *handle, am_message *message) {
+  audio_module_runner *amr = (audio_module_runner *) handle;
+  ptrdiff_t rp = *(ptrdiff_t *)ami_get_message_buffer(amr->shm_ptr,
+      ami_get_read_ptr_offset());
+  ptrdiff_t wp = *(ptrdiff_t *)ami_get_message_buffer(amr->shm_ptr,
+      ami_get_write_ptr_offset());
+  ptrdiff_t dp = (message->data == NULL) ? rp :
+    (ami_get_message_buffer(amr->shm_ptr, 0) - message->data) + message->size;
+  if (dp == wp) return -1;  // Reached end of messages.
+  if (*(int *)ami_get_message_buffer(amr->shm_ptr, dp) == 0) {
+    dp = ami_get_data_offset();
+  }
+  if (dp == wp) return -1;
+  char *p = ami_get_message_buffer(amr->shm_ptr, dp);
+  message->size = *(int *)p;
+  message->data = p + 4;
+  return 0;
+}

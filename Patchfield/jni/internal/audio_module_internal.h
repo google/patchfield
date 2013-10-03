@@ -31,15 +31,17 @@
 #include <time.h>
 #include <unistd.h>
 
-#define PATCHFIELD_PROTOCOL_VERSION 6
+#define PATCHFIELD_PROTOCOL_VERSION 7
 
 #define MAX_MODULES 32 
 #define MAX_CONNECTIONS 16 
+#define MESSAGE_PAGES 4
 
 #define MEM_PAGE_SIZE sysconf(_SC_PAGESIZE)
 #define BARRIER_OFFSET (MAX_MODULES * sizeof(audio_module) / MEM_PAGE_SIZE + 1)
+#define MESSAGE_OFFSET (BARRIER_OFFSET + MESSAGE_PAGES)
 #define BUFFER_OFFSET \
-  (BARRIER_OFFSET + MAX_MODULES * 3 * sizeof(int) / MEM_PAGE_SIZE + 1)
+  (MESSAGE_OFFSET + MAX_MODULES * 3 * sizeof(int) / MEM_PAGE_SIZE + 1)
 
 typedef struct {
   int status;  // 0: none; 1: current; 2: slated for deletion
@@ -91,5 +93,11 @@ void ami_collect_input(void *p, int index);
 audio_module_runner *ami_create(int version, int token, int index);
 void ami_release(audio_module_runner *p);
 int ami_has_timed_out(audio_module_runner *p);
+
+void *ami_get_message_buffer(void *shm_ptr, ptrdiff_t offset);
+ptrdiff_t ami_get_read_ptr_offset();
+ptrdiff_t ami_get_write_ptr_offset();
+ptrdiff_t ami_get_data_offset();
+ptrdiff_t ami_get_top_offset();
 
 #endif
