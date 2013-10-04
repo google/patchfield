@@ -175,12 +175,21 @@ public class PatchfieldService extends Service {
         e.printStackTrace();
         return;
       }
-      byte[] buf = new byte[1024];
+      byte[] buf = new byte[1025];
       DatagramPacket packet = new DatagramPacket(buf, buf.length);
       while (!Thread.interrupted()) {
         try {
           socket.receive(packet);
-          patchfield.postMessage(packet.getLength(), packet.getData());
+          int length = packet.getLength();
+          if (length > 0) {
+            if (length <= 1024) {
+              patchfield.postMessage(length, packet.getData());
+            } else {
+              Log.w("msg receive", "Message too long.");
+            }
+          } else {
+            break;
+          }
         } catch (IOException e) {
           e.printStackTrace();
         }
