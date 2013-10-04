@@ -15,9 +15,6 @@
 package com.noisepages.nettoyeur.patchfield.service;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
 import java.util.List;
 
 import android.app.Notification;
@@ -25,7 +22,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.noisepages.nettoyeur.patchfield.IPatchfieldClient;
 import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
@@ -163,38 +159,11 @@ public class PatchfieldService extends Service {
     public void stopForeground(boolean removeNotification) throws RemoteException {
       PatchfieldService.this.stopForeground(removeNotification);
     }
-  };
 
-  private Thread receiverThread = new Thread() {
     @Override
-    public void run() {
-      DatagramSocket socket = null;
-      try {
-        socket = new DatagramSocket(9001);
-      } catch (SocketException e) {
-        e.printStackTrace();
-        return;
-      }
-      byte[] buf = new byte[1025];
-      DatagramPacket packet = new DatagramPacket(buf, buf.length);
-      while (!Thread.interrupted()) {
-        try {
-          socket.receive(packet);
-          int length = packet.getLength();
-          if (length > 0) {
-            if (length <= 1024) {
-              patchfield.postMessage(length, packet.getData());
-            } else {
-              Log.w("msg receive", "Message too long.");
-            }
-          } else {
-            break;
-          }
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-      }
-    };
+    public int postMessage(int length, byte[] data) throws RemoteException {
+      return patchfield.postMessage(length, data);
+    }
   };
 
   @Override
@@ -202,8 +171,6 @@ public class PatchfieldService extends Service {
     super.onCreate();
     try {
       patchfield = new Patchfield(this, 2, 2);
-      receiverThread.setDaemon(true);
-      receiverThread.start();
     } catch (IOException e) {
       patchfield = null;
     }

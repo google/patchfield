@@ -24,33 +24,12 @@ void am_configure(void *handle, audio_module_process_t process, void *context) {
   amr->context = context;
 }
 
-void *ami_get_message_buffer(void *shm_ptr, ptrdiff_t offset) {
-  return
-    (void *)(((char *) shm_ptr) + MESSAGE_OFFSET * MEM_PAGE_SIZE + offset);
-}
-
-ptrdiff_t ami_get_read_ptr_offset() {
-  return 0;
-}
-
-ptrdiff_t ami_get_write_ptr_offset() {
-  return sizeof(ptrdiff_t);
-}
-
-ptrdiff_t ami_get_data_offset() {
-  return 2 * sizeof(ptrdiff_t);
-}
-
-ptrdiff_t ami_get_top_offset() {
-  return MESSAGE_PAGES * MEM_PAGE_SIZE;
-}
-
 int am_next_message(void *handle, am_message *message) {
   audio_module_runner *amr = (audio_module_runner *) handle;
   ptrdiff_t rp = *(ptrdiff_t *)ami_get_message_buffer(amr->shm_ptr,
-      ami_get_read_ptr_offset());
+      ami_get_read_ptr_offset);
   ptrdiff_t wp = *(ptrdiff_t *)ami_get_message_buffer(amr->shm_ptr,
-      ami_get_write_ptr_offset());
+      ami_get_write_ptr_offset);
   int size = message->size;
   if (size & 0x03) {
     size += 4 - (size & 0x03);
@@ -59,7 +38,7 @@ int am_next_message(void *handle, am_message *message) {
         ((char *)ami_get_message_buffer(amr->shm_ptr, 0))) + size);
   if (dp == wp) return -1;  // Reached end of messages.
   if (*(int *)ami_get_message_buffer(amr->shm_ptr, dp) == 0) {
-    dp = ami_get_data_offset();
+    dp = ami_get_data_offset;
   }
   if (dp == wp) return -1;
   char *p = ami_get_message_buffer(amr->shm_ptr, dp);

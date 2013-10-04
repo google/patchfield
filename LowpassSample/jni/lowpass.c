@@ -17,7 +17,6 @@
 #include "lowpass.h"
 
 #include "audio_module.h"
-#include "tinyosc.h"
 
 #include <android/log.h>
 #include <stddef.h>

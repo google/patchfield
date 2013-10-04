@@ -233,9 +233,9 @@ static void process(void *context, int sample_rate, int buffer_frames,
   ptrdiff_t read_ptr = __sync_fetch_and_or(&pf->msg_read_ptr, 0);
   ptrdiff_t write_ptr = __sync_fetch_and_or(&pf->msg_write_ptr, 0);
   *(ptrdiff_t *)ami_get_message_buffer(pf->shm_ptr,
-      ami_get_read_ptr_offset()) = read_ptr;
+      ami_get_read_ptr_offset) = read_ptr;
   *(ptrdiff_t *)ami_get_message_buffer(pf->shm_ptr,
-      ami_get_write_ptr_offset()) = write_ptr;
+      ami_get_write_ptr_offset) = write_ptr;
   struct timespec deadline;
   clock_gettime(CLOCK_MONOTONIC, &deadline);
   add_nsecs(&deadline, 100000);  // 0.1ms deadline for clients to report.
@@ -308,8 +308,8 @@ static patchfield *create_instance(int sample_rate, int buffer_frames,
     pf->sample_rate = sample_rate;
     pf->buffer_frames = buffer_frames;
     pf->next_buffer = BUFFER_OFFSET * MEM_PAGE_SIZE / sizeof(float);
-    pf->msg_read_ptr = ami_get_data_offset();
-    pf->msg_write_ptr = ami_get_data_offset();
+    pf->msg_read_ptr = ami_get_data_offset;
+    pf->msg_write_ptr = ami_get_data_offset;
     pf->shm_fd = smi_create();
     if (pf->shm_fd < 0) {
       LOGW("Unable to create shared memory.");
@@ -348,7 +348,13 @@ static patchfield *create_instance(int sample_rate, int buffer_frames,
 }
 
 static int post_message(patchfield *pf, int length, const char *data) {
-  if (length <= 0) {
+  if (length > MAX_MESSAGE_LENGTH) {
+    return -12;  // PatchfieldException.MESSAGE_TOO_LONG
+  }
+  if (length == 0) {
+    return -13;  // PatchfieldException.EMPTY_MESSAGE
+  }
+  if (length < 0) {
     return -2;  // PatchfieldException.INVALID_PARAMETERS
   }
   ptrdiff_t rp = __sync_fetch_and_or(&pf->msg_read_ptr, 0);
@@ -361,10 +367,10 @@ static int post_message(patchfield *pf, int length, const char *data) {
       LOGW("Message queue full.");
       return -11;  // PatchfieldException.INSUFFICIENT_MESSAGE_SPACE
     }
-  } else if (ami_get_top_offset() - wp > length + 4) {
+  } else if (ami_get_top_offset - wp > length + 4) {
     wn = wp;
-  } else if (rp - ami_get_data_offset() > length + 4) {
-    wn = ami_get_data_offset();
+  } else if (rp - ami_get_data_offset > length + 4) {
+    wn = ami_get_data_offset;
   } else {
     LOGW("Message queue full.");
     return -11;  // PatchfieldException.INSUFFICIENT_MESSAGE_SPACE

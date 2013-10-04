@@ -399,14 +399,14 @@ public class Patchfield implements IPatchfieldService {
   }
 
   @Override
-  public int getProtocolVersion() throws RemoteException {
+  public synchronized int getProtocolVersion() throws RemoteException {
     if (streamPtr == 0) {
       throw new IllegalStateException("Stream closed.");
     }
     return getProtocolVersion(streamPtr);
   }
 
-  public int postMessage(int length, byte[] data) {
+  public synchronized int postMessage(int length, byte[] data) {
     if (streamPtr == 0) {
       throw new IllegalStateException("Stream closed.");
     }

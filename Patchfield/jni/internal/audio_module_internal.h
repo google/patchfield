@@ -35,7 +35,8 @@
 
 #define MAX_MODULES 32 
 #define MAX_CONNECTIONS 16 
-#define MESSAGE_PAGES 1
+#define MESSAGE_PAGES 2
+#define MAX_MESSAGE_LENGTH 1024
 
 #define MEM_PAGE_SIZE sysconf(_SC_PAGESIZE)
 #define MESSAGE_OFFSET (MAX_MODULES * sizeof(audio_module) / MEM_PAGE_SIZE + 1)
@@ -94,10 +95,11 @@ audio_module_runner *ami_create(int version, int token, int index);
 void ami_release(audio_module_runner *p);
 int ami_has_timed_out(audio_module_runner *p);
 
-void *ami_get_message_buffer(void *shm_ptr, ptrdiff_t offset);
-ptrdiff_t ami_get_read_ptr_offset();
-ptrdiff_t ami_get_write_ptr_offset();
-ptrdiff_t ami_get_data_offset();
-ptrdiff_t ami_get_top_offset();
+#define ami_get_message_buffer(shm_ptr, offset) \
+    ((void *)(((char *) shm_ptr) + MESSAGE_OFFSET * MEM_PAGE_SIZE + offset))
+#define ami_get_read_ptr_offset 0
+#define ami_get_write_ptr_offset sizeof(ptrdiff_t)
+#define ami_get_data_offset (2 * sizeof(ptrdiff_t))
+#define ami_get_top_offset (MESSAGE_PAGES * MEM_PAGE_SIZE)
 
 #endif
