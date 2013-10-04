@@ -35,13 +35,13 @@
 
 #define MAX_MODULES 32 
 #define MAX_CONNECTIONS 16 
-#define MESSAGE_PAGES 4
+#define MESSAGE_PAGES 1
 
 #define MEM_PAGE_SIZE sysconf(_SC_PAGESIZE)
-#define BARRIER_OFFSET (MAX_MODULES * sizeof(audio_module) / MEM_PAGE_SIZE + 1)
-#define MESSAGE_OFFSET (BARRIER_OFFSET + MESSAGE_PAGES)
+#define MESSAGE_OFFSET (MAX_MODULES * sizeof(audio_module) / MEM_PAGE_SIZE + 1)
+#define BARRIER_OFFSET (MESSAGE_OFFSET + MESSAGE_PAGES)
 #define BUFFER_OFFSET \
-  (MESSAGE_OFFSET + MAX_MODULES * 3 * sizeof(int) / MEM_PAGE_SIZE + 1)
+  (BARRIER_OFFSET + MAX_MODULES * 3 * sizeof(int) / MEM_PAGE_SIZE + 1)
 
 typedef struct {
   int status;  // 0: none; 1: current; 2: slated for deletion
