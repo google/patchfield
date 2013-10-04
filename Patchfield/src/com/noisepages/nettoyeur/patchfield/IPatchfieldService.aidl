@@ -147,7 +147,11 @@ interface IPatchfieldService {
   void stopForeground(boolean removeNotification);
 
   /**
-   * Posts a message to the module message channel.
+   * Posts a message to the message channel. See the file audio_module.h for
+   * documentation on how to have audio modules retrieve messages.
+   *
+   * The message format is deliberately general and can represent OSC messages
+   * as well as MIDI messages.
    */
   int postMessage(int length, in byte[] data);
 

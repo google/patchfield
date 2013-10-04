@@ -52,11 +52,33 @@ typedef void (*audio_module_process_t)
  */
 void am_configure(void *handle, audio_module_process_t process, void *context);
 
+/*
+ * Data structure for sending control messages to audio modules; works in
+ * conjunction with the Java method IPatchfieldService.postMessage and the
+ * function am_next_message below.
+ *
+ * The message format is deliberately general; it's suitable for representing
+ * MIDI or OSC messages.
+ */
 typedef struct {
   int size;
   char *data;
 } am_message;
 
+/*
+ * To be called from audio module process function only. Iterates over the
+ * currently pending control messages. Returns 0 on success.
+ *
+ * The handle parameter is the same handle that was passed to am_configure. If
+ * you wish to use control messages in your audio module, you will need to save
+ * this handle in your processing context.
+ *
+ * Typical call pattern:
+ *   am_message message = { 0, NULL };
+ *   while (!am_next_message(handle, &message) {
+ *     // Handle message.
+ *   }
+ */
 int am_next_message(void *handle, am_message *message);
 
 #ifdef __cplusplus
