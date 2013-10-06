@@ -37,6 +37,7 @@ public class PatchfieldException extends Exception {
   public static final int INSUFFICIENT_MESSAGE_SPACE = -11;
   public static final int MESSAGE_TOO_LONG = -12;
   public static final int EMPTY_MESSAGE = -13;
+  public static final int FAILED_TO_CREATE_SOCKET = -14;
 
   private static final long serialVersionUID = 1L;
   private final int code;

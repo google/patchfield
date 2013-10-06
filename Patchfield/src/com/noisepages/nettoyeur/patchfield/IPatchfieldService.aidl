@@ -147,6 +147,11 @@ interface IPatchfieldService {
   void stopForeground(boolean removeNotification);
 
   /**
+   * Starts receiving control messages on the given port.
+   */
+  int receiveMessages(int port);
+
+  /**
    * Posts a message to the message channel. See the file audio_module.h for
    * documentation on how to have audio modules retrieve messages.
    *

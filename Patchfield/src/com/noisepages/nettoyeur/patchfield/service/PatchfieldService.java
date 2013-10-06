@@ -164,6 +164,12 @@ public class PatchfieldService extends Service {
     public int postMessage(int length, byte[] data) throws RemoteException {
       return patchfield.postMessage(length, data);
     }
+
+    @Override
+    public int receiveMessages(int port) throws RemoteException {
+      return patchfield.receiveMessages(port);
+    }
+
   };
 
   @Override

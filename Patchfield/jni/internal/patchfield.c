@@ -513,6 +513,12 @@ Java_com_noisepages_nettoyeur_patchfield_Patchfield_getProtocolVersion
 }
 
 JNIEXPORT jint JNICALL
+Java_com_noisepages_nettoyeur_patchfield_Patchfield_getMaxMessageLength
+(JNIEnv *env, jobject obj, jlong p) {
+  return MAX_MESSAGE_LENGTH;
+}
+
+JNIEXPORT jint JNICALL
 Java_com_noisepages_nettoyeur_patchfield_Patchfield_postMessage
 (JNIEnv *env, jobject obj, jlong p, jint length, jbyteArray data) {
   patchfield *pf = (patchfield *) p;

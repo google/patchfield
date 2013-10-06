@@ -15,6 +15,9 @@
 package com.noisepages.nettoyeur.patchfield;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -28,6 +31,7 @@ import android.os.IBinder;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.util.Log;
+import android.util.SparseArray;
 
 import com.noisepages.nettoyeur.patchfield.internal.OpenSlParams;
 
@@ -43,12 +47,47 @@ public class Patchfield implements IPatchfieldService {
     System.loadLibrary("patchfield");
   }
 
+  private class ReceiverThread extends Thread {
+
+    private final DatagramSocket socket;
+
+    public ReceiverThread(int port) throws SocketException {
+      socket = new DatagramSocket(port);
+    }
+
+    @Override
+    public void run() {
+      int maxLength = getMaxMessageLength(streamPtr);
+      byte buffer[] = new byte[maxLength + 1];
+      DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+      while (true) {
+        try {
+          socket.receive(packet);
+          int length = packet.getLength();
+          if (length > 0 && length <= maxLength) {
+            postMessage(length, packet.getData());
+          } else {
+            Log.w(TAG, "Discarded message of length " + length + ".");
+          }
+        } catch (IOException e) {
+          break;
+        }
+      }
+    }
+
+    public void quit() throws InterruptedException {
+      socket.close();
+      join();
+    }
+  }
+
   private final OpenSlParams params;
   private long streamPtr;
   private final Map<String, Integer> modules = new LinkedHashMap<String, Integer>();
   private final Map<String, Notification> notifications = new LinkedHashMap<String, Notification>();
   private final RemoteCallbackList<IPatchfieldClient> clients =
       new RemoteCallbackList<IPatchfieldClient>();
+  private final SparseArray<ReceiverThread> receiverThreads = new SparseArray<ReceiverThread>();
 
   public Patchfield(Context context, int inputChannels, int outputChannels) throws IOException {
     params = OpenSlParams.createInstance(context);
@@ -75,6 +114,15 @@ public class Patchfield implements IPatchfieldService {
 
   public synchronized void release() {
     if (streamPtr != 0) {
+      for (int i = 0; i < receiverThreads.size(); ++i) {
+        int port = receiverThreads.keyAt(i);
+        ReceiverThread thread = receiverThreads.get(port);
+        try {
+          thread.quit();
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();  // Restore interrupt flag.
+        }
+      }
       releaseInstance(streamPtr);
       streamPtr = 0;
       clients.kill();
@@ -413,6 +461,25 @@ public class Patchfield implements IPatchfieldService {
     return postMessage(streamPtr, length, data);
   }
 
+  @Override
+  public synchronized int receiveMessages(int port) throws RemoteException {
+    if (streamPtr == 0) {
+      throw new IllegalStateException("Stream closed.");
+    }
+    if (receiverThreads.indexOfKey(port) < 0) {
+      try {
+        ReceiverThread thread = new ReceiverThread(port);
+        receiverThreads.put(port, thread);
+        thread.start();
+      } catch (SocketException e) {
+        e.printStackTrace();
+        return PatchfieldException.FAILED_TO_CREATE_SOCKET;
+      }
+    }
+    Log.i(TAG, "Listening on port " + port + ".");
+    return PatchfieldException.SUCCESS;
+  }
+
   private native long createInstance(int sampleRate, int bufferSize, int inputChannels,
       int outputChannels);
 
@@ -450,6 +517,8 @@ public class Patchfield implements IPatchfieldService {
   private native int getOutputChannels(long streamPtr, int index);
 
   private native int getProtocolVersion(long streamPtr);
+
+  private native int getMaxMessageLength(long streamPtr);
 
   private native int postMessage(long streamPtr, int length, byte[] data);
 
