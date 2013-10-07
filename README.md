@@ -4,8 +4,9 @@ Patchfield
 Patchfield is an audio infrastructure for Android that provides a simple,
 callback-driven API for implementing audio modules (such as synthesizers and
 effects), a graph-based API for connecting audio modules, plus support for
-inter-app audio routing. It is inspired by [JACK](http://jackaudio.org "JACK"),
-the JACK audio connection kit.
+inter-app audio routing. It also includes a simple messaging mechanism for
+sending OSC or MIDI messages to audio modules. Patchfield is inspired by
+[JACK](http://jackaudio.org "JACK"), the JACK audio connection kit.
 
 Patchfield consists of a remote or local service that acts as a virtual
 patchbay that audio apps can connect to, plus a number of sample apps that
@@ -74,6 +75,7 @@ control app; they are merely being packaged together for convenience.)
 heavy-duty signal processing library, and this project fully integrates it into
 Patchfield.
 * ``PdSample`` Sample app using ``PatchfieldPd``.
+* ``MessageSample`` Sample app illustrating how to use the message channel.
 
 Further sample projects are available will be posted soon.
 
