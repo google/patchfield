@@ -18,6 +18,13 @@ LOCAL_SRC_FILES := utils/buffer_size_adapter.c
 LOCAL_STATIC_LIBRARIES := audiomodule
 include $(BUILD_STATIC_LIBRARY)
 
+include $(CLEAR_VARS)
+
+LOCAL_MODULE := tinyosc
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/tinyosc/src
+LOCAL_SRC_FILES := tinyosc/src/tinyosc.c tinyosc/src/pattern.c
+include $(BUILD_STATIC_LIBRARY)
+
 
 # Internal libraries.
 
