@@ -170,6 +170,10 @@ public class PatchfieldService extends Service {
       return patchfield.receiveMessages(port);
     }
 
+    @Override
+    public int getMaxMessageLength() throws RemoteException {
+      return patchfield.getMaxMessageLength();
+    }
   };
 
   @Override

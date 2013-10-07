@@ -161,6 +161,11 @@ interface IPatchfieldService {
   int postMessage(int length, in byte[] data);
 
   /**
+   * Returns the largest admissible message length.
+   */
+  int getMaxMessageLength();
+
+  /**
    * Creates a new audio module in the Patchfield service; for internal use mostly, to be called by
    * the configure method of {@link AudioModule}.
    *

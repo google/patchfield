@@ -454,11 +454,20 @@ public class Patchfield implements IPatchfieldService {
     return getProtocolVersion(streamPtr);
   }
 
+  @Override
   public synchronized int postMessage(int length, byte[] data) {
     if (streamPtr == 0) {
       throw new IllegalStateException("Stream closed.");
     }
     return postMessage(streamPtr, length, data);
+  }
+
+  @Override
+  public synchronized int getMaxMessageLength() throws RemoteException {
+    if (streamPtr == 0) {
+      throw new IllegalStateException("Stream closed.");
+    }
+    return getMaxMessageLength(streamPtr);
   }
 
   @Override
