@@ -40,8 +40,12 @@ static void process_func(void *context, int sample_rate, int buffer_frames,
   am_message message = { 0, NULL };
   char s[256];
   while (!am_next_message(data->handle, &message)) {
-    osc_message_to_string(s, 256, (osc_packet *) &message);
-    LOGI("%s", s);
+    int status = osc_message_to_string(s, 256, (osc_packet *) &message);
+    if (status >= 0) {
+      LOGI("%s", s);
+    } else {
+      LOGW("Conversion failed with error code %d.", status);
+    }
   }
 }
 
