@@ -18,8 +18,6 @@ LOCAL_SRC_FILES := utils/buffer_size_adapter.c
 LOCAL_STATIC_LIBRARIES := audiomodule
 include $(BUILD_STATIC_LIBRARY)
 
-include $(CLEAR_VARS)
-
 
 # Internal libraries.
 
