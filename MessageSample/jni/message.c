@@ -17,6 +17,7 @@
 #include "message.h"
 
 #include "audio_module.h"
+#include "tinyosc/src/tinyosc.h"
 
 #include <android/log.h>
 #include <stddef.h>
@@ -37,8 +38,10 @@ static void process_func(void *context, int sample_rate, int buffer_frames,
     int output_channels, float *output_buffer) {
   message_data *data = (message_data *) context;
   am_message message = { 0, NULL };
+  char s[256];
   while (!am_next_message(data->handle, &message)) {
-    LOGI("%s, %d\n", message.data, message.size);
+    osc_message_to_string(s, 256, (osc_packet *) &message);
+    LOGI("%s", s);
   }
 }
 
