@@ -33,17 +33,12 @@
 typedef struct {
   int alpha;  // RC lowpass filter coefficient, between 0 and RANGE.
   float *y;   // Filter values for each channel.
-  void *handle;
 } lowpass_data;
 
 static void process_func(void *context, int sample_rate, int buffer_frames,
     int input_channels, const float *input_buffer,
     int output_channels, float *output_buffer) {
   lowpass_data *data = (lowpass_data *) context;
-  am_message msg = { 0, NULL };
-  while (!am_next_message(data->handle, &msg)) {
-    LOGI("OSC message: %d, %s, %p", msg.size, msg.data, msg.data);
-  }
   float alpha = (float) __sync_fetch_and_or(&data->alpha, 0) / RANGE;
   int i, j;
   for (i = 0; i < input_channels; ++i) {
@@ -65,13 +60,12 @@ Java_com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule_configureNativeCo
   if (data) {
     data->y = malloc(channels * sizeof(float));
     if (data->y) {
-      data->handle = (void *) handle;
       data->alpha = RANGE;
       int i;
       for (i = 0; i < channels; ++i) {
         data->y[i] = 0;
       }
-      am_configure(data->handle, process_func, data);
+      am_configure((void *) handle, process_func, data);
     } else {
       free(data);
       data = NULL;

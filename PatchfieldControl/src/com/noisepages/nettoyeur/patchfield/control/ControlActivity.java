@@ -152,7 +152,6 @@ public class ControlActivity extends Activity implements OnCheckedChangeListener
               .setSmallIcon(android.R.drawable.ic_media_play).setContentTitle("PatchfieldControl")
               .setContentIntent(pi).build();
       try {
-        patchfield.receiveMessages(8000);
         patchfield.startForeground(1, notification);
         patchfield.registerClient(receiver);
         playButton.setChecked(patchfield.isRunning());
