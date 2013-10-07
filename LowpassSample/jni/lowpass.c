@@ -18,15 +18,9 @@
 
 #include "audio_module.h"
 
-#include <android/log.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-
-#define LOGI(...) \
-  __android_log_print(ANDROID_LOG_INFO, "lowpass", __VA_ARGS__)
-#define LOGW(...) \
-  __android_log_print(ANDROID_LOG_WARN, "lowpass", __VA_ARGS__)
 
 #define RANGE 1000000
 
