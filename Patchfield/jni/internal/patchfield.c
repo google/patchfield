@@ -347,7 +347,7 @@ static patchfield *create_instance(int sample_rate, int buffer_frames,
   return pf;
 }
 
-static int post_message(patchfield *pf, int length, const char *data) {
+static int post_message(patchfield *pf, int32_t length, const char *data) {
   if (length > MAX_MESSAGE_LENGTH) {
     return -12;  // PatchfieldException.MESSAGE_TOO_LONG
   }
@@ -376,12 +376,12 @@ static int post_message(patchfield *pf, int length, const char *data) {
     return -11;  // PatchfieldException.INSUFFICIENT_MESSAGE_SPACE
   }
   char *p = ami_get_message_buffer(pf->shm_ptr, wn);
-  *(int *)p = length;
+  *(int32_t *)p = length;
   memcpy(p + 4, data, length);
   if (length & 0x03) {
     length += 4 - (length & 0x03);
   }
-  *(int *)(p + length + 4) = 0;
+  *(int32_t *)(p + length + 4) = 0;
   __sync_bool_compare_and_swap(&pf->msg_write_ptr, wp, wn + length + 4);
   return 0;
 }
