@@ -28,6 +28,8 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
+
 /*
  * Processing callback; takes a processing context (which is just a pointer to
  * whatever data you want to pass to the callback), the sample rate, the buffer
@@ -61,7 +63,7 @@ void am_configure(void *handle, audio_module_process_t process, void *context);
  * MIDI or OSC messages.
  */
 typedef struct {
-  int size;
+  int32_t size;
   char *data;
 } am_message;
 
