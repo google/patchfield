@@ -141,7 +141,9 @@ static void launch_thread(void *context, int sample_rate, int buffer_frames,
     int output_channels, short *output_buffer) {
   audio_module_runner *amr = (audio_module_runner *) context;
   if (!--amr->launch_counter) {
-    if (pthread_create(&amr->thread, NULL, run_module, amr)) {
+    if (!pthread_create(&amr->thread, NULL, run_module, amr)) {
+      pthread_setname_np(amr->thread, "AudioModule");
+    } else {
       LOGW("Thread creation failed: %s", strerror(errno));
     }
   }
