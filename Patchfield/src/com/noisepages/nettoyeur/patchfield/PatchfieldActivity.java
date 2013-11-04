@@ -26,6 +26,11 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.view.KeyEvent;
 
+/**
+ * This convenience class encapsulates two common features of activities that use Patchfield, the
+ * connection to the Patchfield service and navigation to a control activity via a long press on
+ * the back button.
+ */
 public abstract class PatchfieldActivity extends Activity {
 
   protected IPatchfieldService patchfield = null;
@@ -54,6 +59,9 @@ public abstract class PatchfieldActivity extends Activity {
 
   protected abstract void onPatchfieldDisconnected();
 
+  /**
+   * When overriding the onDestroy method, make sure to invoke this parent method _at the end_.
+   */
   @Override
   protected void onDestroy() {
     unbindService(connection);
