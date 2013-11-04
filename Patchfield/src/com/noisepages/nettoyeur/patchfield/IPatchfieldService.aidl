@@ -101,7 +101,8 @@ interface IPatchfieldService {
 
   /**
    * @return The notification associated with this module, or null if the module
-   * doesn't exist.
+   * doesn't exist. If module is null, it will return the master notification (see
+   * setMasterNotification below).
    */
   Notification getNotification(String module);
   
@@ -137,15 +138,12 @@ interface IPatchfieldService {
   int getBufferSize();
   
   /**
-   * Delegates to the corresponding Service method.
+   * Sets the master notification, which provides an intent for navigating from individual modules to an
+   * optional control app. It also equips the service with foreground privileges, and the notification will
+   * be used as the persistent notification that shows up in the notification bar.
    */
-  void startForeground(int id, in Notification notification);
+  void setMasterNotification(in Notification notification);
   
-  /**
-   * Delegates to the corresponding Service method.
-   */
-  void stopForeground(boolean removeNotification);
-      
   /**
    * Creates a new audio module in the Patchfield service; for internal use mostly, to be called by
    * the configure method of {@link AudioModule}.
