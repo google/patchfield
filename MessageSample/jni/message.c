@@ -40,12 +40,18 @@ static void process_func(void *context, int sample_rate, int buffer_frames,
   am_message message = { 0, NULL };
   char s[256];
   while (!am_next_message(data->handle, &message)) {
+    // For the purposes of this sample app, we just log the message.
     int status = osc_message_to_string(s, 256, (osc_packet *) &message);
     if (status >= 0) {
       LOGI("%s", s);
     } else {
       LOGW("Conversion failed with error code %d.", status);
     }
+    // In order to handle the message in a real app, do something like this:
+    // float x, y;
+    // if (!osc_unpack_message(&message, "/xy", "ff", &x, &y)) {
+    //   // Handle coordinates from xy-pad.
+    // }
   }
 }
 
