@@ -4,3 +4,6 @@
 [submodule "PatchfieldPd/jni/libpd"]
 	path = PatchfieldPd/jni/libpd
 	url = https://github.com/libpd/libpd.git
+[submodule "Patchfield/jni/tinyosc"]
+	path = Patchfield/jni/tinyosc
+	url = https://github.com/nettoyeurny/tinyosc.git

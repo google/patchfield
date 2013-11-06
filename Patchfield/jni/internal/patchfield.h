@@ -143,39 +143,6 @@ JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchfield_Patchfield_getOu
 JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchfield_Patchfield_getProtocolVersion
   (JNIEnv *, jobject, jlong);
 
-/*
- * Class:     com_noisepages_nettoyeur_patchfield_Patchfield
- * Method:    getMaxMessageLength
- * Signature: (J)I
- */
-JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchfield_Patchfield_getMaxMessageLength
-  (JNIEnv *, jobject, jlong);
-
-/*
- * Class:     com_noisepages_nettoyeur_patchfield_Patchfield
- * Method:    postMessage
- * Signature: (JI[B)I
- */
-JNIEXPORT jint JNICALL Java_com_noisepages_nettoyeur_patchfield_Patchfield_postMessage
-  (JNIEnv *, jobject, jlong, jint, jbyteArray);
-
-#ifdef __cplusplus
-}
-#endif
-#endif
-/* Header for class com_noisepages_nettoyeur_patchfield_Patchfield_ReceiverThread */
-
-#ifndef _Included_com_noisepages_nettoyeur_patchfield_Patchfield_ReceiverThread
-#define _Included_com_noisepages_nettoyeur_patchfield_Patchfield_ReceiverThread
-#ifdef __cplusplus
-extern "C" {
-#endif
-#undef com_noisepages_nettoyeur_patchfield_Patchfield_ReceiverThread_MIN_PRIORITY
-#define com_noisepages_nettoyeur_patchfield_Patchfield_ReceiverThread_MIN_PRIORITY 1L
-#undef com_noisepages_nettoyeur_patchfield_Patchfield_ReceiverThread_NORM_PRIORITY
-#define com_noisepages_nettoyeur_patchfield_Patchfield_ReceiverThread_NORM_PRIORITY 5L
-#undef com_noisepages_nettoyeur_patchfield_Patchfield_ReceiverThread_MAX_PRIORITY
-#define com_noisepages_nettoyeur_patchfield_Patchfield_ReceiverThread_MAX_PRIORITY 10L
 #ifdef __cplusplus
 }
 #endif
