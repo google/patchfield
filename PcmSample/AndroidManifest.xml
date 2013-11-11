@@ -7,7 +7,8 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="18" />
-    <uses-permission android:name="com.noisepages.nettoyeur.patchfield.service.USE_PATCHFIELD"/>
+
+    <uses-permission android:name="com.noisepages.nettoyeur.patchfield.service.USE_PATCHFIELD" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +17,9 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.noisepages.nettoyeur.patchfield.source.PcmActivity"
-            android:label="@string/app_name" android:launchMode="singleTask">
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

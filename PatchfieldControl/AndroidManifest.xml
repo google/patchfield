@@ -7,24 +7,34 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="18" />
-    <permission android:protectionLevel="normal" android:name="com.noisepages.nettoyeur.patchfield.service.USE_PATCHFIELD"></permission>
-    <uses-permission android:name="com.noisepages.nettoyeur.patchfield.service.USE_PATCHFIELD"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
+    <permission
+        android:name="com.noisepages.nettoyeur.patchfield.service.USE_PATCHFIELD"
+        android:protectionLevel="normal" >
+    </permission>
+
+    <uses-permission android:name="com.noisepages.nettoyeur.patchfield.service.USE_PATCHFIELD" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <service android:name="com.noisepages.nettoyeur.patchfield.service.PatchfieldService" android:permission="com.noisepages.nettoyeur.patchfield.service.USE_PATCHFIELD">
-             <intent-filter>
-                <action android:name="IPatchfieldService" ></action>
-             </intent-filter>
+        <service
+            android:name="com.noisepages.nettoyeur.patchfield.service.PatchfieldService"
+            android:permission="com.noisepages.nettoyeur.patchfield.service.USE_PATCHFIELD" >
+            <intent-filter>
+                <action android:name="IPatchfieldService" >
+                </action>
+            </intent-filter>
         </service>
+
         <activity
             android:name="com.noisepages.nettoyeur.patchfield.control.ControlActivity"
-            android:label="@string/app_name" android:launchMode="singleTask">
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
