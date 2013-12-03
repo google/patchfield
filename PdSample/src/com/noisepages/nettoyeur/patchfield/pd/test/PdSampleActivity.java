@@ -22,79 +22,32 @@ import org.puredata.core.PdBase;
 import org.puredata.core.utils.IoUtils;
 import org.puredata.core.utils.PdDispatcher;
 
-import android.app.Activity;
 import android.app.Notification;
-import android.content.ComponentName;
-import android.content.Context;
+import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
 
-import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
+import com.noisepages.nettoyeur.patchfield.PatchfieldActivity;
 import com.noisepages.nettoyeur.patchfield.pd.PdModule;
 
-public class PdSampleActivity extends Activity {
+public class PdSampleActivity extends PatchfieldActivity {
 
   private static final String TAG = "PatchfieldPdSample";
 
-  private IPatchfieldService patchfield = null;
-
   private PdModule module = null;
   private final String label = "pdtest";
-
-  private ServiceConnection connection = new ServiceConnection() {
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-      patchfield = null;
-    }
-
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-      Log.i(TAG, "Service connected.");
-      patchfield = IPatchfieldService.Stub.asInterface(service);
-      int inputChannels = 2;
-      int outputChannels = 2;
-      Notification notification =
-          new Notification.Builder(PdSampleActivity.this).setSmallIcon(R.drawable.pd_icon)
-              .setContentTitle("PdModule").build();
-      try {
-        // Create PdModule instance before invoking any methods on PdBase.
-        module =
-            PdModule.getInstance(patchfield.getSampleRate(), inputChannels, outputChannels,
-                notification);
-        PdBase.setReceiver(new PdDispatcher() {
-          @Override
-          public void print(String s) {
-            Log.i(TAG, s);
-          }
-        });
-        InputStream in = getResources().openRawResource(R.raw.test);
-        File pdFile = IoUtils.extractResource(in, "test.pd", getCacheDir());
-        PdBase.openPatch(pdFile);
-        module.configure(patchfield, label);
-        patchfield.activateModule(label);
-      } catch (RemoteException e) {
-        e.printStackTrace();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-  };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    bindService(new Intent("IPatchfieldService"), connection, Context.BIND_AUTO_CREATE);
   }
 
   @Override
   protected void onDestroy() {
-    super.onDestroy();
     if (patchfield != null) {
       try {
         module.release(patchfield);
@@ -103,7 +56,7 @@ public class PdSampleActivity extends Activity {
       }
     }
     PdBase.release();
-    unbindService(connection);
+    super.onDestroy();
   }
 
   @Override
@@ -113,4 +66,41 @@ public class PdSampleActivity extends Activity {
     return true;
   }
 
+  @Override
+  protected void onPatchfieldConnected() {
+    int inputChannels = 2;
+    int outputChannels = 2;
+    PendingIntent pi =
+        PendingIntent.getActivity(PdSampleActivity.this, 0, new Intent(PdSampleActivity.this,
+            PdSampleActivity.class), 0);
+    Notification notification =
+        new Notification.Builder(PdSampleActivity.this).setSmallIcon(R.drawable.pd_icon)
+            .setContentTitle("PdModule").setContentIntent(pi).build();
+    try {
+      // Create PdModule instance before invoking any methods on PdBase.
+      module =
+          PdModule.getInstance(patchfield.getSampleRate(), inputChannels, outputChannels,
+              notification);
+      PdBase.setReceiver(new PdDispatcher() {
+        @Override
+        public void print(String s) {
+          Log.i(TAG, s);
+        }
+      });
+      InputStream in = getResources().openRawResource(R.raw.test);
+      File pdFile = IoUtils.extractResource(in, "test.pd", getCacheDir());
+      PdBase.openPatch(pdFile);
+      module.configure(patchfield, label);
+      patchfield.activateModule(label);
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  protected void onPatchfieldDisconnected() {
+    // Do nothing for now.
+  }
 }

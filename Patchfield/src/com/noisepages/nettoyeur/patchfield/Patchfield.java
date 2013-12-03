@@ -85,6 +85,7 @@ public class Patchfield implements IPatchfieldService {
   private long streamPtr;
   private final Map<String, Integer> modules = new LinkedHashMap<String, Integer>();
   private final Map<String, Notification> notifications = new LinkedHashMap<String, Notification>();
+  private Notification masterNotification = null;
   private final RemoteCallbackList<IPatchfieldClient> clients =
       new RemoteCallbackList<IPatchfieldClient>();
   private final SparseArray<ReceiverThread> receiverThreads = new SparseArray<ReceiverThread>();
@@ -383,7 +384,7 @@ public class Patchfield implements IPatchfieldService {
 
   @Override
   public synchronized Notification getNotification(String module) {
-    return notifications.get(module);
+    return module == null ? masterNotification : notifications.get(module);
   }
 
   @Override
@@ -444,6 +445,11 @@ public class Patchfield implements IPatchfieldService {
       clients.finishBroadcast();
     }
     return PatchfieldException.successOrFailure(result);
+  }
+
+  @Override
+  public synchronized void setMasterNotification(Notification notification) {
+    masterNotification = notification;
   }
 
   @Override
@@ -533,16 +539,6 @@ public class Patchfield implements IPatchfieldService {
 
   @Override
   public IBinder asBinder() {
-    throw new UnsupportedOperationException("Not implemented for local patchfield.");
-  }
-
-  @Override
-  public void startForeground(int id, Notification notification) {
-    throw new UnsupportedOperationException("Not implemented for local patchfield.");
-  }
-
-  @Override
-  public void stopForeground(boolean removeNotification) {
     throw new UnsupportedOperationException("Not implemented for local patchfield.");
   }
 

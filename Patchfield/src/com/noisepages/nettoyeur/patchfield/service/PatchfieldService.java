@@ -151,13 +151,9 @@ public class PatchfieldService extends Service {
     }
 
     @Override
-    public void startForeground(int id, Notification notification) throws RemoteException {
-      PatchfieldService.this.startForeground(id, notification);
-    }
-
-    @Override
-    public void stopForeground(boolean removeNotification) throws RemoteException {
-      PatchfieldService.this.stopForeground(removeNotification);
+    public void setMasterNotification(Notification notification) throws RemoteException {
+      patchfield.setMasterNotification(notification);
+      PatchfieldService.this.startForeground(Integer.MAX_VALUE, notification);
     }
 
     @Override
