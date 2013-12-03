@@ -14,15 +14,10 @@
 
 package com.noisepages.nettoyeur.patchfield.lowpass;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.Menu;
@@ -33,13 +28,11 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
+import com.noisepages.nettoyeur.patchfield.PatchfieldActivity;
 
-public class LowpassActivity extends Activity implements OnSeekBarChangeListener {
+public class LowpassActivity extends PatchfieldActivity implements OnSeekBarChangeListener {
 
   private static final String TAG = "LowpassSample";
-
-  private IPatchfieldService patchfield = null;
 
   private LowpassModule module = null;
 
@@ -48,35 +41,6 @@ public class LowpassActivity extends Activity implements OnSeekBarChangeListener
   private final String moduleLabel = "lowpass";
 
   private int sampleRate;
-
-  private ServiceConnection connection = new ServiceConnection() {
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-      patchfield = null;
-    }
-
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-      Log.i(TAG, "Service connected.");
-      patchfield = IPatchfieldService.Stub.asInterface(service);
-      PendingIntent pi =
-          PendingIntent.getActivity(LowpassActivity.this, 0, new Intent(LowpassActivity.this,
-              LowpassActivity.class), 0);
-      Notification notification =
-          new Notification.Builder(LowpassActivity.this).setSmallIcon(R.drawable.emo_im_happy)
-              .setContentTitle("LowpassModule").setContentIntent(pi).build();
-      try {
-        Log.i(TAG, "Creating module.");
-        module = new LowpassModule(2, notification);
-        module.configure(patchfield, moduleLabel);
-        patchfield.activateModule(moduleLabel);
-        sampleRate = patchfield.getSampleRate();
-        textView.setText("Cutoff frequency: " + sampleRate + "Hz");
-      } catch (RemoteException e) {
-        e.printStackTrace();
-      }
-    }
-  };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -100,12 +64,10 @@ public class LowpassActivity extends Activity implements OnSeekBarChangeListener
         }
       }
     });
-    bindService(new Intent("IPatchfieldService"), connection, Context.BIND_AUTO_CREATE);
   }
 
   @Override
   protected void onDestroy() {
-    super.onDestroy();
     if (patchfield != null) {
       try {
         module.release(patchfield);
@@ -113,7 +75,7 @@ public class LowpassActivity extends Activity implements OnSeekBarChangeListener
         e.printStackTrace();
       }
     }
-    unbindService(connection);
+    super.onDestroy();
   }
 
   @Override
@@ -138,4 +100,30 @@ public class LowpassActivity extends Activity implements OnSeekBarChangeListener
 
   @Override
   public void onStopTrackingTouch(SeekBar seekBar) {}
+
+  @Override
+  protected void onPatchfieldConnected() {
+    Log.i(TAG, "Service connected.");
+    PendingIntent pi =
+        PendingIntent.getActivity(LowpassActivity.this, 0, new Intent(LowpassActivity.this,
+            LowpassActivity.class), 0);
+    Notification notification =
+        new Notification.Builder(LowpassActivity.this).setSmallIcon(R.drawable.emo_im_happy)
+            .setContentTitle("LowpassModule").setContentIntent(pi).build();
+    try {
+      Log.i(TAG, "Creating module.");
+      module = new LowpassModule(2, notification);
+      module.configure(patchfield, moduleLabel);
+      patchfield.activateModule(moduleLabel);
+      sampleRate = patchfield.getSampleRate();
+      textView.setText("Cutoff frequency: " + sampleRate + "Hz");
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  protected void onPatchfieldDisconnected() {
+    // Do nothing for now.
+  }
 }

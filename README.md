@@ -17,7 +17,7 @@ Forum
 -----
 
 If you have any questions or comments, don't hesitate to get in touch at
-https://groups.google.com/d/forum/patchfield, if you implement a great project
+https://groups.google.com/d/forum/patchfield. If you implement a great project
 on top of Patchbay, please tell us about it!
 
 Device compatibility
@@ -166,8 +166,8 @@ Patchfield incurs no latency on top of the systemic latency of the Android audio
 stack; the audio processing callbacks of all active modules are invoked in one
 buffer queue callback of OpenSL ES.
 
-Odds and ends
--------------
+Sample format and buffer size
+-----------------------------
 
 Patchfield uses 32-bit float samples; buffers are non-interleaved.  The
 Patchfield service operates at the native sample rate and buffer size of the
@@ -181,6 +181,15 @@ Multiples of three, such as 144, 192, and 384, have been seen in the wild. The
 Patchfield repository includes a utility library that performs buffer size
 adaptation for audio modules that use synthesis techniques or audio libraries
 that cannot operate at the native buffer size.
+
+Navigation between Patchfield apps
+----------------------------------
+
+In order to navigate from the control app to an audio module, long-click on the
+icon of the module in the control UI. In order to navigate from an audio module
+to the control app, long-click on the back button. An abstract utility class,
+``PatchfieldActivity.java``, implements this behavior and manages the
+connection to the Patchfield service.
 
 Apps that use Patchfield should launch with launch mode ``singleTask``. This
 deviates from the usual recommendations for Android development, but it is
