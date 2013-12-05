@@ -14,63 +14,30 @@
 
 package com.noisepages.nettoyeur.patchfield.messagesample;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.Menu;
 
-import com.noisepages.nettoyeur.patchfield.IPatchfieldService;
+import com.noisepages.nettoyeur.patchfield.PatchfieldActivity;
+import com.noisepages.nettoyeur.patchfield.PatchfieldException;
 
-public class MessageActivity extends Activity {
+public class MessageActivity extends PatchfieldActivity {
 
-  private IPatchfieldService patchfield = null;
   private MessageModule module = null;
   private final String moduleName = "source";
-
-  private ServiceConnection connection = new ServiceConnection() {
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-      patchfield = null;
-    }
-
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-      patchfield = IPatchfieldService.Stub.asInterface(service);
-      PendingIntent pi =
-          PendingIntent.getActivity(MessageActivity.this, 0, new Intent(MessageActivity.this,
-              MessageActivity.class), 0);
-      Notification notification =
-          new Notification.Builder(MessageActivity.this).setSmallIcon(R.drawable.perm_group_audio_settings)
-              .setContentTitle("MessageModule").setContentIntent(pi).build();
-      module = new MessageModule(notification);
-      try {
-        module.configure(patchfield, moduleName);
-        patchfield.activateModule(moduleName);
-        patchfield.receiveMessages(8000);
-      } catch (RemoteException e) {
-        e.printStackTrace();
-      }
-    }
-  };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_message);
-    bindService(new Intent("IPatchfieldService"), connection, Context.BIND_AUTO_CREATE);
   }
 
   @Override
   protected void onDestroy() {
-    super.onDestroy();
     if (patchfield != null) {
       try {
         module.release(patchfield);
@@ -78,7 +45,7 @@ public class MessageActivity extends Activity {
         e.printStackTrace();
       }
     }
-    unbindService(connection);
+    super.onDestroy();
   }
 
   @Override
@@ -86,5 +53,33 @@ public class MessageActivity extends Activity {
     // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.message, menu);
     return true;
+  }
+
+  @Override
+  protected void onPatchfieldConnected() {
+    PendingIntent pi =
+        PendingIntent.getActivity(MessageActivity.this, 0, new Intent(MessageActivity.this,
+            MessageActivity.class), 0);
+    Notification notification =
+        new Notification.Builder(MessageActivity.this)
+            .setSmallIcon(R.drawable.perm_group_audio_settings).setContentTitle("MessageModule")
+            .setContentIntent(pi).build();
+    module = new MessageModule(notification);
+    try {
+      PatchfieldException.throwOnError(module.configure(patchfield, moduleName));
+      patchfield.activateModule(moduleName);
+      patchfield.receiveMessages(8000);
+    } catch (RemoteException e) {
+      e.printStackTrace();
+    } catch (PatchfieldException e) {
+      Log.e(getClass().getName(), "Error code: " + e.getCode());
+      e.printStackTrace();
+      finish();
+    }
+  }
+
+  @Override
+  protected void onPatchfieldDisconnected() {
+    // Do nothing for now.
   }
 }
