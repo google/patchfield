@@ -28,7 +28,7 @@ import com.noisepages.nettoyeur.patchfield.PatchfieldException;
 public class MessageActivity extends PatchfieldActivity {
 
   private MessageModule module = null;
-  private final String moduleName = "source";
+  private final String moduleName = "message";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
