@@ -17,6 +17,7 @@
 #include "lowpass.h"
 
 #include "audio_module.h"
+#include "tinyosc/src/tinyosc.h"
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -27,12 +28,21 @@
 typedef struct {
   int alpha;  // RC lowpass filter coefficient, between 0 and RANGE.
   float *y;   // Filter values for each channel.
+  void *handle;
 } lowpass_data;
 
 static void process_func(void *context, int sample_rate, int buffer_frames,
     int input_channels, const float *input_buffer,
     int output_channels, float *output_buffer) {
   lowpass_data *data = (lowpass_data *) context;
+  am_message message = { 0, NULL };
+  while (!am_next_message(data->handle, &message)) {
+    float x;
+    if (!osc_unpack_message(&message, "/1/rotaryA", "f", &x)) {
+      while (!__sync_bool_compare_and_swap(&data->alpha, data->alpha,
+                                           (int) (RANGE * x)));
+    }
+  }
   float alpha = (float) __sync_fetch_and_or(&data->alpha, 0) / RANGE;
   int i, j;
   for (i = 0; i < input_channels; ++i) {
@@ -54,6 +64,7 @@ Java_com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule_configureNativeCo
   if (data) {
     data->y = malloc(channels * sizeof(float));
     if (data->y) {
+      data->handle = handle;
       data->alpha = RANGE;
       int i;
       for (i = 0; i < channels; ++i) {
@@ -80,5 +91,6 @@ JNIEXPORT void JNICALL
 Java_com_noisepages_nettoyeur_patchfield_lowpass_LowpassModule_setParameter
 (JNIEnv *env, jobject obj, jlong p, jdouble alpha) {
   lowpass_data *data = (lowpass_data *) p;
-  __sync_bool_compare_and_swap(&data->alpha, data->alpha, (int) (RANGE * alpha));
+  while (!__sync_bool_compare_and_swap(&data->alpha, data->alpha,
+                                       (int) (RANGE * alpha)));
 }
